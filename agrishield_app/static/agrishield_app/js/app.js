@@ -216,11 +216,11 @@ document.addEventListener("DOMContentLoaded", function () {
         const w_poverty = currentWeights.w3;
         const budget_units = sliderBudget.value;
         const unit_cost = inputCost.value;
-        const province = provinceSelect.value;
+        const province = provinceSelect ? provinceSelect.value : "All Rwanda";
 
         const queryStr = `level=${level}&w_stress=${w_stress}&w_cropland=${w_cropland}&w_poverty=${w_poverty}&budget_units=${budget_units}&unit_cost=${unit_cost}&province=${encodeURIComponent(province)}`;
 
-        btnExport.href = `/api/export-csv/?${queryStr}`;
+        if (btnExport) btnExport.href = `/api/export-csv/?${queryStr}`;
 
         fetch(`/api/simulate/?${queryStr}`)
             .then(res => res.json())
@@ -258,18 +258,64 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function updateKPIs(kpis) {
-        kpiCropland.textContent = kpis.total_cropland_ha.toLocaleString() + " ha";
-        kpiUnirrigated.textContent = kpis.total_unirrigated_ha.toLocaleString() + " ha";
-        kpiBudgetUnits.textContent = kpis.target_units_count + " Pumps";
-        kpiProtected.textContent = kpis.protected_ha_targeted.toLocaleString() + " ha";
-        kpiTargetShare.textContent = kpis.target_share_pct + "% Target Share";
-        kpiPoverty.textContent = kpis.target_poverty_share + "%";
-        kpiInvestment.textContent = "$" + kpis.total_investment_usd.toLocaleString();
+        if (!kpis) return;
+        if (kpiCropland) kpiCropland.textContent = kpis.total_cropland_ha.toLocaleString() + " ha";
+        if (kpiUnirrigated) kpiUnirrigated.textContent = kpis.total_unirrigated_ha.toLocaleString() + " ha";
+        if (kpiBudgetUnits) kpiBudgetUnits.textContent = kpis.target_units_count + " Pumps";
+        if (kpiProtected) kpiProtected.textContent = kpis.protected_ha_targeted.toLocaleString() + " ha";
+        if (kpiTargetShare) kpiTargetShare.textContent = kpis.target_share_pct + "% Target Share";
+        if (kpiPoverty) kpiPoverty.textContent = kpis.target_poverty_share + "%";
+        if (kpiInvestment) kpiInvestment.textContent = "$" + kpis.total_investment_usd.toLocaleString();
     }
 
     // ---------------------------------------------------------
-    // 3D Deck.gl Map Controller
+    // Comprehensive Interactive Map Controller
     // ---------------------------------------------------------
+    let currentMapMode = "3D"; // "3D" or "2D"
+    let currentMetricMode = "allocation"; // "allocation", "score", "risk", "poverty", "cropland"
+    let currentBasemap = "light"; // "light", "dark", "voyager", "none"
+    let currentElevScale = 1.0;
+    let selectedUnitName = null;
+    let currentGeojson = null;
+    let currentGeoLevel = "District";
+
+    const BASEMAP_TILES = {
+        light: "https://a.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png",
+        dark: "https://a.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png",
+        voyager: "https://a.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png",
+        none: null
+    };
+
+    function getColorForFeature(props, metricMode) {
+        const isTarget = props.selected_for_intervention;
+        const score = props.ssit_priority_score || 0;
+        const risk = props.predicted_stress_prob || 0;
+        const pov = props.eicv_poverty_pct || 0;
+        const crop = props.unirrigated_ha || 0;
+
+        if (metricMode === "allocation") {
+            return isTarget ? [239, 68, 68, 220] : [16, 185, 129, 140];
+        } else if (metricMode === "score") {
+            if (score <= 0.35) return [16, 185, 129, 180];
+            if (score <= 0.55) return [245, 158, 11, 200];
+            if (score <= 0.75) return [215, 155, 82, 215];
+            return [239, 68, 68, 230];
+        } else if (metricMode === "risk") {
+            if (risk <= 0.45) return [59, 130, 246, 180];
+            if (risk <= 0.70) return [245, 158, 11, 200];
+            return [239, 68, 68, 230];
+        } else if (metricMode === "poverty") {
+            if (pov <= 28) return [203, 213, 225, 170];
+            if (pov <= 42) return [249, 115, 22, 200];
+            return [185, 28, 28, 230];
+        } else if (metricMode === "cropland") {
+            if (crop <= 18000) return [187, 247, 208, 170];
+            if (crop <= 35000) return [34, 197, 94, 200];
+            return [21, 128, 61, 230];
+        }
+        return [16, 185, 129, 160];
+    }
+
     function initDeckGLMap() {
         const container = document.getElementById("deck-map-container");
         if (!container) return;
@@ -279,7 +325,7 @@ document.addEventListener("DOMContentLoaded", function () {
             initialViewState: {
                 latitude: -1.94,
                 longitude: 29.87,
-                zoom: 8.4,
+                zoom: 8.5,
                 pitch: 48,
                 bearing: -10
             },
@@ -290,48 +336,250 @@ document.addEventListener("DOMContentLoaded", function () {
                 return {
                     html: `
                         <div class="deck-tooltip">
-                            <b style="font-size: 1.05rem; color: #10b981;">${p.unit_name}</b> <span style="color: #94a3b8;">(${p.province})</span><br/>
-                            <hr style="border-color: #334155; margin: 6px 0;"/>
-                            <b>SSIT Priority Score:</b> <span style="color: #f59e0b; font-weight: 800;">${p.ssit_priority_score}</span><br/>
+                            <b style="font-size: 1.05rem; color: #265BA5;">${p.unit_name}</b> <span style="color: #64748b;">(${p.province})</span><br/>
+                            <hr style="border-color: #e2e8f0; margin: 6px 0;"/>
+                            <b>SSIT Priority Score:</b> <span style="color: #d79b52; font-weight: 800;">${p.ssit_priority_score}</span><br/>
                             <b>Priority Rank:</b> #${p.allocated_subsidy_rank}<br/>
                             <b>Allocation Status:</b> ${p.target_status}<br/>
-                            <hr style="border-color: #334155; margin: 6px 0;"/>
-                            💧 <b>Predicted Risk:</b> ${p.predicted_stress_prob}<br/>
+                            <hr style="border-color: #e2e8f0; margin: 6px 0;"/>
+                            💧 <b>Predicted Stress Risk:</b> ${(p.predicted_stress_prob * 100).toFixed(1)}%<br/>
                             🌱 <b>Soil Moisture:</b> ${p.real_soil_moisture_m3_m3} m³/m³<br/>
-                            ☀️ <b>Dry Spell:</b> ${p.dry_spell_days} days<br/>
-                            👥 <b>EICV Poverty:</b> ${p.eicv_poverty_pct}%<br/>
+                            ☀️ <b>Dry Spell Duration:</b> ${p.dry_spell_days} days<br/>
+                            👥 <b>EICV Poverty Rate:</b> ${p.eicv_poverty_pct}%<br/>
                             🌾 <b>Unirrigated Area:</b> ${p.unirrigated_ha.toLocaleString()} ha
                         </div>
                     `
                 };
             }
         });
+
+        setupMapControls();
+    }
+
+    function setupMapControls() {
+        const btnMode3D = document.getElementById("btn-mode-3d");
+        const btnMode2D = document.getElementById("btn-mode-2d");
+        const groupElevScale = document.getElementById("group-elevation-scale");
+
+        if (btnMode3D && btnMode2D) {
+            btnMode3D.addEventListener("click", () => {
+                currentMapMode = "3D";
+                btnMode3D.classList.add("active");
+                btnMode2D.classList.remove("active");
+                if (groupElevScale) groupElevScale.style.display = "flex";
+                if (deckInstance) {
+                    deckInstance.setProps({
+                        initialViewState: {
+                            latitude: -1.94,
+                            longitude: 29.87,
+                            zoom: 8.5,
+                            pitch: 48,
+                            bearing: -10,
+                            transitionDuration: 800
+                        }
+                    });
+                }
+                updateDeckGLMap();
+            });
+
+            btnMode2D.addEventListener("click", () => {
+                currentMapMode = "2D";
+                btnMode2D.classList.add("active");
+                btnMode3D.classList.remove("active");
+                if (groupElevScale) groupElevScale.style.display = "none";
+                if (deckInstance) {
+                    deckInstance.setProps({
+                        initialViewState: {
+                            latitude: -1.94,
+                            longitude: 29.87,
+                            zoom: 8.5,
+                            pitch: 0,
+                            bearing: 0,
+                            transitionDuration: 800
+                        }
+                    });
+                }
+                updateDeckGLMap();
+            });
+        }
+
+        const selectMapMetric = document.getElementById("select-map-metric");
+        if (selectMapMetric) {
+            selectMapMetric.addEventListener("change", (e) => {
+                currentMetricMode = e.target.value;
+                updateDeckGLMap();
+            });
+        }
+
+        const selectMapBasemap = document.getElementById("select-map-basemap");
+        if (selectMapBasemap) {
+            selectMapBasemap.addEventListener("change", (e) => {
+                currentBasemap = e.target.value;
+                updateDeckGLMap();
+            });
+        }
+
+        const sliderElevScale = document.getElementById("slider-elev-scale");
+        const valElevScale = document.getElementById("val-elev-scale");
+        if (sliderElevScale) {
+            sliderElevScale.addEventListener("input", (e) => {
+                currentElevScale = parseFloat(e.target.value);
+                if (valElevScale) valElevScale.textContent = currentElevScale.toFixed(1) + "x";
+                updateDeckGLMap();
+            });
+        }
+
+        const btnRecenter = document.getElementById("btn-recenter-map");
+        if (btnRecenter) {
+            btnRecenter.addEventListener("click", () => {
+                if (deckInstance) {
+                    const is3D = currentMapMode === "3D";
+                    deckInstance.setProps({
+                        initialViewState: {
+                            latitude: -1.94,
+                            longitude: 29.87,
+                            zoom: 8.5,
+                            pitch: is3D ? 48 : 0,
+                            bearing: is3D ? -10 : 0,
+                            transitionDuration: 800
+                        }
+                    });
+                }
+            });
+        }
     }
 
     function updateDeckGLMap(geojson, level) {
+        if (geojson) currentGeojson = geojson;
+        if (level) currentGeoLevel = level;
+        if (!currentGeojson) return;
+
         if (!deckInstance) {
             initDeckGLMap();
         }
 
+        const is3D = currentMapMode === "3D";
+        const layers = [];
+
+        // Carto Basemap Tile Layer
+        if (currentBasemap !== "none" && BASEMAP_TILES[currentBasemap]) {
+            const tileLayer = new deck.TileLayer({
+                id: "carto-basemap-tiles",
+                data: BASEMAP_TILES[currentBasemap],
+                minZoom: 0,
+                maxZoom: 19,
+                tileSize: 256,
+                renderSubLayers: props => {
+                    const { bbox: { left, bottom, right, top } } = props.tile;
+                    return new deck.BitmapLayer(props, {
+                        data: null,
+                        image: props.data,
+                        bounds: [left, bottom, right, top]
+                    });
+                }
+            });
+            layers.push(tileLayer);
+        }
+
+        // Polygon Choropleth Layer
         const polygonLayer = new deck.GeoJsonLayer({
             id: "rwanda-3d-polygons",
-            data: geojson,
-            opacity: 0.85,
+            data: currentGeojson,
+            opacity: is3D ? 0.88 : 0.75,
             stroked: true,
             filled: true,
-            extruded: true,
-            wireframe: true,
-            getElevation: f => f.properties.elevation_m,
-            getFillColor: f => f.properties.fill_color,
-            getLineColor: [255, 255, 255, 120],
-            lineWidthMinPixels: 1,
-            pickable: true
+            extruded: is3D,
+            wireframe: is3D,
+            getElevation: f => is3D ? (f.properties.elevation_m * currentElevScale) : 0,
+            getFillColor: f => getColorForFeature(f.properties, currentMetricMode),
+            getLineColor: f => (f.properties.unit_name === selectedUnitName) ? [250, 204, 21, 255] : [255, 255, 255, 140],
+            lineWidthMinPixels: f => (f.properties.unit_name === selectedUnitName) ? 3 : 1,
+            pickable: true,
+            onClick: ({ object }) => {
+                if (!object) return;
+                selectedUnitName = object.properties.unit_name;
+                updateDeckGLMap();
+                if (unitShapSelect) {
+                    unitShapSelect.value = selectedUnitName;
+                    fetchShapWaterfall(selectedUnitName);
+                }
+            },
+            updateTriggers: {
+                getElevation: [currentMapMode, currentElevScale],
+                getFillColor: [currentMetricMode],
+                getLineColor: [selectedUnitName],
+                lineWidthMinPixels: [selectedUnitName],
+                extruded: [currentMapMode]
+            }
         });
+        layers.push(polygonLayer);
 
         if (deckInstance) {
-            deckInstance.setProps({
-                layers: [polygonLayer]
-            });
+            deckInstance.setProps({ layers });
+        }
+
+        updateLegendDisplay();
+    }
+
+    function updateLegendDisplay() {
+        const titleEl = document.getElementById("legend-title");
+        const contentEl = document.getElementById("legend-content");
+        if (!titleEl || !contentEl) return;
+
+        if (currentMetricMode === "allocation") {
+            titleEl.textContent = "🎯 Subsidy Target Allocation";
+            contentEl.innerHTML = `
+                <div style="display: flex; flex-direction: column; gap: 6px; font-size: 0.78rem;">
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <span style="width: 14px; height: 14px; background: #ef4444; border-radius: 4px; display: inline-block;"></span>
+                        <b>Target Allocated ($K$ Subsidies)</b>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <span style="width: 14px; height: 14px; background: #10b981; border-radius: 4px; display: inline-block;"></span>
+                        <span>Baseline (Unallocated)</span>
+                    </div>
+                </div>
+            `;
+        } else if (currentMetricMode === "score") {
+            titleEl.textContent = "📊 SSIT Priority Score";
+            contentEl.innerHTML = `
+                <div class="legend-bar-container" style="background: linear-gradient(to right, #10b981, #f59e0b, #d79b52, #ef4444);"></div>
+                <div class="legend-scale-labels">
+                    <span>0.00 (Low)</span>
+                    <span>0.50</span>
+                    <span>1.00 (High Target)</span>
+                </div>
+            `;
+        } else if (currentMetricMode === "risk") {
+            titleEl.textContent = "💧 Climate Drought Risk";
+            contentEl.innerHTML = `
+                <div class="legend-bar-container" style="background: linear-gradient(to right, #3b82f6, #f59e0b, #ef4444);"></div>
+                <div class="legend-scale-labels">
+                    <span>Low Exposure</span>
+                    <span>Moderate</span>
+                    <span>Extreme Risk</span>
+                </div>
+            `;
+        } else if (currentMetricMode === "poverty") {
+            titleEl.textContent = "👥 EICV Poverty Rate";
+            contentEl.innerHTML = `
+                <div class="legend-bar-container" style="background: linear-gradient(to right, #cbd5e1, #f97316, #b91c1c);"></div>
+                <div class="legend-scale-labels">
+                    <span>< 20%</span>
+                    <span>40%</span>
+                    <span>70%+ (High)</span>
+                </div>
+            `;
+        } else if (currentMetricMode === "cropland") {
+            titleEl.textContent = "🌾 Unirrigated Cropland";
+            contentEl.innerHTML = `
+                <div class="legend-bar-container" style="background: linear-gradient(to right, #bbf7d0, #22c55e, #15803d);"></div>
+                <div class="legend-scale-labels">
+                    <span>< 15,000 ha</span>
+                    <span>30,000 ha</span>
+                    <span>50,000+ ha</span>
+                </div>
+            `;
         }
     }
 

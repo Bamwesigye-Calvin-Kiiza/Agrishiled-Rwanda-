@@ -165,12 +165,62 @@
                         <div class="glass-box-title">Interactive 3D SSIT Subsidy Allocation Deck</div>
                     </div>
                     <p style="color: var(--text-muted); font-size: 0.88rem; margin-bottom: 16px;">
-                        Extruded 3D polygon height represents the computed <b>SSIT Priority Score</b>. 
-                        Districts/Sectors highlighted in <b style="color: #ef4444;">Bright Crimson Red</b> receive allocated solar pump subsidies under ceiling <i>K</i>, 
-                        while <b style="color: #10b981;">Emerald Green</b> polygons represent baseline unirrigated regions.
+                        Explore multi-dimensional spatial risk layers with real-time Carto basemaps, 3D extruded pillars vs 2D flat heatmap modes, continuous metric color gradients, and click-to-inspect district intelligence.
                     </p>
                     
-                    <div id="deck-map-container"></div>
+                    <div class="map-viewport-wrapper">
+                        <!-- Map Floating Control Toolbar -->
+                        <div class="map-controls-toolbar">
+                            <div class="map-toolbar-group">
+                                <label class="map-toolbar-label">Projection</label>
+                                <div class="btn-group-segmented">
+                                    <button type="button" class="btn-segmented active" id="btn-mode-3d">3D Pillars</button>
+                                    <button type="button" class="btn-segmented" id="btn-mode-2d">2D Flat</button>
+                                </div>
+                            </div>
+
+                            <div class="map-toolbar-group">
+                                <label class="map-toolbar-label">Choropleth Layer Metric</label>
+                                <select id="select-map-metric" class="map-select-control">
+                                    <option value="allocation" selected>🎯 SSIT Subsidy Allocation (Target vs Baseline)</option>
+                                    <option value="score">📊 Computed SSIT Priority Score</option>
+                                    <option value="risk">💧 Climate Drought Stress Probability</option>
+                                    <option value="poverty">👥 EICV Household Poverty Rate</option>
+                                    <option value="cropland">🌾 Unirrigated Cropland Area</option>
+                                </select>
+                            </div>
+
+                            <div class="map-toolbar-group">
+                                <label class="map-toolbar-label">Basemap</label>
+                                <select id="select-map-basemap" class="map-select-control">
+                                    <option value="light" selected>Positron Light (NISR Standard)</option>
+                                    <option value="dark">Dark Matter (High Contrast)</option>
+                                    <option value="voyager">Voyager Terrain</option>
+                                    <option value="none">Clean Vector (No Tile)</option>
+                                </select>
+                            </div>
+
+                            <div class="map-toolbar-group" id="group-elevation-scale">
+                                <label class="map-toolbar-label">3D Height (<span id="val-elev-scale">1.0x</span>)</label>
+                                <input type="range" id="slider-elev-scale" min="0.2" max="3.0" step="0.2" value="1.0" class="map-range-control">
+                            </div>
+
+                            <button type="button" id="btn-recenter-map" class="btn-map-action" title="Recenter Camera View">
+                                Reset Camera
+                            </button>
+                        </div>
+
+                        <!-- DeckGL Map Container -->
+                        <div id="deck-map-container"></div>
+
+                        <!-- Floating Map Legend Overlay -->
+                        <div id="map-legend-overlay" class="map-legend-box">
+                            <div class="legend-header" id="legend-title">🎯 Subsidy Target Allocation</div>
+                            <div class="legend-body" id="legend-content">
+                                <!-- Dynamic JS Legend -->
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="glass-box">
