@@ -170,6 +170,22 @@ def perform_simulation(params):
         "geojson": deck_geojson
     }
 
+def landing_view(request):
+    cache = get_data_cache()
+    metrics = cache.get("metrics", {})
+    initial_sim = perform_simulation({"level": "district", "budget_units": 5})
+    top_districts = initial_sim.get("ranked_list", [])[:5]
+    
+    context = {
+        "metrics": metrics,
+        "top_districts": top_districts,
+        "total_cropland_ha": 896180,
+        "unirrigated_ha": 845988,
+        "district_count": 30,
+        "sector_count": 422
+    }
+    return render(request, "agrishield_app/landing.html", context)
+
 def index_view(request):
     cache = get_data_cache()
     metrics = cache["metrics"]

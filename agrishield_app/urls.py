@@ -4,7 +4,8 @@ from . import views
 app_name = 'agrishield'
 
 urlpatterns = [
-    path('', views.index_view, name='index'),
+    path('', views.landing_view, name='landing'),
+    path('dashboard/', views.index_view, name='index'),
     path('api/simulate/', views.api_simulate, name='api_simulate'),
     path('api/shap/', views.api_shap, name='api_shap'),
     path('api/export-csv/', views.api_export_csv, name='api_export_csv'),

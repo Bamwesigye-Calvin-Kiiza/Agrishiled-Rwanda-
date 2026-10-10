@@ -1,0 +1,323 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About NISR AgriShield Rwanda — Project & Technical Architecture</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'agrishield_app/css/styles.css' %}">
+</head>
+<body class="nisr-theme">
+
+    <!-- Top Navigation Header -->
+    <header class="app-header">
+        <div class="header-container">
+            <div class="logo-group">
+                <a href="{% url 'agrishield:index' %}" class="logo-link">
+                    <div class="logo-badge">NISR</div>
+                    <div class="logo-text">
+                        <h1>AgriShield <span>Rwanda</span></h1>
+                        <p>Agricultural Climate Resilience Engine</p>
+                    </div>
+                </a>
+            </div>
+            
+            <nav class="header-nav">
+                <a href="{% url 'agrishield:landing' %}" class="nav-link">🏠 Home</a>
+                <a href="{% url 'agrishield:index' %}" class="nav-link">🌐 3D Spatial Engine</a>
+                <a href="{% url 'agrishield:about' %}" class="nav-link active">📖 About Project</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="main-container about-page">
+        
+        <!-- Hero Banner Section -->
+        <section class="about-hero-card">
+            <div class="hero-content">
+                <span class="nisr-pill-badge">🏆 NISR HACKATHON 2026 OFFICIAL ENTRY</span>
+                <h1 class="hero-title">Empowering Rwanda's Smallholders Through Data-Driven Climate Resilience</h1>
+                <p class="hero-subtitle">
+                    NISR AgriShield bridges official national statistics with predictive machine learning and 3D spatial optimization to target MINAGRI & RAB's Small-Scale Irrigation Technology (SSIT) solar pump subsidies under NST2 & Vision 2050.
+                </p>
+                
+                <div class="hero-cta-group">
+                    <a href="{% url 'agrishield:index' %}" class="btn-nisr-primary">🌐 Open Interactive 3D Spatial Engine</a>
+                    <a href="#technical-architecture" class="btn-nisr-outline">📐 Explore Architecture & Data</a>
+                </div>
+            </div>
+            
+            <div class="hero-graphics">
+                <div class="nisr-stat-glow-box">
+                    <div class="glow-value">94.4%</div>
+                    <div class="glow-label">Rainfed Cropland Exposure</div>
+                    <div class="glow-sub">845,988 ha rely on seasonal rains</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- National Impact Key Metrics Grid -->
+        <section class="impact-metrics-grid">
+            <div class="metric-glass-card">
+                <div class="metric-icon">🌾</div>
+                <div class="metric-num">896,180 <span class="unit">ha</span></div>
+                <div class="metric-label">Total Rwanda Cropland</div>
+                <div class="metric-detail">NISR SAS Survey Benchmark</div>
+            </div>
+            <div class="metric-glass-card highlight-gold">
+                <div class="metric-icon">👥</div>
+                <div class="metric-num">422 <span class="unit">Sectors</span></div>
+                <div class="metric-label">Full Sector Microdata</div>
+                <div class="metric-detail">30 Administrative Districts</div>
+            </div>
+            <div class="metric-glass-card highlight-cyan">
+                <div class="metric-icon">🎯</div>
+                <div class="metric-num">0.9873</div>
+                <div class="metric-label">Sector Prediction ROC-AUC</div>
+                <div class="metric-detail">Stratified 5-Fold LightGBM</div>
+            </div>
+            <div class="metric-glass-card">
+                <div class="metric-icon">☀️</div>
+                <div class="metric-num">$1,200 <span class="unit">/ unit</span></div>
+                <div class="metric-label">SSIT Solar Pump Standard</div>
+                <div class="metric-detail">MINAGRI NST2 Policy Target</div>
+            </div>
+        </section>
+
+        <!-- Project Overview & Mandate Section -->
+        <section class="about-section" id="project-overview">
+            <div class="section-header">
+                <h2>🎯 Project Mission & Policy Mandate</h2>
+                <p>Aligning National Statistical Datasets with Rwanda's NST2 & Vision 2050 Climate Directives</p>
+            </div>
+            
+            <div class="overview-grid">
+                <div class="info-card">
+                    <div class="card-badge gold">POLICY CONTEXT</div>
+                    <h3>MINAGRI & RAB SSIT Subsidies</h3>
+                    <p>
+                        Under the National Strategy for Transformation (NST2), the Ministry of Agriculture and Animal Resources (MINAGRI) and the Rwanda Agriculture & Animal Resources Board (RAB) subsidize Small-Scale Irrigation Technology (SSIT) solar pumps by up to 50%. AgriShield provides the data-driven spatial targeting engine to maximize return on public investment.
+                    </p>
+                </div>
+                
+                <div class="info-card">
+                    <div class="card-badge cyan">THE PROBLEM</div>
+                    <h3>Climate Drought Risk & Rainfed Dependence</h3>
+                    <p>
+                        Over 845,000 hectares of smallholder farmland rely strictly on unpredictable seasonal rains. In dry corridor regions like Eastern Province (Bugesera, Kayonza) and high-poverty Southern sectors (Gisagara, Nyaruguru), unmitigated dry spells trigger yield failures and exacerbate rural poverty.
+                    </p>
+                </div>
+
+                <div class="info-card">
+                    <div class="card-badge navy">OUR SOLUTION</div>
+                    <h3>Multi-Criteria Decision Support</h3>
+                    <p>
+                        AgriShield replaces manual guesswork with a transparent multi-criteria optimization formula ($U_i = w_1 \cdot \text{Climate} + w_2 \cdot \text{Cropland} + w_3 \cdot \text{Poverty}$) with a strict $w_1 + w_2 + w_3 = 1.00$ live constraint rule, enabling policy makers to dynamically balance climate risk, smallholder area, and poverty.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Technical Architecture Section -->
+        <section class="about-section" id="technical-architecture">
+            <div class="section-header">
+                <h2>🧠 Machine Learning & Geospatial Architecture</h2>
+                <p>How NISR AgriShield Processes Satellite Rasters and Microdata Into Actionable Field Deployment Schedules</p>
+            </div>
+
+            <!-- Visual Pipeline Flowchart -->
+            <div class="pipeline-flow-card">
+                <div class="flow-step">
+                    <div class="step-num">1</div>
+                    <div class="step-title">Multi-Modal Ingestion</div>
+                    <div class="step-desc">NISR SAS Cropland, NISR EICV Poverty Microdata, CHIRPS Satellite Rainfall, ERA5 Temp & Copernicus Soil Moisture</div>
+                </div>
+                <div class="flow-arrow">➔</div>
+                <div class="flow-step">
+                    <div class="step-num">2</div>
+                    <div class="step-title">Stratified ML Training</div>
+                    <div class="step-desc">XGBoost & LightGBM trained via StratifiedKFold (District AUC 0.8426, Sector AUC 0.9873)</div>
+                </div>
+                <div class="flow-arrow">➔</div>
+                <div class="flow-step">
+                    <div class="step-num">3</div>
+                    <div class="step-title">Multi-Criteria Optimization</div>
+                    <div class="step-desc">Live Weight Utility Scoring ($w_1 + w_2 + w_3 = 1.00$) with Popup Validation</div>
+                </div>
+                <div class="flow-arrow">➔</div>
+                <div class="flow-step">
+                    <div class="step-num">4</div>
+                    <div class="step-title">3D Map & Operational Export</div>
+                    <div class="step-desc">Extruded 3D DeckGL Priority Map & CSV RAB Field Deployment Schedules</div>
+                </div>
+            </div>
+
+            <!-- Detailed Methodology Columns -->
+            <div class="methodology-grid">
+                <div class="tech-card">
+                    <h3>📡 Data Sources & Grounding</h3>
+                    <ul class="nisr-list">
+                        <li><strong>NISR SAS (Seasonal Agricultural Survey)</strong>: Ingests 2026/2025 release crop area, irrigation share, and yield benchmarks.</li>
+                        <li><strong>NISR EICV (Integrated Household Living Conditions Survey)</strong>: Official household poverty microdata rates across all 30 districts and 422 sectors.</li>
+                        <li><strong>CHIRPS Satellite Rainfall</strong>: Daily/monthly precipitation anomaly indices.</li>
+                        <li><strong>ECMWF ERA5 Reanalysis</strong>: Land surface temperatures and dry spell durations (days).</li>
+                        <li><strong>Copernicus Topsoil Moisture</strong>: Volumetric water content ($m^3/m^3$) measuring root-zone moisture deficits.</li>
+                    </ul>
+                </div>
+
+                <div class="tech-card">
+                    <h3>⚡ Predictive Modeling & TreeSHAP</h3>
+                    <ul class="nisr-list">
+                        <li><strong>StratifiedKFold Cross-Validation</strong>: Solves single-class fold collapse by stratifying climate stress labels across all folds.</li>
+                        <li><strong>Dynamic Prior Thresholding</strong>: Optimizes F1 scores matching the empirical target prior ($\approx 0.40$).</li>
+                        <li><strong>TreeSHAP Explainability</strong>: Quantifies exact feature impacts (dry spell days, topsoil moisture, poverty rate) for every sector.</li>
+                        <li><strong>Zero Data Fallback</strong>: 100% reliable local NLP fallback engine for instant stats lookup.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Official References & Data Portals -->
+        <section class="about-section" id="data-portals">
+            <div class="section-header">
+                <h2>🔗 Official NISR & Government Data Portals</h2>
+                <p>Direct Access to Authoritative Statistics and National Policy Strategies</p>
+            </div>
+
+            <div class="portal-links-grid">
+                <a href="https://www.statistics.gov.rw" target="_blank" rel="noopener" class="portal-card">
+                    <div class="portal-icon">🏛️</div>
+                    <div class="portal-info">
+                        <h4>NISR Official Data Portal</h4>
+                        <p>National Institute of Statistics of Rwanda statistical releases and SAS survey reports.</p>
+                    </div>
+                    <div class="portal-arrow">↗</div>
+                </a>
+
+                <a href="https://microdata.statistics.gov.rw" target="_blank" rel="noopener" class="portal-card">
+                    <div class="portal-icon">📊</div>
+                    <div class="portal-info">
+                        <h4>NISR Microdata Catalog</h4>
+                        <p>Access raw EICV household poverty survey datasets and methodology documents.</p>
+                    </div>
+                    <div class="portal-arrow">↗</div>
+                </a>
+
+                <a href="https://www.minagri.gov.rw" target="_blank" rel="noopener" class="portal-card">
+                    <div class="portal-icon">🌱</div>
+                    <div class="portal-info">
+                        <h4>MINAGRI Policy Portal</h4>
+                        <p>Rwanda Ministry of Agriculture NST2 strategy and SSIT solar pump subsidy guidelines.</p>
+                    </div>
+                    <div class="portal-arrow">↗</div>
+                </a>
+
+                <a href="https://www.rab.gov.rw" target="_blank" rel="noopener" class="portal-card">
+                    <div class="portal-icon">🌾</div>
+                    <div class="portal-info">
+                        <h4>RAB Rwanda Agriculture Board</h4>
+                        <p>Extension services, irrigation schemes, and operational field implementation schedules.</p>
+                    </div>
+                    <div class="portal-arrow">↗</div>
+                </a>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Modal Popup for Customizing Utility Weights -->
+    <div id="weights-modal-overlay" class="modal-overlay">
+        <div class="modal-card">
+            <div class="modal-header">
+                <div class="modal-title-group">
+                    <h2>⚙️ Customize Multi-Criteria Utility Weights</h2>
+                    <p>Rule: Weights $w_1 + w_2 + w_3$ MUST sum to exactly 1.00 (100%)</p>
+                </div>
+                <button type="button" class="modal-close-btn" id="btn-close-modal">&times;</button>
+            </div>
+
+            <div class="modal-body">
+                <form id="weights-modal-form">
+                    <div class="weight-input-group">
+                        <label for="modal-w1">
+                            <span class="weight-label-title">💧 Climate Drought Risk Weight ($w_1$)</span>
+                            <span class="weight-label-sub">ML Predicted Stress Probability & Satellite Anomaly</span>
+                        </label>
+                        <input type="number" id="modal-w1" step="0.01" min="0" max="1" value="0.40" class="modal-input">
+                    </div>
+
+                    <div class="weight-input-group">
+                        <label for="modal-w2">
+                            <span class="weight-label-title">🌾 Unirrigated Cropland Weight ($w_2$)</span>
+                            <span class="weight-label-sub">Smallholder Rainfed Area Exposure (Hectares)</span>
+                        </label>
+                        <input type="number" id="modal-w2" step="0.01" min="0" max="1" value="0.35" class="modal-input">
+                    </div>
+
+                    <div class="weight-input-group">
+                        <label for="modal-w3">
+                            <span class="weight-label-title">👥 Poverty Vulnerability Weight ($w_3$)</span>
+                            <span class="weight-label-sub">NISR EICV Microdata Household Poverty Rate (%)</span>
+                        </label>
+                        <input type="number" id="modal-w3" step="0.01" min="0" max="1" value="0.25" class="modal-input">
+                    </div>
+
+                    <!-- Live Sum Validation Box -->
+                    <div id="modal-weight-sum-badge" class="weight-sum-status valid">
+                        Total Sum: <span id="modal-weight-sum-val">1.00</span> / 1.00 (Valid 100%)
+                    </div>
+                </form>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn-nisr-outline" id="btn-cancel-modal">Cancel</button>
+                <button type="button" class="btn-nisr-gold" id="btn-save-modal-weights">Save & Recalculate</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Floating NISR AI Assistant Chatbot Widget -->
+    <div id="chatbot-widget" class="chatbot-widget-container">
+        <button id="chatbot-toggle-btn" class="chatbot-toggle-btn" title="Ask NISR Stats AI Assistant">
+            <span class="chat-icon">💬</span>
+            <span class="chat-badge-text">NISR AI Assistant</span>
+        </button>
+
+        <div id="chatbot-box" class="chatbot-box hidden">
+            <div class="chatbot-header">
+                <div class="chat-header-title">
+                    <span class="bot-status-dot"></span>
+                    <h3>💬 NISR AgriShield AI Assistant</h3>
+                </div>
+                <button id="chatbot-close-btn" class="chat-close-btn">&times;</button>
+            </div>
+            <div id="chatbot-messages" class="chatbot-messages">
+                <div class="chat-msg bot-msg">
+                    👋 <strong>Muraho!</strong> I am the official <strong>NISR AgriShield AI Assistant</strong>.<br><br>
+                    Ask me anything about:<br>
+                    • ⚙️ <strong>Website Features</strong>: <em>'How do I customize weights?'</em><br>
+                    • 📍 <strong>Districts & Sectors</strong>: Type any location (<em>Nyagatare, Bugesera, Karangazi</em>)<br>
+                    • 👥 <strong>Poverty Microdata</strong>: <em>'What are the poorest districts?'</em><br>
+                    • 🚨 <strong>Drought Statistics</strong>: <em>'Show drought risk rankings'</em>
+                </div>
+            </div>
+            <form id="chatbot-form" class="chatbot-input-form">
+                <input type="text" id="chatbot-input" placeholder="Ask about poverty, cropland, drought..." required autocomplete="off">
+                <button type="submit" class="btn-chat-send">Send</button>
+            </form>
+        </div>
+    </div>
+
+    <footer class="app-footer">
+        <div class="footer-container">
+            <p>© 2026 National Institute of Statistics of Rwanda (NISR) Hackathon. Built for Ministry of Agriculture & Animal Resources (MINAGRI) & RAB.</p>
+        </div>
+    </footer>
+
+    <script src="{% static 'agrishield_app/js/app.js' %}"></script>
+</body>
+</html>

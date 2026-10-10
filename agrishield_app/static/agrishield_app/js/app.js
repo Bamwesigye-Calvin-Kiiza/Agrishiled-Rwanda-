@@ -138,10 +138,17 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     // Preset Buttons
-    document.getElementById("btn-preset-minagri").addEventListener("click", () => setWeights(0.50, 0.30, 0.20));
-    document.getElementById("btn-preset-drought").addEventListener("click", () => setWeights(0.75, 0.15, 0.10));
-    document.getElementById("btn-preset-propoor").addEventListener("click", () => setWeights(0.20, 0.20, 0.60));
-    document.getElementById("btn-preset-equal").addEventListener("click", () => setWeights(0.34, 0.33, 0.33));
+    const btnMinagri = document.getElementById("btn-preset-minagri");
+    if (btnMinagri) btnMinagri.addEventListener("click", () => setWeights(0.50, 0.30, 0.20));
+
+    const btnDrought = document.getElementById("btn-preset-drought");
+    if (btnDrought) btnDrought.addEventListener("click", () => setWeights(0.75, 0.15, 0.10));
+
+    const btnPropoor = document.getElementById("btn-preset-propoor");
+    if (btnPropoor) btnPropoor.addEventListener("click", () => setWeights(0.20, 0.20, 0.60));
+
+    const btnEqual = document.getElementById("btn-preset-equal");
+    if (btnEqual) btnEqual.addEventListener("click", () => setWeights(0.34, 0.33, 0.33));
 
     function setWeights(ws, wc, wp) {
         currentWeights = { w1: ws, w2: wc, w3: wp };
@@ -150,10 +157,10 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function updateSliderDisplays() {
-        valStress.textContent = `${currentWeights.w1.toFixed(2)} (${Math.round(currentWeights.w1 * 100)}%)`;
-        valCropland.textContent = `${currentWeights.w2.toFixed(2)} (${Math.round(currentWeights.w2 * 100)}%)`;
-        valPoverty.textContent = `${currentWeights.w3.toFixed(2)} (${Math.round(currentWeights.w3 * 100)}%)`;
-        if (valBudget) valBudget.textContent = sliderBudget.value;
+        if (valStress) valStress.textContent = `${currentWeights.w1.toFixed(2)} (${Math.round(currentWeights.w1 * 100)}%)`;
+        if (valCropland) valCropland.textContent = `${currentWeights.w2.toFixed(2)} (${Math.round(currentWeights.w2 * 100)}%)`;
+        if (valPoverty) valPoverty.textContent = `${currentWeights.w3.toFixed(2)} (${Math.round(currentWeights.w3 * 100)}%)`;
+        if (valBudget && sliderBudget) valBudget.textContent = sliderBudget.value;
     }
 
     [sliderBudget, inputCost, provinceSelect, levelSelect].forEach(input => {
@@ -167,27 +174,34 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     // Initialize Map and Trigger Initial Simulation on Load
-    initDeckGLMap();
-    triggerSimulation();
+    if (document.getElementById("deck-map-container")) {
+        initDeckGLMap();
+        triggerSimulation();
 
-    // Fetch Metrics on Load
-    fetch("/api/metrics/")
-        .then(res => res.json())
-        .then(metrics => {
-            globalMetrics = metrics;
-            updateMetricsDisplay();
-            renderGlobalShapChart();
-        });
+        // Fetch Metrics on Load
+        fetch("/api/metrics/")
+            .then(res => res.json())
+            .then(metrics => {
+                globalMetrics = metrics;
+                updateMetricsDisplay();
+                renderGlobalShapChart();
+            })
+            .catch(err => console.log("Metrics fetch bypassed"));
+    }
 
     function updateMetricsDisplay() {
-        if (!globalMetrics) return;
+        if (!globalMetrics || !levelSelect) return;
         const levelKey = levelSelect.value.toLowerCase().includes("district") ? "district" : "sector";
         const m = globalMetrics[levelKey];
         if (m) {
-            document.getElementById("cv-metric-auc").textContent = m.overall_auc.toFixed(4);
-            document.getElementById("cv-metric-f1").textContent = m.overall_f1.toFixed(4);
-            document.getElementById("cv-metric-acc").textContent = m.overall_acc.toFixed(4);
-            document.getElementById("cv-metric-pr").textContent = `${m.overall_precision.toFixed(2)} / ${m.overall_recall.toFixed(2)}`;
+            const aucEl = document.getElementById("cv-metric-auc");
+            if (aucEl) aucEl.textContent = m.overall_auc.toFixed(4);
+            const f1El = document.getElementById("cv-metric-f1");
+            if (f1El) f1El.textContent = m.overall_f1.toFixed(4);
+            const accEl = document.getElementById("cv-metric-acc");
+            if (accEl) accEl.textContent = m.overall_acc.toFixed(4);
+            const prEl = document.getElementById("cv-metric-pr");
+            if (prEl) prEl.textContent = `${m.overall_precision.toFixed(2)} / ${m.overall_recall.toFixed(2)}`;
         }
     }
 
@@ -195,6 +209,7 @@ document.addEventListener("DOMContentLoaded", function () {
     // REST API Simulation Function
     // ---------------------------------------------------------
     function triggerSimulation() {
+        if (!levelSelect || !sliderBudget || !inputCost) return;
         const level = levelSelect.value;
         const w_stress = currentWeights.w1;
         const w_cropland = currentWeights.w2;
@@ -375,12 +390,12 @@ document.addEventListener("DOMContentLoaded", function () {
         };
 
         const layoutScatter = {
-            title: { text: 'Soil Moisture Deficit vs EICV Poverty Rate', font: { color: '#ffffff' } },
-            xaxis: { title: 'Volumetric Soil Moisture (m³/m³)', color: '#94a3b8' },
-            yaxis: { title: 'EICV Poverty Rate (%)', color: '#94a3b8' },
+            title: { text: 'Soil Moisture Deficit vs EICV Poverty Rate', font: { color: '#265BA5', size: 14 } },
+            xaxis: { title: 'Volumetric Soil Moisture (m³/m³)', color: '#4A6DAE' },
+            yaxis: { title: 'EICV Poverty Rate (%)', color: '#4A6DAE' },
             paper_bgcolor: 'rgba(0,0,0,0)',
             plot_bgcolor: 'rgba(0,0,0,0)',
-            font: { color: '#e2e8f0' },
+            font: { color: '#1E293B' },
             margin: { l: 50, r: 20, t: 40, b: 40 }
         };
 
@@ -400,16 +415,16 @@ document.addEventListener("DOMContentLoaded", function () {
             x: provX,
             y: provY,
             type: 'bar',
-            marker: { color: '#10b981' }
+            marker: { color: '#265BA5' }
         };
 
         const layoutBar = {
-            title: { text: 'Mean Dry Spell Days by Province (<1.0mm/day)', font: { color: '#ffffff' } },
-            xaxis: { title: 'Province', color: '#94a3b8' },
-            yaxis: { title: 'Mean Dry Spell Days', color: '#94a3b8' },
+            title: { text: 'Mean Dry Spell Days by Province (<1.0mm/day)', font: { color: '#265BA5', size: 14 } },
+            xaxis: { title: 'Province', color: '#4A6DAE' },
+            yaxis: { title: 'Mean Dry Spell Days', color: '#4A6DAE' },
             paper_bgcolor: 'rgba(0,0,0,0)',
             plot_bgcolor: 'rgba(0,0,0,0)',
-            font: { color: '#e2e8f0' },
+            font: { color: '#1E293B' },
             margin: { l: 40, r: 20, t: 40, b: 40 }
         };
 
@@ -435,16 +450,16 @@ document.addEventListener("DOMContentLoaded", function () {
             y: yCols,
             type: 'bar',
             orientation: 'h',
-            marker: { color: '#10b981' }
+            marker: { color: '#265BA5' }
         };
 
         const layoutGlobal = {
-            title: { text: `Global TreeSHAP Importance (${levelKey.toUpperCase()})`, font: { color: '#ffffff' } },
-            xaxis: { title: 'Mean |SHAP Value|', color: '#94a3b8' },
-            yaxis: { color: '#94a3b8' },
+            title: { text: `Global TreeSHAP Importance (${levelKey.toUpperCase()})`, font: { color: '#265BA5', size: 14 } },
+            xaxis: { title: 'Mean |SHAP Value|', color: '#4A6DAE' },
+            yaxis: { color: '#4A6DAE' },
             paper_bgcolor: 'rgba(0,0,0,0)',
             plot_bgcolor: 'rgba(0,0,0,0)',
-            font: { color: '#e2e8f0' },
+            font: { color: '#1E293B' },
             margin: { l: 140, r: 20, t: 40, b: 40 }
         };
 
@@ -477,16 +492,16 @@ document.addEventListener("DOMContentLoaded", function () {
                     orientation: 'v',
                     x: xCols,
                     y: yVals,
-                    connector: { line: { color: '#64748b' } },
-                    decreasing: { marker: { color: '#10b981' } },
-                    increasing: { marker: { color: '#ef4444' } }
+                    connector: { line: { color: '#B0C0DB' } },
+                    decreasing: { marker: { color: '#265BA5' } },
+                    increasing: { marker: { color: '#D79B52' } }
                 };
 
                 const layoutWaterfall = {
-                    title: { text: `SHAP Driver Breakdown for ${data.unit_name}`, font: { color: '#ffffff' } },
+                    title: { text: `SHAP Driver Breakdown for ${data.unit_name}`, font: { color: '#265BA5', size: 14 } },
                     paper_bgcolor: 'rgba(0,0,0,0)',
                     plot_bgcolor: 'rgba(0,0,0,0)',
-                    font: { color: '#e2e8f0' },
+                    font: { color: '#1E293B' },
                     margin: { l: 40, r: 20, t: 40, b: 40 }
                 };
 

@@ -1,19 +1,23 @@
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
 
 :root {
-    --bg-dark: #071328;
-    --card-bg: rgba(15, 36, 68, 0.75);
-    --border-color: rgba(244, 180, 26, 0.22);
-    --nisr-gold: #f4b41a;
-    --nisr-navy: #0b1f3a;
-    --nisr-blue: #149bfc;
-    --primary-emerald: #10b981;
-    --accent-crimson: #ef4444;
-    --accent-amber: #f4b41a;
-    --accent-blue: #149bfc;
-    --text-primary: #f8fafc;
-    --text-muted: #94a3b8;
-    --text-sub: #64748b;
+  --nisr-primary:   #265BA5;
+  --nisr-logo:      #3158A4;
+  --nisr-accent:    #59A9E7;
+  --nisr-orange:    #D79B52;
+  --nisr-wave-1:    #4A6DAE;
+  --nisr-wave-2:    #849DC8;
+  --nisr-wave-3:    #B0C0DB;
+  --nisr-bar-gray:  #E7E9EB;
+  --nisr-bg-light:  #F2F5F9;
+  --nisr-white:     #FFFFFF;
+
+  --bg-dark:        #F2F5F9;
+  --card-bg:        #FFFFFF;
+  --border-color:   #B0C0DB;
+  --text-primary:   #1E293B;
+  --text-muted:     #4A6DAE;
+  --text-sub:       #64748B;
 }
 
 * {
@@ -24,7 +28,7 @@
 
 body {
     font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-    background-color: var(--bg-dark);
+    background-color: var(--nisr-bg-light);
     color: var(--text-primary);
     line-height: 1.5;
     overflow-x: hidden;
@@ -32,9 +36,10 @@ body {
 
 /* App Header */
 .app-header {
-    background: rgba(15, 23, 42, 0.85);
+    background: var(--nisr-white);
     backdrop-filter: blur(16px);
-    border-bottom: 1px solid var(--border-color);
+    border-bottom: 2px solid var(--nisr-bar-gray);
+    box-shadow: 0 2px 12px rgba(38, 91, 165, 0.08);
     padding: 16px 32px;
     display: flex;
     justify-content: space-between;
@@ -53,14 +58,13 @@ body {
 .brand-logo {
     width: 44px;
     height: 44px;
-    filter: drop-shadow(0 0 8px rgba(16, 185, 129, 0.4));
 }
 
 .brand-title {
     font-size: 1.45rem;
     font-weight: 800;
     letter-spacing: -0.02em;
-    color: #ffffff;
+    color: var(--nisr-primary);
     display: flex;
     align-items: center;
     gap: 10px;
@@ -68,7 +72,7 @@ body {
 
 .brand-sub {
     font-size: 0.82rem;
-    color: var(--text-muted);
+    color: var(--nisr-wave-1);
     font-weight: 500;
 }
 
@@ -83,21 +87,21 @@ body {
 }
 
 .badge-nst2 {
-    background: rgba(16, 185, 129, 0.15);
-    color: var(--primary-emerald);
-    border: 1px solid rgba(16, 185, 129, 0.3);
+    background: rgba(38, 91, 165, 0.12);
+    color: var(--nisr-primary);
+    border: 1px solid var(--nisr-wave-2);
 }
 
 .badge-track1 {
-    background: rgba(245, 158, 11, 0.15);
-    color: var(--accent-amber);
-    border: 1px solid rgba(245, 158, 11, 0.3);
+    background: rgba(215, 155, 82, 0.15);
+    color: var(--nisr-orange);
+    border: 1px solid rgba(215, 155, 82, 0.35);
 }
 
 .badge-django {
-    background: rgba(59, 130, 246, 0.15);
-    color: var(--accent-blue);
-    border: 1px solid rgba(59, 130, 246, 0.3);
+    background: rgba(89, 169, 231, 0.15);
+    color: var(--nisr-primary);
+    border: 1px solid var(--nisr-accent);
 }
 
 /* App Layout Grid */
@@ -109,13 +113,13 @@ body {
 
 /* Sidebar Styling */
 .app-sidebar {
-    background: rgba(15, 23, 42, 0.6);
-    backdrop-filter: blur(12px);
-    border-right: 1px solid var(--border-color);
+    background: var(--nisr-white);
+    border-right: 1px solid var(--nisr-bar-gray);
     padding: 24px;
     display: flex;
     flex-direction: column;
     gap: 20px;
+    box-shadow: 2px 0 10px rgba(38, 91, 165, 0.04);
 }
 
 .sidebar-section-title {
@@ -123,7 +127,7 @@ body {
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.08em;
-    color: var(--primary-emerald);
+    color: var(--nisr-primary);
     margin-bottom: 10px;
     display: flex;
     align-items: center;
@@ -140,25 +144,25 @@ body {
 .control-label {
     font-size: 0.82rem;
     font-weight: 600;
-    color: var(--text-muted);
+    color: var(--text-primary);
     display: flex;
     justify-content: space-between;
 }
 
 .slider-val {
-    color: var(--primary-emerald);
+    color: var(--nisr-primary);
     font-weight: 700;
 }
 
 input[type="range"] {
-    accent-color: var(--primary-emerald);
+    accent-color: var(--nisr-primary);
     width: 100%;
     cursor: pointer;
 }
 
 select, input[type="number"] {
-    background: #1e293b;
-    border: 1px solid var(--border-color);
+    background: var(--nisr-bg-light);
+    border: 1px solid var(--nisr-wave-3);
     border-radius: 8px;
     padding: 8px 12px;
     color: var(--text-primary);
@@ -170,7 +174,7 @@ select, input[type="number"] {
 }
 
 select:focus, input[type="number"]:focus {
-    border-color: var(--primary-emerald);
+    border-color: var(--nisr-primary);
 }
 
 .preset-grid {
@@ -180,9 +184,9 @@ select:focus, input[type="number"]:focus {
 }
 
 .btn-preset {
-    background: #1e293b;
-    border: 1px solid var(--border-color);
-    color: var(--text-primary);
+    background: var(--nisr-bg-light);
+    border: 1px solid var(--nisr-wave-3);
+    color: var(--nisr-primary);
     padding: 8px 10px;
     border-radius: 8px;
     font-size: 0.78rem;
@@ -193,10 +197,10 @@ select:focus, input[type="number"]:focus {
 }
 
 .btn-preset:hover {
-    background: var(--primary-emerald);
-    color: #000000;
+    background: var(--nisr-primary);
+    color: var(--nisr-white);
     font-weight: 700;
-    border-color: var(--primary-emerald);
+    border-color: var(--nisr-primary);
 }
 
 /* Main Dashboard Area */
@@ -215,19 +219,18 @@ select:focus, input[type="number"]:focus {
 }
 
 .metric-card {
-    background: var(--card-bg);
-    backdrop-filter: blur(12px);
-    border: 1px solid var(--border-color);
+    background: var(--nisr-white);
+    border: 1px solid var(--nisr-wave-3);
     border-radius: 14px;
     padding: 18px 16px;
-    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+    box-shadow: 0 4px 16px rgba(38, 91, 165, 0.06);
     text-align: center;
     transition: transform 0.2s, border-color 0.2s;
 }
 
 .metric-card:hover {
     transform: translateY(-3px);
-    border-color: rgba(16, 185, 129, 0.4);
+    border-color: var(--nisr-accent);
 }
 
 .metric-title {
@@ -235,14 +238,14 @@ select:focus, input[type="number"]:focus {
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.08em;
-    color: var(--text-muted);
+    color: var(--nisr-wave-1);
     margin-bottom: 6px;
 }
 
 .metric-value {
     font-size: 1.7rem;
     font-weight: 800;
-    color: var(--primary-emerald);
+    color: var(--nisr-primary);
 }
 
 .metric-sub {
@@ -255,14 +258,14 @@ select:focus, input[type="number"]:focus {
 .tabs-nav {
     display: flex;
     gap: 8px;
-    border-bottom: 1px solid var(--border-color);
+    border-bottom: 2px solid var(--nisr-bar-gray);
     padding-bottom: 12px;
 }
 
 .tab-btn {
     background: transparent;
     border: none;
-    color: var(--text-muted);
+    color: var(--nisr-wave-1);
     font-family: inherit;
     font-size: 0.92rem;
     font-weight: 600;
@@ -276,14 +279,13 @@ select:focus, input[type="number"]:focus {
 }
 
 .tab-btn:hover {
-    color: var(--text-primary);
-    background: rgba(255, 255, 255, 0.04);
+    color: var(--nisr-primary);
+    background: rgba(38, 91, 165, 0.08);
 }
 
 .tab-btn.active {
-    color: var(--primary-emerald);
-    background: rgba(16, 185, 129, 0.12);
-    border: 1px solid rgba(16, 185, 129, 0.3);
+    color: var(--nisr-white);
+    background: var(--nisr-primary);
 }
 
 /* Tab Content Panes */
@@ -303,12 +305,12 @@ select:focus, input[type="number"]:focus {
 
 /* Glass Section Container */
 .glass-box {
-    background: var(--card-bg);
-    backdrop-filter: blur(12px);
-    border: 1px solid var(--border-color);
+    background: var(--nisr-white);
+    border: 1px solid var(--nisr-wave-3);
     border-radius: 16px;
     padding: 24px;
     margin-bottom: 24px;
+    box-shadow: 0 4px 20px rgba(38, 91, 165, 0.06);
 }
 
 .glass-box-header {
@@ -321,7 +323,7 @@ select:focus, input[type="number"]:focus {
 .glass-box-title {
     font-size: 1.1rem;
     font-weight: 700;
-    color: #ffffff;
+    color: var(--nisr-primary);
     display: flex;
     align-items: center;
     gap: 8px;
@@ -334,19 +336,19 @@ select:focus, input[type="number"]:focus {
     border-radius: 14px;
     overflow: hidden;
     position: relative;
-    border: 1px solid var(--border-color);
-    box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.5);
+    border: 1px solid var(--nisr-wave-3);
+    box-shadow: 0 4px 16px rgba(38, 91, 165, 0.1);
 }
 
 /* Custom Deck.gl Tooltip */
 .deck-tooltip {
     font-family: 'Plus Jakarta Sans', sans-serif;
     padding: 12px 14px;
-    background: #0f172a;
-    color: #fff;
+    background: var(--nisr-white);
+    color: #1E293B;
     border-radius: 8px;
-    border: 1px solid #334155;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+    border: 1px solid var(--nisr-wave-2);
+    box-shadow: 0 10px 25px rgba(38, 91, 165, 0.18);
     font-size: 0.85rem;
     pointer-events: none;
     z-index: 1000;
@@ -357,7 +359,7 @@ select:focus, input[type="number"]:focus {
     max-height: 380px;
     overflow-y: auto;
     border-radius: 10px;
-    border: 1px solid var(--border-color);
+    border: 1px solid var(--nisr-wave-3);
 }
 
 table.custom-table {
@@ -368,22 +370,24 @@ table.custom-table {
 }
 
 table.custom-table th {
-    background: #1e293b;
-    color: var(--text-muted);
+    background: var(--nisr-bg-light);
+    color: var(--nisr-primary);
     padding: 12px 16px;
     font-weight: 700;
     position: sticky;
     top: 0;
     z-index: 10;
+    border-bottom: 2px solid var(--nisr-wave-3);
 }
 
 table.custom-table td {
     padding: 10px 16px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    border-bottom: 1px solid var(--nisr-bar-gray);
+    color: #1E293B;
 }
 
 table.custom-table tr:hover {
-    background: rgba(255, 255, 255, 0.03);
+    background: rgba(89, 169, 231, 0.08);
 }
 
 .status-badge {
@@ -394,15 +398,15 @@ table.custom-table tr:hover {
 }
 
 .status-target {
-    background: rgba(239, 68, 68, 0.2);
-    color: #ef4444;
-    border: 1px solid rgba(239, 68, 68, 0.4);
+    background: rgba(215, 155, 82, 0.15);
+    color: var(--nisr-orange);
+    border: 1px solid rgba(215, 155, 82, 0.35);
 }
 
 .status-baseline {
-    background: rgba(16, 185, 129, 0.15);
-    color: #10b981;
-    border: 1px solid rgba(16, 185, 129, 0.3);
+    background: rgba(38, 91, 165, 0.12);
+    color: var(--nisr-primary);
+    border: 1px solid var(--nisr-wave-2);
 }
 
 /* Charts Containers */
@@ -413,8 +417,8 @@ table.custom-table tr:hover {
 }
 
 .btn-export {
-    background: var(--primary-emerald);
-    color: #000000;
+    background: var(--nisr-primary);
+    color: var(--nisr-white);
     font-weight: 700;
     padding: 12px 24px;
     border-radius: 10px;
@@ -429,9 +433,9 @@ table.custom-table tr:hover {
 }
 
 .btn-export:hover {
-    background: #34d399;
+    background: var(--nisr-logo);
     transform: translateY(-2px);
-    box-shadow: 0 4px 14px rgba(16, 185, 129, 0.4);
+    box-shadow: 0 4px 14px rgba(38, 91, 165, 0.35);
 }
 
 /* Custom Weight Allocation Modal */
@@ -441,7 +445,7 @@ table.custom-table tr:hover {
     left: 0;
     width: 100vw;
     height: 100vh;
-    background: rgba(11, 15, 25, 0.82);
+    background: rgba(38, 91, 165, 0.35);
     backdrop-filter: blur(12px);
     display: flex;
     justify-content: center;
@@ -450,13 +454,13 @@ table.custom-table tr:hover {
 }
 
 .modal-card {
-    background: #0f172a;
-    border: 1px solid rgba(255, 255, 255, 0.12);
+    background: var(--nisr-white);
+    border: 1px solid var(--nisr-wave-2);
     border-radius: 16px;
     width: 90%;
     max-width: 480px;
     padding: 24px;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+    box-shadow: 0 20px 40px rgba(38, 91, 165, 0.2);
 }
 
 .modal-header {
@@ -469,12 +473,12 @@ table.custom-table tr:hover {
 .modal-close {
     background: transparent;
     border: none;
-    color: #94a3b8;
+    color: var(--nisr-wave-1);
     font-size: 1.5rem;
     cursor: pointer;
 }
 .modal-close:hover {
-    color: #fff;
+    color: var(--nisr-primary);
 }
 
 /* NISR AI Chatbot Floating Widget */
@@ -486,14 +490,14 @@ table.custom-table tr:hover {
 }
 
 .chatbot-fab {
-    background: linear-gradient(135deg, #f4b41a 0%, #d99b00 100%);
-    color: #071328;
+    background: linear-gradient(135deg, var(--nisr-primary) 0%, var(--nisr-logo) 100%);
+    color: var(--nisr-white);
     font-weight: 800;
     font-size: 0.92rem;
     padding: 12px 20px;
     border-radius: 30px;
     border: none;
-    box-shadow: 0 8px 25px rgba(244, 180, 26, 0.45);
+    box-shadow: 0 8px 25px rgba(38, 91, 165, 0.35);
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -503,7 +507,7 @@ table.custom-table tr:hover {
 
 .chatbot-fab:hover {
     transform: translateY(-3px);
-    box-shadow: 0 12px 30px rgba(244, 180, 26, 0.65);
+    box-shadow: 0 12px 30px rgba(38, 91, 165, 0.5);
 }
 
 .chatbot-window {
@@ -512,10 +516,10 @@ table.custom-table tr:hover {
     right: 28px;
     width: 390px;
     height: 500px;
-    background: #0b1f3a;
-    border: 1px solid rgba(244, 180, 26, 0.35);
+    background: var(--nisr-white);
+    border: 1px solid var(--nisr-wave-2);
     border-radius: 16px;
-    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.75);
+    box-shadow: 0 20px 50px rgba(38, 91, 165, 0.25);
     display: flex;
     flex-direction: column;
     overflow: hidden;
@@ -524,9 +528,9 @@ table.custom-table tr:hover {
 }
 
 .chatbot-header {
-    background: rgba(7, 19, 40, 0.96);
+    background: var(--nisr-primary);
     padding: 14px 16px;
-    border-bottom: 1px solid rgba(244, 180, 26, 0.25);
+    border-bottom: 1px solid var(--nisr-wave-3);
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -539,6 +543,7 @@ table.custom-table tr:hover {
     display: flex;
     flex-direction: column;
     gap: 12px;
+    background: var(--nisr-bg-light);
 }
 
 .chat-msg {
@@ -551,16 +556,16 @@ table.custom-table tr:hover {
 }
 
 .chat-msg.bot-msg {
-    background: rgba(15, 36, 68, 0.95);
-    color: #f8fafc;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--nisr-white);
+    color: #1E293B;
+    border: 1px solid var(--nisr-wave-3);
     align-self: flex-start;
     border-bottom-left-radius: 2px;
 }
 
 .chat-msg.user-msg {
-    background: #f4b41a;
-    color: #071328;
+    background: var(--nisr-primary);
+    color: var(--nisr-white);
     font-weight: 600;
     align-self: flex-end;
     border-bottom-right-radius: 2px;
@@ -569,30 +574,31 @@ table.custom-table tr:hover {
 .chatbot-input-row {
     display: flex;
     padding: 10px;
-    background: rgba(7, 19, 40, 0.96);
-    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    background: var(--nisr-white);
+    border-top: 1px solid var(--nisr-bar-gray);
     gap: 8px;
 }
 
 .chatbot-input-row input {
     flex: 1;
-    background: #13294b;
-    border: 1px solid rgba(255, 255, 255, 0.18);
-    color: #fff;
+    background: var(--nisr-bg-light);
+    border: 1px solid var(--nisr-wave-3);
+    color: #1E293B;
     padding: 8px 12px;
     border-radius: 8px;
     font-size: 0.85rem;
 }
 
 .chatbot-input-row button {
-    background: #f4b41a;
-    color: #071328;
+    background: var(--nisr-primary);
+    color: var(--nisr-white);
     border: none;
     font-weight: 800;
     padding: 8px 16px;
     border-radius: 8px;
     cursor: pointer;
 }
+
 .chatbot-input-row button:hover {
-    background: #ffc107;
+    background: var(--nisr-logo);
 }

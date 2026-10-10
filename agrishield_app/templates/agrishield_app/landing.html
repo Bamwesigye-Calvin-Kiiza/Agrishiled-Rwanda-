@@ -1,0 +1,600 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NISR AgriShield Rwanda — Spatial AI Engine for Climate Resilience</title>
+    
+    <!-- CSS Stylesheet -->
+    <link rel="stylesheet" href="{% static 'agrishield_app/css/styles.css' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        /* Landing Page Custom Styling */
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: var(--nisr-bg-light);
+            color: #1E293B;
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+        }
+
+        .landing-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 40px;
+            background: var(--nisr-white);
+            border-bottom: 2px solid var(--nisr-bar-gray);
+            box-shadow: 0 2px 10px rgba(38, 91, 165, 0.06);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .brand-pill {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+        }
+
+        .brand-logo-img {
+            width: 42px;
+            height: 42px;
+            object-fit: contain;
+        }
+
+        .brand-name {
+            font-weight: 800;
+            font-size: 1.25rem;
+            color: var(--nisr-primary);
+            letter-spacing: -0.02em;
+        }
+
+        .brand-tag {
+            font-size: 0.75rem;
+            color: var(--nisr-orange);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .nav-menu {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+        }
+
+        .nav-link {
+            color: var(--nisr-wave-1);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: color 0.2s ease;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            color: var(--nisr-primary);
+            font-weight: 700;
+        }
+
+        .btn-cta-nav {
+            background: linear-gradient(135deg, var(--nisr-primary) 0%, var(--nisr-logo) 100%);
+            color: var(--nisr-white);
+            font-weight: 700;
+            padding: 10px 22px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 0.9rem;
+            box-shadow: 0 4px 14px rgba(38, 91, 165, 0.25);
+            transition: all 0.2s ease;
+        }
+
+        .btn-cta-nav:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(38, 91, 165, 0.4);
+        }
+
+        /* Hero Section */
+        .hero-section {
+            position: relative;
+            padding: 80px 20px 60px;
+            text-align: center;
+            background: linear-gradient(180deg, var(--nisr-white) 0%, var(--nisr-bg-light) 100%);
+            border-bottom: 1px solid var(--nisr-wave-3);
+            overflow: hidden;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 18px;
+            border-radius: 50px;
+            background: rgba(38, 91, 165, 0.08);
+            border: 1px solid var(--nisr-wave-3);
+            color: var(--nisr-primary);
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 24px;
+        }
+
+        .hero-title {
+            font-size: 3.2rem;
+            font-weight: 800;
+            line-height: 1.15;
+            color: var(--nisr-primary);
+            max-width: 900px;
+            margin: 0 auto 20px;
+            letter-spacing: -0.03em;
+        }
+
+        .hero-title span {
+            color: var(--nisr-orange);
+        }
+
+        .hero-subtitle {
+            font-size: 1.2rem;
+            color: var(--nisr-wave-1);
+            max-width: 760px;
+            margin: 0 auto 36px;
+            font-weight: 500;
+        }
+
+        .hero-cta-group {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            flex-wrap: wrap;
+            margin-bottom: 50px;
+        }
+
+        .btn-hero-primary {
+            background: linear-gradient(135deg, var(--nisr-primary) 0%, var(--nisr-logo) 100%);
+            color: var(--nisr-white);
+            font-weight: 700;
+            font-size: 1.05rem;
+            padding: 16px 36px;
+            border-radius: 10px;
+            text-decoration: none;
+            box-shadow: 0 8px 25px rgba(38, 91, 165, 0.3);
+            transition: all 0.25s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-hero-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(38, 91, 165, 0.45);
+        }
+
+        .btn-hero-secondary {
+            background: var(--nisr-white);
+            color: var(--nisr-primary);
+            font-weight: 600;
+            font-size: 1.05rem;
+            padding: 16px 32px;
+            border-radius: 10px;
+            text-decoration: none;
+            border: 1px solid var(--nisr-wave-2);
+            transition: all 0.25s ease;
+        }
+
+        .btn-hero-secondary:hover {
+            background: var(--nisr-bg-light);
+            border-color: var(--nisr-primary);
+        }
+
+        /* Stats Bar */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .stat-card-landing {
+            background: var(--nisr-white);
+            border: 1px solid var(--nisr-wave-3);
+            border-radius: 14px;
+            padding: 24px 20px;
+            text-align: center;
+            box-shadow: 0 4px 16px rgba(38, 91, 165, 0.06);
+            transition: transform 0.2s ease;
+        }
+
+        .stat-card-landing:hover {
+            transform: translateY(-4px);
+            border-color: var(--nisr-accent);
+        }
+
+        .stat-val-landing {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: var(--nisr-primary);
+            margin-bottom: 6px;
+        }
+
+        .stat-lbl-landing {
+            font-size: 0.85rem;
+            color: var(--nisr-wave-1);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        /* Feature Section */
+        .section-container {
+            max-width: 1140px;
+            margin: 70px auto;
+            padding: 0 20px;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 45px;
+        }
+
+        .section-tag {
+            color: var(--nisr-orange);
+            font-weight: 700;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 8px;
+        }
+
+        .section-title {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: var(--nisr-primary);
+            letter-spacing: -0.02em;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 24px;
+        }
+
+        .feature-card {
+            background: var(--nisr-white);
+            border: 1px solid var(--nisr-wave-3);
+            border-radius: 16px;
+            padding: 32px;
+            box-shadow: 0 4px 16px rgba(38, 91, 165, 0.06);
+            transition: all 0.25s ease;
+        }
+
+        .feature-card:hover {
+            border-color: var(--nisr-accent);
+            transform: translateY(-4px);
+            box-shadow: 0 8px 25px rgba(38, 91, 165, 0.12);
+        }
+
+        .feature-icon {
+            font-size: 2.5rem;
+            margin-bottom: 16px;
+        }
+
+        .feature-h3 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--nisr-primary);
+            margin-bottom: 10px;
+        }
+
+        .feature-p {
+            font-size: 0.95rem;
+            color: #4A5568;
+            line-height: 1.6;
+        }
+
+        /* Top Priority Districts Teaser */
+        .priority-teaser-box {
+            background: var(--nisr-white);
+            border: 1px solid var(--nisr-wave-3);
+            border-radius: 16px;
+            padding: 36px;
+            margin-top: 40px;
+            box-shadow: 0 4px 20px rgba(38, 91, 165, 0.06);
+        }
+
+        .district-pill-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 16px;
+            margin-top: 24px;
+        }
+
+        .district-pill {
+            background: var(--nisr-bg-light);
+            border: 1px solid var(--nisr-wave-3);
+            border-radius: 10px;
+            padding: 16px;
+            text-align: center;
+        }
+
+        .district-pill-name {
+            font-weight: 700;
+            color: var(--nisr-primary);
+            font-size: 1.05rem;
+        }
+
+        .district-pill-prov {
+            font-size: 0.78rem;
+            color: var(--nisr-wave-1);
+            margin-top: 2px;
+        }
+
+        .district-pill-score {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: var(--nisr-orange);
+            margin-top: 6px;
+        }
+
+        /* Call to Action Banner */
+        .cta-banner {
+            background: var(--nisr-white);
+            border: 2px solid var(--nisr-wave-3);
+            border-radius: 20px;
+            padding: 60px 40px;
+            text-align: center;
+            margin: 70px auto;
+            max-width: 1060px;
+            box-shadow: 0 8px 30px rgba(38, 91, 165, 0.08);
+        }
+
+        .cta-title {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: var(--nisr-primary);
+            margin-bottom: 16px;
+        }
+
+        .cta-desc {
+            font-size: 1.1rem;
+            color: var(--nisr-wave-1);
+            max-width: 680px;
+            margin: 0 auto 30px;
+        }
+
+        /* Footer */
+        .landing-footer {
+            border-top: 2px solid var(--nisr-bar-gray);
+            padding: 40px 20px;
+            text-align: center;
+            color: var(--nisr-wave-1);
+            font-size: 0.85rem;
+            background: var(--nisr-white);
+        }
+
+        .landing-footer a {
+            color: var(--nisr-primary);
+            text-decoration: none;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <header class="landing-header">
+        <a href="{% url 'agrishield:landing' %}" class="brand-pill">
+            <img src="https://img.icons8.com/color/96/wheat.png" alt="NISR AgriShield Logo" class="brand-logo-img">
+            <div>
+                <div class="brand-name">NISR AgriShield</div>
+                <div class="brand-tag">Rwanda SSIT Engine</div>
+            </div>
+        </a>
+
+        <nav class="nav-menu">
+            <a href="{% url 'agrishield:landing' %}" class="nav-link active">🏠 Home</a>
+            <a href="{% url 'agrishield:index' %}" class="nav-link">🌐 3D Spatial Engine</a>
+            <a href="{% url 'agrishield:index' %}" class="btn-cta-nav">Launch Engine 🚀</a>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="hero-badge">
+            🏛️ NISR Hackathon 2026 | MINAGRI & RAB SSIT Policy Engine
+        </div>
+        <h1 class="hero-title">
+            Data-Driven Spatial AI for <span>Rwanda’s Climate Resilience</span>
+        </h1>
+        <p class="hero-subtitle">
+            Empowering Ministry of Agriculture (MINAGRI) and RAB to target 50% Small-Scale Irrigation Technology (SSIT) solar pump subsidies by fusing NISR SAS cropland microdata, EICV household poverty indices, and Earth Observation climate reanalysis.
+        </p>
+
+        <div class="hero-cta-group">
+            <a href="{% url 'agrishield:index' %}" class="btn-hero-primary">
+                <span>🚀 Launch 3D Spatial Engine</span>
+            </a>
+            <a href="#features" class="btn-hero-secondary">
+                <span>⚡ Core Technical Features</span>
+            </a>
+        </div>
+
+        <!-- Key Metrics Cards -->
+        <div class="stats-grid">
+            <div class="stat-card-landing">
+                <div class="stat-val-landing">896,180 ha</div>
+                <div class="stat-lbl-landing">Total Cropland Area (NISR SAS)</div>
+            </div>
+            <div class="stat-card-landing">
+                <div class="stat-val-landing">845,988 ha</div>
+                <div class="stat-lbl-landing">Rainfed Exposure (94.4%)</div>
+            </div>
+            <div class="stat-card-landing">
+                <div class="stat-val-landing">30 / 422</div>
+                <div class="stat-lbl-landing">Districts & Sectors Modeled</div>
+            </div>
+            <div class="stat-card-landing">
+                <div class="stat-val-landing">0.9873</div>
+                <div class="stat-lbl-landing">Sector ML ROC-AUC (XGBoost)</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Why AgriShield Section -->
+    <section class="section-container">
+        <div class="section-header">
+            <div class="section-tag">Empirical Policy Directive</div>
+            <h2 class="section-title">Solving Rwanda's Smallholder Irrigation Gap</h2>
+        </div>
+
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">🚨</div>
+                <h3 class="feature-h3">Seasonal Dry Spell Vulnerability</h3>
+                <p class="feature-p">
+                    Over 845,000 hectares of smallholder farmland rely entirely on seasonal rainfall. Prolonged dry spells in Eastern and Southern Rwanda severely impair crop yields and threaten rural food security.
+                </p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">🎯</div>
+                <h3 class="feature-h3">Targeted SSIT Solar Pump Subsidies</h3>
+                <p class="feature-p">
+                    Under Rwanda's NST2 strategy, MINAGRI subsidizes small-scale solar irrigation by up to 50%. AgriShield replaces manual distribution with transparent, multi-criteria data-driven targeting.
+                </p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">🧠</div>
+                <h3 class="feature-h3">Explainable Machine Learning</h3>
+                <p class="feature-p">
+                    Combining XGBoost and LightGBM models trained on NISR microdata with TreeSHAP explainability, every priority score is fully traceable back to empirical climate, crop, and poverty factors.
+                </p>
+            </div>
+        </div>
+
+        <!-- Top Priority Target Districts Teaser -->
+        <div class="priority-teaser-box">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
+                <div>
+                    <h3 style="font-size: 1.4rem; color: var(--nisr-primary); font-weight: 700; margin: 0;">🏆 Top Priority Target Districts (Baseline Simulation)</h3>
+                    <p style="color: var(--nisr-wave-1); font-size: 0.9rem; margin-top: 4px;">Ranked by multi-criteria optimization ($w_1\text{Climate} + w_2\text{Cropland} + w_3\text{Poverty}$):</p>
+                </div>
+                <a href="{% url 'agrishield:index' %}" style="color: var(--nisr-orange); font-weight: 700; text-decoration: none; font-size: 0.95rem;">Customize Weights in 3D Engine →</a>
+            </div>
+
+            <div class="district-pill-grid">
+                {% for dist in top_districts %}
+                <div class="district-pill">
+                    <div class="district-pill-name">#{{ forloop.counter }} {{ dist.NAME_2 }}</div>
+                    <div class="district-pill-prov">{{ dist.Province|default:"Rwanda" }}</div>
+                    <div class="district-pill-score">Score: {{ dist.score|floatformat:3 }}</div>
+                </div>
+                {% empty %}
+                <div class="district-pill"><div class="district-pill-name">Nyagatare</div><div class="district-pill-prov">Eastern Province</div></div>
+                <div class="district-pill"><div class="district-pill-name">Kayonza</div><div class="district-pill-prov">Eastern Province</div></div>
+                <div class="district-pill"><div class="district-pill-name">Bugesera</div><div class="district-pill-prov">Eastern Province</div></div>
+                <div class="district-pill"><div class="district-pill-name">Gisagara</div><div class="district-pill-prov">Southern Province</div></div>
+                <div class="district-pill"><div class="district-pill-name">Gatsibo</div><div class="district-pill-prov">Eastern Province</div></div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+
+    <!-- Platform Features Grid -->
+    <section class="section-container" style="margin-top: 60px;">
+        <div class="section-header">
+            <div class="section-tag">Core Technical Capabilities</div>
+            <h2 class="section-title">Built for Data-Driven Policy Decisions</h2>
+        </div>
+
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">🌐</div>
+                <h3 class="feature-h3">3D DeckGL Spatial Maps</h3>
+                <p class="feature-p">
+                    Interactive 3D choropleth map layers with extrusion elevation representing targeted SSIT solar pump density across Rwanda's 30 districts and 422 sectors.
+                </p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">⚖️</div>
+                <h3 class="feature-h3">Live Weight Simulation</h3>
+                <p class="feature-p">
+                    Policy makers can dynamically adjust climate risk, cropland area, and poverty weights in real time with an automated live constraint enforcement ($w_1 + w_2 + w_3 = 1.00$).
+                </p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">💬</div>
+                <h3 class="feature-h3">Conversational AI Assistant</h3>
+                <p class="feature-p">
+                    Built-in 360° RAG assistant powered by official NISR SAS survey reports, EICV microdata, and MINAGRI policy guidelines for instant natural language queries.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Banner -->
+    <section class="cta-banner">
+        <h2 class="cta-title">Ready to Explore Rwanda's SSIT Decision Engine?</h2>
+        <p class="cta-desc">
+            Interact with the live 3D spatial map, simulate subsidy scenarios, inspect TreeSHAP feature contributions, and export field deployment schedules.
+        </p>
+        <a href="{% url 'agrishield:index' %}" class="btn-hero-primary" style="font-size: 1.15rem; padding: 18px 42px;">
+            <span>🚀 Launch 3D Decision Engine Now</span>
+        </a>
+    </section>
+
+    <!-- Footer -->
+    <footer class="landing-footer">
+        <p>© 2026 National Institute of Statistics of Rwanda (NISR) Hackathon. Built for Ministry of Agriculture & Animal Resources (MINAGRI) & RAB.</p>
+        <p style="margin-top: 8px;">
+            Official Portals: <a href="https://www.statistics.gov.rw" target="_blank">NISR Data Portal</a> | <a href="https://microdata.statistics.gov.rw" target="_blank">NISR Microdata</a> | <a href="https://www.minagri.gov.rw" target="_blank">MINAGRI</a> | <a href="https://www.rab.gov.rw" target="_blank">RAB</a>
+        </p>
+    </footer>
+
+    <!-- NISR AI Assistant Chatbot Floating Widget -->
+    <div id="chatbot-widget-container">
+        <button type="button" id="btn-toggle-chatbot" class="chatbot-fab">
+            💬 <span>NISR Stats Assistant</span>
+        </button>
+
+        <div id="chatbot-window" class="chatbot-window" style="display: none;">
+            <div class="chatbot-header">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <span style="font-size: 1.3rem;">📊</span>
+                    <div>
+                        <div style="font-weight: 800; font-size: 0.95rem; color: #fff;">NISR Statistics AI Assistant</div>
+                        <div style="font-size: 0.72rem; color: #f4b41a;">EICV Poverty, SAS Irrigation & Climate Risk</div>
+                    </div>
+                </div>
+                <button type="button" id="btn-close-chatbot" class="modal-close">&times;</button>
+            </div>
+
+            <div id="chatbot-messages" class="chatbot-messages">
+                <div class="chat-msg bot-msg">
+                    👋 <b>Muraho!</b> I am the official <b>NISR AgriShield AI Assistant</b>.<br/><br/>
+                    Ask me any question about Rwanda's:<br/>
+                    • 👥 <b>EICV Poverty Rates</b><br/>
+                    • 🌾 <b>Cropland & SSIT Irrigation Targets</b><br/>
+                    • 🚨 <b>Climate & Drought Risk Predictions</b><br/>
+                    • 📍 <b>Specific District / Sector Statistics</b>
+                </div>
+            </div>
+
+            <form id="chatbot-form" class="chatbot-input-row">
+                <input type="text" id="chatbot-input" placeholder="Ask about poverty, irrigation, or district..." autocomplete="off">
+                <button type="submit" id="btn-send-chat">Send</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Application JavaScript Controller -->
+    <script src="{% static 'agrishield_app/js/app.js' %}"></script>
+</body>
+</html>

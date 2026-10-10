@@ -33,35 +33,34 @@ st.markdown("""
 
     /* Glassmorphic Metric Cards */
     .metric-card {
-        background: rgba(30, 41, 59, 0.7);
-        backdrop-filter: blur(12px);
-        border: 1px solid rgba(255, 255, 255, 0.08);
+        background: #FFFFFF;
+        border: 1px solid #B0C0DB;
         border-radius: 14px;
         padding: 20px;
-        box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        box-shadow: 0 4px 16px rgba(38, 91, 165, 0.06);
         text-align: center;
         transition: transform 0.2s ease, border-color 0.2s ease;
     }
     .metric-card:hover {
         transform: translateY(-3px);
-        border-color: rgba(16, 185, 129, 0.4);
+        border-color: #59A9E7;
     }
     .metric-title {
         font-size: 0.82rem;
         font-weight: 600;
         text-transform: uppercase;
         letter-spacing: 0.08em;
-        color: #94a3b8;
+        color: #4A6DAE;
         margin-bottom: 6px;
     }
     .metric-value {
         font-size: 1.85rem;
         font-weight: 800;
-        color: #10b981;
+        color: #265BA5;
     }
     .metric-sub {
         font-size: 0.78rem;
-        color: #64748b;
+        color: #64748B;
         margin-top: 4px;
     }
 
@@ -76,28 +75,29 @@ st.markdown("""
         text-transform: uppercase;
     }
     .badge-nst2 {
-        background: rgba(16, 185, 129, 0.15);
-        color: #10b981;
-        border: 1px solid rgba(16, 185, 129, 0.3);
+        background: rgba(38, 91, 165, 0.12);
+        color: #265BA5;
+        border: 1px solid #B0C0DB;
     }
     .badge-track1 {
-        background: rgba(245, 158, 11, 0.15);
-        color: #f59e0b;
-        border: 1px solid rgba(245, 158, 11, 0.3);
+        background: rgba(215, 155, 82, 0.15);
+        color: #D79B52;
+        border: 1px solid rgba(215, 155, 82, 0.35);
     }
     .badge-target {
-        background: rgba(239, 68, 68, 0.2);
-        color: #ef4444;
-        border: 1px solid rgba(239, 68, 68, 0.4);
+        background: rgba(215, 155, 82, 0.2);
+        color: #D79B52;
+        border: 1px solid rgba(215, 155, 82, 0.4);
     }
 
     /* Section Containers */
     .glass-container {
-        background: rgba(15, 23, 42, 0.6);
-        border: 1px solid rgba(255, 255, 255, 0.06);
+        background: #FFFFFF;
+        border: 1px solid #B0C0DB;
         border-radius: 16px;
         padding: 24px;
         margin-bottom: 24px;
+        box-shadow: 0 4px 20px rgba(38, 91, 165, 0.06);
     }
 
     /* Custom scrollbar */
@@ -106,10 +106,10 @@ st.markdown("""
         height: 6px;
     }
     ::-webkit-scrollbar-track {
-        background: #0b0f19;
+        background: #F2F5F9;
     }
     ::-webkit-scrollbar-thumb {
-        background: #334155;
+        background: #B0C0DB;
         border-radius: 3px;
     }
 </style>
@@ -393,12 +393,13 @@ st.markdown("<br>", unsafe_allow_html=True)
 # ---------------------------------------------------------
 # Application Navigation Tabs
 # ---------------------------------------------------------
-tab_map, tab_explain, tab_data, tab_chatbot, tab_audit = st.tabs([
+tab_map, tab_explain, tab_data, tab_chatbot, tab_audit, tab_about = st.tabs([
     "🌐 3D Spatial Prioritization Map",
     "🧠 LightGBM & TreeSHAP Explainability",
     "📊 NISR & Climate Data Explorer",
     "💬 NISR Stats AI Assistant",
-    "📝 Policy Simulation & Deployment Export"
+    "📝 Policy Simulation & Deployment Export",
+    "📖 About NISR AgriShield"
 ])
 
 # =========================================================
@@ -1028,3 +1029,55 @@ with tab_audit:
         "💡 **Methodology Note**: AgriShield Rwanda combines Spatial Group K-Fold LightGBM modeling with TreeSHAP explainability "
         "to ensure 100% transparent, data-driven climate resilience under the National Strategy for Transformation (NST2)."
     )
+
+# =========================================================
+# TAB 6: About NISR AgriShield Project
+# =========================================================
+with tab_about:
+    st.subheader("📖 About NISR AgriShield Rwanda — Project & Technical Architecture")
+    st.markdown(
+        "**NISR AgriShield** bridges official national statistics with predictive machine learning and 3D spatial optimization "
+        "to target MINAGRI & RAB's **Small-Scale Irrigation Technology (SSIT)** solar pump subsidies under NST2 & Vision 2050."
+    )
+    
+    st.markdown("---")
+    
+    col_ab1, col_ab2 = st.columns([1, 1])
+    
+    with col_ab1:
+        st.markdown("### 🎯 Mission & Policy Mandate")
+        st.markdown("""
+        - **Built For**: National Institute of Statistics of Rwanda (NISR) Hackathon 2026.
+        - **Policy Target**: Optimizes spatial subsidy allocation for Small-Scale Irrigation Technology (SSIT) solar pumps managed by MINAGRI and RAB.
+        - **Agricultural Exposure**: 845,988 hectares (~94.4% of total cropland) rely strictly on seasonal rainfall.
+        - **Multi-Criteria Rule**: Utility formula $U_i = w_1 \\cdot \\text{Climate} + w_2 \\cdot \\text{Cropland} + w_3 \\cdot \\text{Poverty}$ subject to strict live constraint $w_1 + w_2 + w_3 = 1.00$.
+        """)
+        
+    with col_ab2:
+        st.markdown("### 📊 Grounded Data Sources")
+        st.markdown("""
+        - **NISR SAS Survey**: 896,180 total cropland hectares across 30 districts & 422 sectors.
+        - **NISR EICV Microdata**: Household poverty rates from official national survey releases.
+        - **CHIRPS Satellite Rainfall**: High-resolution daily/monthly precipitation anomaly feeds.
+        - **ECMWF ERA5 Reanalysis**: Land surface temperature ($^\\circ\\text{C}$) & dry spell duration (days).
+        - **Copernicus Land Service**: Topsoil moisture content ($m^3/m^3$).
+        """)
+        
+    st.markdown("---")
+    st.markdown("### 🧠 Machine Learning Architecture & Performance")
+    
+    m_col1, m_col2, m_col3, m_col4 = st.columns(4)
+    m_col1.metric("District ROC-AUC", "0.8426", "StratifiedKFold")
+    m_col2.metric("Sector ROC-AUC", "0.9873", "422 Sectors")
+    m_col3.metric("District F1 Score", "0.8462", "Optimal Thresh")
+    m_col4.metric("Sector F1 Score", "0.9739", "Optimal Thresh")
+    
+    st.markdown("---")
+    st.markdown("### 🔗 Authoritative Data Portals")
+    st.markdown("""
+    - 🏛️ [NISR Official Data Portal](https://www.statistics.gov.rw)
+    - 📊 [NISR EICV Microdata Catalog](https://microdata.statistics.gov.rw)
+    - 🌱 [MINAGRI Policy Portal & NST2 Strategy](https://www.minagri.gov.rw)
+    - 🌾 [RAB Rwanda Agriculture Board](https://www.rab.gov.rw)
+    - 🛰️ [CHIRPS & ERA5 Satellite Climate Feeds](https://www.chc.ucsb.edu/data/chirps)
+    """)
