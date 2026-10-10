@@ -1,0 +1,293 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AgriShield Rwanda — SSIT Climate Resilience Engine (Django App)</title>
+    
+    <!-- CSS Stylesheet -->
+    <link rel="stylesheet" href="{% static 'agrishield_app/css/styles.css' %}">
+    
+    <!-- Deck.gl 3D Map Library -->
+    <script src="https://unpkg.com/deck.gl@latest/dist.min.js"></script>
+    <!-- Mapbox GL JS for basemap rendering -->
+    <script src="https://api.mapbox.com/mapbox-gl-js/v2.14.1/mapbox-gl.js"></script>
+    <link href="https://api.mapbox.com/mapbox-gl-js/v2.14.1/mapbox-gl.css" rel="stylesheet" />
+    
+    <!-- Plotly.js for interactive charts -->
+    <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+</head>
+<body>
+
+    <!-- App Header -->
+    <header class="app-header">
+        <div class="brand-container">
+            <img src="https://img.icons8.com/color/96/wheat.png" alt="AgriShield Logo" class="brand-logo">
+            <div>
+                <div class="brand-title">
+                    AgriShield Rwanda
+                    <span class="badge-tag badge-nst2">NST2 & Vision 2050</span>
+                    <span class="badge-tag badge-track1">NISR 2026 Hackathon</span>
+                    <span class="badge-tag badge-django">Django Web Engine</span>
+                </div>
+                <div class="brand-sub">Fusing NISR SAS Microdata & EICV Poverty Profiles with ECMWF ERA5-Land & CHIRPS Earth Observation Reanalysis</div>
+            </div>
+        </div>
+    </header>
+
+    <div class="app-layout">
+        <!-- Sidebar Controls -->
+        <aside class="app-sidebar">
+            <div class="sidebar-section-title">⚙️ Policy & Model Setup</div>
+            
+            <div class="control-group">
+                <label class="control-label">Administrative Level</label>
+                <select id="level-select">
+                    <option value="district" selected>District (Level 2 — 30 Units)</option>
+                    <option value="sector">Sector (Level 3 — 422 Units)</option>
+                </select>
+            </div>
+
+            <div class="sidebar-section-title" style="margin-top: 10px;">🎯 Policy Presets</div>
+            <div class="preset-grid">
+                <button type="button" class="btn-preset" id="btn-preset-minagri">🎯 MINAGRI</button>
+                <button type="button" class="btn-preset" id="btn-preset-drought">🚨 Drought</button>
+                <button type="button" class="btn-preset" id="btn-preset-propoor">🤝 Pro-Poor</button>
+                <button type="button" class="btn-preset" id="btn-preset-equal">⚖️ Equal</button>
+            </div>
+
+            <div class="sidebar-section-title" style="margin-top: 14px;">Multi-Criteria Utility Weights</div>
+            
+            <div class="control-group">
+                <div class="control-label">
+                    <span>💧 Climate Risk (w1)</span>
+                    <span class="slider-val" id="val-stress">0.50</span>
+                </div>
+                <input type="range" id="slider-stress" min="0.0" max="1.0" step="0.05" value="0.50">
+            </div>
+
+            <div class="control-group">
+                <div class="control-label">
+                    <span>🌾 Cropland Area (w2)</span>
+                    <span class="slider-val" id="val-cropland">0.30</span>
+                </div>
+                <input type="range" id="slider-cropland" min="0.0" max="1.0" step="0.05" value="0.30">
+            </div>
+
+            <div class="control-group">
+                <div class="control-label">
+                    <span>👥 EICV Poverty (w3)</span>
+                    <span class="slider-val" id="val-poverty">0.20</span>
+                </div>
+                <input type="range" id="slider-poverty" min="0.0" max="1.0" step="0.05" value="0.20">
+            </div>
+
+            <div class="sidebar-section-title" style="margin-top: 14px;">💰 Subsidy Ceiling & Investment</div>
+            
+            <div class="control-group">
+                <div class="control-label">
+                    <span>SSIT Pump Ceiling (K)</span>
+                    <span class="slider-val" id="val-budget">10</span>
+                </div>
+                <input type="range" id="slider-budget" min="1" max="100" step="1" value="10">
+            </div>
+
+            <div class="control-group">
+                <label class="control-label">Estimated Pump Cost ($)</label>
+                <input type="number" id="input-cost" min="500" max="5000" step="100" value="1200">
+            </div>
+
+            <div class="control-group">
+                <label class="control-label">Province Filter</label>
+                <select id="province-select">
+                    <option value="All Rwanda" selected>All Rwanda</option>
+                    <option value="Eastern">Eastern Province</option>
+                    <option value="Northern">Northern Province</option>
+                    <option value="Southern">Southern Province</option>
+                    <option value="Western">Western Province</option>
+                    <option value="Kigali City">Kigali City</option>
+                </select>
+            </div>
+        </aside>
+
+        <!-- Main Application Dashboard -->
+        <main class="app-content">
+            
+            <!-- Key Metric Ribbon -->
+            <div class="metrics-ribbon">
+                <div class="metric-card">
+                    <div class="metric-title">Total Cropland</div>
+                    <div class="metric-value" id="kpi-cropland">896,180 ha</div>
+                    <div class="metric-sub">Across All Units</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-title">Unirrigated Area</div>
+                    <div class="metric-value" id="kpi-unirrigated">845,988 ha</div>
+                    <div class="metric-sub">Smallholder Exposure</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-title">SSIT Ceiling</div>
+                    <div class="metric-value" id="kpi-budget-units" style="color: #ef4444;">10 Pumps</div>
+                    <div class="metric-sub">Target Units</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-title">Protected Cropland</div>
+                    <div class="metric-value" id="kpi-protected">278,184 ha</div>
+                    <div class="metric-sub" id="kpi-target-share">32.9% Target Share</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-title">Target Poverty</div>
+                    <div class="metric-value" id="kpi-poverty" style="color: #f59e0b;">40.4%</div>
+                    <div class="metric-sub">EICV Vulnerability</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-title">Required Budget</div>
+                    <div class="metric-value" id="kpi-investment" style="color: #3b82f6;">$12,000</div>
+                    <div class="metric-sub">Total Investment</div>
+                </div>
+            </div>
+
+            <!-- Tab Navigation -->
+            <div class="tabs-nav">
+                <button class="tab-btn active" data-tab="tab-map">🌐 3D Spatial Prioritization Map</button>
+                <button class="tab-btn" data-tab="tab-shap">🧠 LightGBM & TreeSHAP Explainability</button>
+                <button class="tab-btn" data-tab="tab-data">📊 NISR & Climate Data Explorer</button>
+                <button class="tab-btn" data-tab="tab-audit">📝 Policy Simulation & Export</button>
+            </div>
+
+            <!-- TAB 1: 3D Spatial Prioritization Deck -->
+            <div class="tab-pane active" id="tab-map">
+                <div class="glass-box">
+                    <div class="glass-box-header">
+                        <div class="glass-box-title">🗺️ Interactive 3D SSIT Subsidy Allocation Deck</div>
+                    </div>
+                    <p style="color: var(--text-muted); font-size: 0.88rem; margin-bottom: 16px;">
+                        Extruded 3D polygon height represents the computed <b>SSIT Priority Score</b>. 
+                        Districts/Sectors highlighted in <b style="color: #ef4444;">Bright Crimson Red</b> receive allocated solar pump subsidies under ceiling <i>K</i>, 
+                        while <b style="color: #10b981;">Emerald Green</b> polygons represent baseline unirrigated regions.
+                    </p>
+                    
+                    <div id="deck-map-container"></div>
+                </div>
+
+                <div class="glass-box">
+                    <div class="glass-box-header">
+                        <div class="glass-box-title">📋 Prioritized SSIT Deployment Schedule</div>
+                    </div>
+                    
+                    <div class="data-table-wrapper">
+                        <table class="custom-table">
+                            <thead>
+                                <tr>
+                                    <th>Rank</th>
+                                    <th>Administrative Unit</th>
+                                    <th>Province</th>
+                                    <th>Priority Score</th>
+                                    <th>Allocation Target</th>
+                                    <th>Predicted Risk (Prob)</th>
+                                    <th>Unirrigated Cropland</th>
+                                    <th>EICV Poverty Rate</th>
+                                    <th>Dry Spell Days</th>
+                                    <th>Soil Moisture</th>
+                                </tr>
+                            </thead>
+                            <tbody id="table-body">
+                                <!-- Dynamic JS rendering -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 2: TreeSHAP Explainability -->
+            <div class="tab-pane" id="tab-shap">
+                <div class="glass-box">
+                    <div class="glass-box-header">
+                        <div class="glass-box-title">🧠 Spatial Group K-Fold LightGBM Performance</div>
+                    </div>
+                    <p style="color: var(--text-muted); font-size: 0.88rem;">
+                        AgriShield enforces <b>Leave-One-Province-Out</b> spatial group cross-validation across Rwanda's 5 provinces to eliminate spatial autocorrelation leakage.
+                    </p>
+
+                    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-top: 16px;">
+                        <div style="background: rgba(15,23,42,0.8); padding: 16px; border-radius: 10px; border: 1px solid var(--border-color); text-align: center;">
+                            <div style="color: var(--text-muted); font-size: 0.8rem;">Spatial Group CV AUC</div>
+                            <div style="font-size: 1.6rem; font-weight: 800; color: var(--primary-emerald);" id="cv-metric-auc">{{ metrics.sector.overall_auc }}</div>
+                        </div>
+                        <div style="background: rgba(15,23,42,0.8); padding: 16px; border-radius: 10px; border: 1px solid var(--border-color); text-align: center;">
+                            <div style="color: var(--text-muted); font-size: 0.8rem;">Out-of-Fold F1 Score</div>
+                            <div style="font-size: 1.6rem; font-weight: 800; color: var(--accent-amber);" id="cv-metric-f1">{{ metrics.sector.overall_f1 }}</div>
+                        </div>
+                        <div style="background: rgba(15,23,42,0.8); padding: 16px; border-radius: 10px; border: 1px solid var(--border-color); text-align: center;">
+                            <div style="color: var(--text-muted); font-size: 0.8rem;">Classification Accuracy</div>
+                            <div style="font-size: 1.6rem; font-weight: 800; color: var(--text-primary);" id="cv-metric-acc">{{ metrics.sector.overall_acc }}</div>
+                        </div>
+                        <div style="background: rgba(15,23,42,0.8); padding: 16px; border-radius: 10px; border: 1px solid var(--border-color); text-align: center;">
+                            <div style="color: var(--text-muted); font-size: 0.8rem;">Precision / Recall</div>
+                            <div style="font-size: 1.6rem; font-weight: 800; color: var(--accent-blue);" id="cv-metric-pr">{{ metrics.sector.overall_precision }} / {{ metrics.sector.overall_recall }}</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="charts-grid">
+                    <div class="glass-box">
+                        <div class="glass-box-header">
+                            <div class="glass-box-title">📊 Global TreeSHAP Feature Importances</div>
+                        </div>
+                        <div id="chart-global-shap" style="width: 100%; height: 380px;"></div>
+                    </div>
+
+                    <div class="glass-box">
+                        <div class="glass-box-header">
+                            <div class="glass-box-title">🔍 Local Unit TreeSHAP Waterfall Driver</div>
+                            <div>
+                                <select id="unit-shap-select" style="width: 200px;">
+                                    {% for name in district_names %}
+                                        <option value="{{ name }}">{{ name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <div id="chart-shap-waterfall" style="width: 100%; height: 380px;"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 3: NISR Microdata & Climate Explorer -->
+            <div class="tab-pane" id="tab-data">
+                <div class="glass-box">
+                    <div class="glass-box-header">
+                        <div class="glass-box-title">📊 NISR Survey Microdata & ERA5-Land Explorer</div>
+                    </div>
+
+                    <div class="charts-grid">
+                        <div id="chart-scatter" style="width: 100%; height: 380px;"></div>
+                        <div id="chart-prov-bar" style="width: 100%; height: 380px;"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 4: Policy Simulation & Deployment Export -->
+            <div class="tab-pane" id="tab-audit">
+                <div class="glass-box">
+                    <div class="glass-box-header">
+                        <div class="glass-box-title">📝 Operational Deployment Schedule Export</div>
+                    </div>
+                    <p style="color: var(--text-muted); margin-bottom: 20px;">
+                        Generate and download the optimized priority deployment schedule ready for administrative dispatch to MINAGRI, RAB, and district agronomists.
+                    </p>
+
+                    <a href="/api/export-csv/?level=district" id="btn-export-csv" class="btn-export">
+                        📥 Download Official MINAGRI Deployment Schedule (CSV)
+                    </a>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- Application JavaScript Controller -->
+    <script src="{% static 'agrishield_app/js/app.js' %}"></script>
+</body>
+</html>

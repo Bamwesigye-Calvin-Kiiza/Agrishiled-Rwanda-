@@ -1,0 +1,140 @@
+{
+  "district": {
+    "level": "district",
+    "overall_auc": 0.8426,
+    "overall_f1": 0.8462,
+    "overall_acc": 0.8667,
+    "overall_precision": 0.7857,
+    "overall_recall": 0.9167,
+    "fold_metrics": [
+      {
+        "fold": 1,
+        "auc": 1.0,
+        "sample_count": 6
+      },
+      {
+        "fold": 2,
+        "auc": 1.0,
+        "sample_count": 6
+      },
+      {
+        "fold": 3,
+        "auc": 0.5,
+        "sample_count": 6
+      },
+      {
+        "fold": 4,
+        "auc": 0.75,
+        "sample_count": 6
+      },
+      {
+        "fold": 5,
+        "auc": 1.0,
+        "sample_count": 6
+      }
+    ],
+    "feature_importances": [
+      {
+        "feature": "real_soil_moisture_m3_m3",
+        "mean_shap": 4.2694
+      },
+      {
+        "feature": "dry_spell_days",
+        "mean_shap": 0.9827
+      },
+      {
+        "feature": "eicv_poverty_pct",
+        "mean_shap": 0.7336
+      },
+      {
+        "feature": "real_precip_mm",
+        "mean_shap": 0.6158
+      },
+      {
+        "feature": "unirrigated_ha",
+        "mean_shap": 0.0914
+      },
+      {
+        "feature": "real_temp_c",
+        "mean_shap": 0.0891
+      }
+    ],
+    "features": [
+      "real_precip_mm",
+      "real_temp_c",
+      "real_soil_moisture_m3_m3",
+      "dry_spell_days",
+      "unirrigated_ha",
+      "eicv_poverty_pct"
+    ]
+  },
+  "sector": {
+    "level": "sector",
+    "overall_auc": 0.9873,
+    "overall_f1": 0.9739,
+    "overall_acc": 0.9787,
+    "overall_precision": 0.9545,
+    "overall_recall": 0.9941,
+    "fold_metrics": [
+      {
+        "fold": 1,
+        "auc": 0.9948,
+        "sample_count": 85
+      },
+      {
+        "fold": 2,
+        "auc": 1.0,
+        "sample_count": 85
+      },
+      {
+        "fold": 3,
+        "auc": 1.0,
+        "sample_count": 84
+      },
+      {
+        "fold": 4,
+        "auc": 0.9994,
+        "sample_count": 84
+      },
+      {
+        "fold": 5,
+        "auc": 1.0,
+        "sample_count": 84
+      }
+    ],
+    "feature_importances": [
+      {
+        "feature": "real_soil_moisture_m3_m3",
+        "mean_shap": 4.5775
+      },
+      {
+        "feature": "dry_spell_days",
+        "mean_shap": 1.8665
+      },
+      {
+        "feature": "real_precip_mm",
+        "mean_shap": 0.3296
+      },
+      {
+        "feature": "eicv_poverty_pct",
+        "mean_shap": 0.0446
+      },
+      {
+        "feature": "real_temp_c",
+        "mean_shap": 0.0211
+      },
+      {
+        "feature": "unirrigated_ha",
+        "mean_shap": 0.0174
+      }
+    ],
+    "features": [
+      "real_precip_mm",
+      "real_temp_c",
+      "real_soil_moisture_m3_m3",
+      "dry_spell_days",
+      "unirrigated_ha",
+      "eicv_poverty_pct"
+    ]
+  }
+}
