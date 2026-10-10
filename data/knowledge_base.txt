@@ -1,0 +1,81 @@
+================================================================================
+NISR AGRISHIELD RWANDA — COMPREHENSIVE PLATFORM & GEOSPATIAL KNOWLEDGE BASE
+================================================================================
+
+1. PROJECT OVERVIEW & POLICY MANDATE
+--------------------------------------------------------------------------------
+- Platform Name: NISR AgriShield Rwanda (Rwanda Agricultural Climate Resilience & SSIT Solar Pump Prioritization Engine).
+- Built For: National Institute of Statistics of Rwanda (NISR) Hackathon 2026.
+- Official Brand Palette: Deep Navy (#071328), NISR Official Gold (#F4B41A), Electric Cyan (#149BFC).
+- Policy Target: Optimizes the spatial targeting of Small-Scale Irrigation Technology (SSIT) solar pump subsidies managed by MINAGRI (Ministry of Agriculture and Animal Resources) and RAB (Rwanda Agriculture & Animal Resources Board) under NST2 (National Strategy for Transformation 2) and Vision 2050.
+- Agricultural Scope: Total Rwanda cropland area = 896,180 hectares across 30 districts and 422 sectors. Unirrigated rainfed cropland = 845,988 hectares (~94.4% rainfed exposure).
+
+2. MACHINE LEARNING & MULTI-CRITERIA OPTIMIZATION ARCHITECTURE
+--------------------------------------------------------------------------------
+- Predictive Models: Multi-layer XGBoost & LightGBM trained using Stratified 5-Fold Cross-Validation (StratifiedKFold) on multi-modal raster and tabular data.
+- Model Performance Metrics:
+  * District Level: ROC-AUC = 0.8426 (F1 Score = 0.8462, Accuracy = 0.8667).
+  * Sector Level: ROC-AUC = 0.9873 (F1 Score = 0.9739, Accuracy = 0.9787).
+- Multi-Criteria Optimization Formula:
+  Utility (Ui) = w1 * ClimateRisk + w2 * CroplandExposure + w3 * PovertyVulnerability
+- STRICT WEIGHT CONSTRAINT RULE:
+  w1 + w2 + w3 MUST EQUAL EXACTLY 1.00 (100%).
+  If sum != 1.00, user submission is blocked in the UI with a red warning badge.
+
+3. WEBSITE NAVIGATION & UI FEATURE GUIDE
+--------------------------------------------------------------------------------
+- Customize Utility Weights: Click "⚙️ Customize Weights" button in the navigation header or sidebar. A modal pop-up appears allowing inputs for Climate Risk (w1), Cropland Exposure (w2), and Poverty (w3). Live validation enforces w1 + w2 + w3 = 1.00.
+- 3D Spatial Prioritization Map: Navigate to "🌐 3D Spatial Prioritization Map". Extruded 3D polygon height represents computed SSIT Priority Score. Bright Crimson Red polygons indicate targeted high-priority subsidy zones under budget ceiling K; Emerald Green polygons indicate baseline rainfed land.
+- Province Filter & Level Selector: Use the Province dropdown (Eastern, Western, Northern, Southern, Kigali City) to zoom to specific regions. Toggle between District Level (30 units) for macro policy and Sector Level (422 units) for micro field deployment.
+- Budget & Target Simulation: Adjust target pump ceiling (K, e.g. 500 pumps at $1,200/unit = $600,000 total budget) to view protected cropland area (ha) and targeted poverty population share.
+- Policy Audit Export: Go to "📝 Policy Simulation & Export" tab to download official CSV operational field deployment schedules for MINAGRI / RAB officers.
+
+4. ALL 30 DISTRICTS OF RWANDA & POVERTY RANKINGS (NISR EICV & SAS DATA)
+--------------------------------------------------------------------------------
+Eastern Province (7 Districts):
+- Bugesera: Poverty 38.4%, Unirrigated 45,120 ha, Drought Risk 58.4%, Dry Spell 42 days. (Sectors: Nyamata, Rilima, Gashora, Mareba, Musenyi, Mayange, Kamababa, Juru, Rweru, Mwogo, Ntarama, Nweru, Shyara, Ruhuha, Nyarugenge).
+- Kayonza: Poverty 38.0%, Unirrigated 52,863 ha, Drought Risk 52.1%, Dry Spell 38 days. (Sectors: Mukarange, Ndego, Kabarondo, Gahini, Ruramira, Murundi, Mwiri, Nyamirama, Rukara).
+- Nyagatare: Poverty 38.0%, Unirrigated 52,863 ha, Drought Risk 40.7%, Dry Spell 38 days. (Sectors: Karangazi, Nyagatare, Katabagemu, Mimuri, Mukama, Musheri, Matimba, Nyakarama, Rukomo, Rwempasha, Tabagwe, Karama).
+- Gatsibo: Poverty 42.1%, Unirrigated 45,320 ha, Drought Risk 47.4%, Dry Spell 31 days. (Sectors: Ngarama, Kiramuruzi, Muhura, Kabarore, Gasange, Kageyo, Gitoki, Rugarama, Remera, Kiziguro, Murambi, Nyagihanga).
+- Kirehe: Poverty 37.5%, Unirrigated 41,200 ha, Drought Risk 49.3%, Dry Spell 35 days. (Sectors: Kirehe, Gahara, Gatore, Kigarama, Kigina, Mahama, Nyamugari, Nyarubuye, Mahama, Mpanga, Musaza).
+- Ngoma: Poverty 36.5%, Unirrigated 38,150 ha, Drought Risk 41.2%, Dry Spell 29 days. (Sectors: Kibungo, Remera, Zaza, Mutenderi, Jarama, Kazo, Mugesera, Sake, Rurenge).
+- Rwamagana: Poverty 31.2%, Unirrigated 35,400 ha, Drought Risk 39.5%, Dry Spell 27 days. (Sectors: Muhazi, Kigabiro, Fumbwe, Gahengeri, Gishari, Karenge, Muyumbu, Nyakariro, Rubona).
+
+Southern Province (8 Districts):
+- Gisagara: Poverty 46.2% (Rank #1 Poorest), Unirrigated 33,574 ha, Drought Risk 37.6%, Dry Spell 19 days. (Sectors: Ndora, Gikonko, Mukindo, Kansi, Kibirizi, Mamba, Muganza, Nyanza, Save).
+- Nyaruguru: Poverty 45.1% (Rank #2 Poorest), Unirrigated 31,914 ha, Drought Risk 37.6%, Dry Spell 18 days. (Sectors: Kibeho, Mata, Busanze, Cyahinda, Kivu, Nyabimata, Ruheru, Ruramba, Muganza).
+- Nyamagabe: Poverty 41.0% (Rank #8 Poorest), Unirrigated 30,846 ha, Drought Risk 35.6%, Dry Spell 13 days. (Sectors: Gasaka, Tare, Kamegeli, Kaduha, Kitabi, Kiamuri, Mushubi, Nkomane).
+- Huye: Poverty 35.2%, Unirrigated 27,450 ha, Drought Risk 32.1%, Dry Spell 17 days. (Sectors: Ngoma, Tumba, Kinazi, Maraba, Mbazi, Mukura, Ruhashya, Rusatira, Rwaniro, Simbi).
+- Ruhango: Poverty 38.2%, Unirrigated 28,900 ha, Drought Risk 34.0%, Dry Spell 19 days. (Sectors: Ruhango, Byimana, Bweramana, Kabagali, Kinazi, Mbuye, Ntongwe, Mwendo).
+- Muhanga: Poverty 34.8%, Unirrigated 26,100 ha, Drought Risk 30.5%, Dry Spell 16 days. (Sectors: Nyamabuye, Cyeza, Kabacuzi, Kibangu, Kiyumba, Mukura, Mushishiro, Nyabinoni, Rongi, Rugendabari).
+- Kamonyi: Poverty 33.1%, Unirrigated 25,400 ha, Drought Risk 31.0%, Dry Spell 15 days. (Sectors: Gacurabwenge, Karama, Kayenzi, Kayumbu, Mugina, Musambira, Ngamba, Nyamiyaga, Runda).
+- Nyanza: Poverty 39.8%, Unirrigated 29,800 ha, Drought Risk 36.2%, Dry Spell 21 days. (Sectors: Busasamana, Busoro, Cyabakamyi, Kibirizi, Kigoma, Mukingo, Muyira, Ntyazo, Nyagisozi).
+
+Northern Province (5 Districts):
+- Burera: Poverty 44.5% (Rank #3 Poorest), Unirrigated 26,812 ha, Drought Risk 47.4%, Dry Spell 19 days. (Sectors: Cyeru, Gahunga, Gatebe, Gitovu, Kagogo, Kinoni, Kinyababa, Kivuye, Nemba, Rugarama, Rugengabari, Ruhunde, Rusarabuye).
+- Gakenke: Poverty 42.0% (Rank #7 Poorest), Unirrigated 29,722 ha, Drought Risk 21.6%, Dry Spell 14 days. (Sectors: Gakenke, Busenzo, Janja, Kamubuga, Karambo, Kivuruga, Mataba, Minazi, Muhondo, Muyongwe, Muzo, Nemba, Ruli, Rusasa, Rushashi).
+- Musanze: Poverty 31.5%, Unirrigated 22,400 ha, Drought Risk 18.2%, Dry Spell 11 days. (Sectors: Muhoza, Busogo, Cyuve, Gacaca, Gashaki, Gataraga, Kimonyi, Kinigi, Nkotsi, Nyange, Remera, Rwaza, Shingiro).
+- Gicumbi: Poverty 38.5%, Unirrigated 32,100 ha, Drought Risk 25.4%, Dry Spell 16 days. (Sectors: Byumba, Bukure, Bwisige, Cyumba, Giti, Kaniga, Manyagiro, Miyove, Mukarange, Muko, Mutete, Nyamiyaga, Nyankenke, Rubaya, Rukomo, Rushaki, Rutare, Ruvune, Wamumu).
+- Rulindo: Poverty 33.2%, Unirrigated 24,600 ha, Drought Risk 23.0%, Dry Spell 15 days. (Sectors: Bushoki, Base, Buyoga, Cyinzuzi, Cyungo, Kinihira, Kisaro, Masoro, Ntarabana, Rukozo, Rusiga, Shyorongi, Tumba).
+
+Western Province (7 Districts):
+- Ngororero: Poverty 43.0% (Rank #4 Poorest), Unirrigated 23,038 ha, Drought Risk 67.0%, Dry Spell 22 days. (Sectors: Ngororero, Bwira, Gatumba, Hindiro, Kabaya, Kageyo, Kavumu, Matyazo, Muhando, Muhororo, Sovu).
+- Rutsiro: Poverty 42.8% (Rank #5 Poorest), Unirrigated 24,056 ha, Drought Risk 37.6%, Dry Spell 17 days. (Sectors: Gihango, Boneza, Kivumu, Manihira, Mukura, Murunda, Musasa, Mushonyi, Mushubati, Nyabirasi, Ruhango, Rusebeya).
+- Nyamasheke: Poverty 39.5% (Rank #9 Poorest), Unirrigated 25,808 ha, Drought Risk 35.6%, Dry Spell 16 days. (Sectors: Kagano, Bushekeri, Bushenge, Cyato, Gihombo, Kanjongo, Karambi, Macuba, Mahembe, Nyabitekeri, Rangiro, Shangi).
+- Karongi: Poverty 39.0% (Rank #10 Poorest), Unirrigated 24,794 ha, Drought Risk 39.2%, Dry Spell 18 days. (Sectors: Rubengera, Bwishyura, Gishyita, Gisovu, Gitesi, Mubuga, Murambi, Murundi, Mutuntu, Rubengera, Rugabano, Ruganda, Twumba).
+- Rubavu: Poverty 31.0%, Unirrigated 18,900 ha, Drought Risk 20.1%, Dry Spell 12 days. (Sectors: Gisenyi, Bugeshi, Busasamana, Cyanzarwe, Kanama, Kanzenze, Mudende, Nyakiriba, Nyamyumba, Nyundo, Rubavu).
+- Nyabihu: Poverty 37.2%, Unirrigated 21,500 ha, Drought Risk 22.4%, Dry Spell 14 days. (Sectors: Mukamira, Bigogwe, Jenda, Jomba, Kabatwa, Karago, Kintobo, Muringa, Rambura, Rurembo, Shyira).
+- Rusizi: Poverty 36.8%, Unirrigated 27,200 ha, Drought Risk 31.5%, Dry Spell 16 days. (Sectors: Kamembe, Bugarama, Butare, Gashonga, Giheke, Gihundwe, Gikundamvura, Gitambi, Bwaniye, Muganza, Mururu, Nkanka, Nkombo, Nkungu, Nyakabuye, Nyakarenzo, Nzahaha, Rwimbogo).
+
+Kigali City (3 Districts & Notable Neighborhoods/Sectors):
+- Nyarugenge District: Sectors: Kiyovu (Prime business/residential sector in Kigali City center), Nyarugenge, Nyamirambo, Kimisagara, Gitega, Muhima, Rwezamenyo, Kanyinya, Kigali, Mageragere.
+- Gasabo District: Sectors: Kimironko, Remera, Kacyiru, Kimihurura, Gisozi, Bumbogo, Gikomero, Gitori, Jabana, Jali, Kinyinya, Nduba, Ndera, Rusororo, Rutunga.
+- Kicukiro District: Sectors: Kicukiro, Gahanga, Gatenga, Gikondo, Kangarama, Masaka, Niboye, Nyarugunga.
+
+5. AUTHORITATIVE DATA PORTALS & SOURCES
+--------------------------------------------------------------------------------
+- NISR Official Portal: https://www.statistics.gov.rw
+- NISR EICV Microdata Catalog: https://microdata.statistics.gov.rw
+- MINAGRI Policy Portal: https://www.minagri.gov.rw
+- RAB (Rwanda Agriculture Board): https://www.rab.gov.rw
+- CHIRPS & ERA5 Satellite Climate Data: https://www.chc.ucsb.edu/data/chirps

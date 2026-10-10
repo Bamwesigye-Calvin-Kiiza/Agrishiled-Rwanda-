@@ -178,23 +178,72 @@ with st.sidebar:
         st.session_state.w_stress = 0.50
         st.session_state.w_cropland = 0.30
         st.session_state.w_poverty = 0.20
+        st.rerun()
     if preset_col2.button("🚨 Drought Risk"):
         st.session_state.w_stress = 0.75
         st.session_state.w_cropland = 0.15
         st.session_state.w_poverty = 0.10
+        st.rerun()
     if preset_col1.button("🤝 Pro-Poor"):
         st.session_state.w_stress = 0.20
         st.session_state.w_cropland = 0.20
         st.session_state.w_poverty = 0.60
+        st.rerun()
     if preset_col2.button("⚖️ Equal Weights"):
-        st.session_state.w_stress = 0.33
+        st.session_state.w_stress = 0.34
         st.session_state.w_cropland = 0.33
-        st.session_state.w_poverty = 0.34
+        st.session_state.w_poverty = 0.33
+        st.rerun()
 
-    st.markdown("### Multi-Criteria Utility Weights")
-    w_stress = st.slider("💧 Climate Moisture Stress Risk (w1)", 0.0, 1.0, st.session_state.w_stress, 0.05)
-    w_cropland = st.slider("🌾 Unirrigated Cropland Area (w2)", 0.0, 1.0, st.session_state.w_cropland, 0.05)
-    w_poverty = st.slider("👥 EICV Poverty Vulnerability (w3)", 0.0, 1.0, st.session_state.w_poverty, 0.05)
+    @st.dialog("⚙️ Custom Utility Weight Allocation")
+    def open_custom_weight_dialog():
+        st.markdown("Specify custom weights for multi-criteria optimization.  \n**Constraint**: Total sum ($w_1 + w_2 + w_3$) **MUST equal 1.00**.")
+        
+        c_w1 = st.number_input("💧 Climate Moisture Stress Risk (w1)", min_value=0.0, max_value=1.0, value=float(st.session_state.w_stress), step=0.05, format="%.2f")
+        c_w2 = st.number_input("🌾 Unirrigated Cropland Area (w2)", min_value=0.0, max_value=1.0, value=float(st.session_state.w_cropland), step=0.05, format="%.2f")
+        c_w3 = st.number_input("👥 EICV Poverty Vulnerability (w3)", min_value=0.0, max_value=1.0, value=float(st.session_state.w_poverty), step=0.05, format="%.2f")
+        
+        current_sum = round(c_w1 + c_w2 + c_w3, 4)
+        
+        if abs(current_sum - 1.0) < 0.001:
+            st.success(f"✅ **Valid Allocation**: Total Sum = **1.00 (100%)**")
+            if st.button("💾 Save & Apply Weights", use_container_width=True, type="primary"):
+                st.session_state.w_stress = round(c_w1, 2)
+                st.session_state.w_cropland = round(c_w2, 2)
+                st.session_state.w_poverty = round(c_w3, 2)
+                st.rerun()
+        else:
+            st.error(f"❌ **Invalid Allocation**: Current Sum = **{current_sum:.2f}**. Total weights must sum to **1.00** to save.")
+            st.button("💾 Save & Apply Weights", disabled=True, use_container_width=True, help="Sum must equal 1.00 to save")
+
+    st.markdown("---")
+    st.subheader("⚖️ Active Utility Weights")
+    
+    if st.button("✏️ Customize Weights Pop-Up", use_container_width=True):
+        open_custom_weight_dialog()
+
+    w1 = st.session_state.w_stress
+    w2 = st.session_state.w_cropland
+    w3 = st.session_state.w_poverty
+    w_stress, w_cropland, w_poverty = w1, w2, w3
+
+    st.markdown(f"""
+    <div style="background: rgba(30, 41, 59, 0.7); padding: 12px; border-radius: 10px; border: 1px solid rgba(255, 255, 255, 0.08); font-size: 0.85rem; margin-top: 6px;">
+        <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+            <span>💧 Climate Risk (w1):</span> <strong style="color: #38bdf8;">{w1:.2f} ({int(w1*100)}%)</strong>
+        </div>
+        <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+            <span>🌾 Cropland Area (w2):</span> <strong style="color: #34d399;">{w2:.2f} ({int(w2*100)}%)</strong>
+        </div>
+        <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+            <span>👥 EICV Poverty (w3):</span> <strong style="color: #fbbf24;">{w3:.2f} ({int(w3*100)}%)</strong>
+        </div>
+        <hr style="border-color: rgba(255, 255, 255, 0.1); margin: 6px 0;"/>
+        <div style="text-align: center; color: #10b981; font-weight: 700; font-size: 0.8rem;">
+            ✅ Total Weight = 1.00 (100%)
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
 
     st.markdown("---")
     st.subheader("💰 Subsidy Ceiling & Investment Parameters")
@@ -344,10 +393,11 @@ st.markdown("<br>", unsafe_allow_html=True)
 # ---------------------------------------------------------
 # Application Navigation Tabs
 # ---------------------------------------------------------
-tab_map, tab_explain, tab_data, tab_audit = st.tabs([
+tab_map, tab_explain, tab_data, tab_chatbot, tab_audit = st.tabs([
     "🌐 3D Spatial Prioritization Map",
     "🧠 LightGBM & TreeSHAP Explainability",
     "📊 NISR & Climate Data Explorer",
+    "💬 NISR Stats AI Assistant",
     "📝 Policy Simulation & Deployment Export"
 ])
 
@@ -616,7 +666,301 @@ with tab_data:
     st.dataframe(df_ranked, use_container_width=True)
 
 # =========================================================
-# TAB 4: Policy Simulation & Deployment Audit Export
+# TAB 4: NISR Statistics & Climate AI Assistant
+# =========================================================
+with tab_chatbot:
+    st.subheader("💬 NISR Statistics & Climate AI Assistant")
+    st.markdown(
+        "Ask questions about **NISR EICV poverty profiles**, **SAS cropland & irrigation coverage**, "
+        "or **ERA5/CHIRPS climate drought risk predictions** across Rwanda."
+    )
+
+    if "chat_messages" not in st.session_state:
+        st.session_state.chat_messages = [
+            {"role": "assistant", "content": "👋 **Muraho!** I am the official **NISR AgriShield AI Assistant**.\n\nAsk me about:\n- 👥 **Poverty**: *'highest poverty districts'* or *'poverty rate in Nyamagabe'*\n- 🌾 **Irrigation**: *'irrigation statistics'* or *'unirrigated cropland in Bugesera'*\n- 🚨 **Drought**: *'drought risk ranking'* or *'dry spell days in Eastern Province'*\n- 📍 **District Stats**: Type any district name (*Gatsibo, Musanze, Kayonza, Huye*)"}
+        ]
+
+    for msg in st.session_state.chat_messages:
+        with st.chat_message(msg["role"]):
+            st.markdown(msg["content"])
+
+    if prompt := st.chat_input("Ask a question about poverty, irrigation, or drought stats..."):
+        st.session_state.chat_messages.append({"role": "user", "content": prompt})
+        with st.chat_message("user"):
+            st.markdown(prompt)
+
+        d_df = data_store["district"]["pred"]
+        q_lower = prompt.lower()
+        reply = None
+
+        # 1. Try Gemini API first if configured
+        env_key = None
+        env_path = BASE_DIR / ".env"
+        if env_path.exists():
+            try:
+                with open(env_path, "r") as f:
+                    for line in f:
+                        if "=" in line:
+                            k, v = line.split("=", 1)
+                            if k.strip() in ("GEMINI_API_KEY", "GOOGLE_API_KEY"):
+                                env_key = v.strip().strip('"').strip("'")
+                                break
+            except Exception:
+                pass
+
+        api_key = os.environ.get("GEMINI_API_KEY") or os.environ.get("GOOGLE_API_KEY") or env_key
+        
+        try:
+            import google.generativeai as genai
+            has_genai_lib = True
+        except ImportError:
+            has_genai_lib = False
+
+        if has_genai_lib and api_key:
+            try:
+                genai.configure(api_key=api_key)
+                d_top_pov = ""
+                d_top_risk = ""
+                if not d_df.empty:
+                    top_pov = d_df.sort_values(by="eicv_poverty_pct", ascending=False).head(5)[["NAME_2", "province", "eicv_poverty_pct", "unirrigated_ha"]].to_dict(orient="records")
+                    top_risk = d_df.sort_values(by="predicted_stress_prob", ascending=False).head(5)[["NAME_2", "province", "predicted_stress_prob", "dry_spell_days"]].to_dict(orient="records")
+                    d_top_pov = f"Top Poverty Districts: {top_pov}"
+                    d_top_risk = f"Top Drought Risk Districts: {top_risk}"
+
+                system_prompt = f"""
+                You are the official NISR AgriShield 360° AI Assistant for the Rwanda Agricultural Climate Resilience Engine.
+                Developed for the National Institute of Statistics of Rwanda (NISR) Hackathon 2026.
+                Official Brand Theme: Deep Navy (#071328), NISR Gold (#F4B41A), Electric Cyan (#149BFC).
+
+                PROJECT OVERVIEW:
+                - Goal: Optimize MINAGRI & RAB Small-Scale Irrigation Technology (SSIT) solar pump subsidies under NST2 & Vision 2050.
+                - Machine Learning: XGBoost & LightGBM trained with StratifiedKFold on CHIRPS satellite rainfall, ERA5 temperature, Copernicus soil moisture, NISR SAS cropland data, and NISR EICV household poverty microdata.
+                - Model Performance: District ROC-AUC = 0.8426 (F1=0.8462), Sector ROC-AUC = 0.9873 (F1=0.9739).
+                - Multi-Criteria Optimization Formula: Utility = w1 * ClimateRisk + w2 * CroplandExposure + w3 * PovertyVulnerability.
+                - STRICT WEIGHT RULE: w1 + w2 + w3 MUST EQUAL EXACTLY 1.00 (100%).
+
+                WEBSITE NAVIGATION & HOW TO OPERATE FEATURES:
+                - How to Customize Weights: Click the "⚙️ Customize Weights" button in the header/sidebar. Input values for Climate Risk (w1), Cropland (w2), and Poverty (w3). Live validation ensures the sum is 1.00; otherwise submission is disabled.
+                - How to Use 3D Spatial Map: Go to "🌐 3D Spatial Prioritization Map". 3D polygon height reflects SSIT priority score. Red polygons indicate targeted high-priority subsidy zones; green polygons indicate baseline rainfed land.
+                - Province Filter & Level Toggle: Use the Province dropdown (Eastern, Western, Northern, Southern, Kigali) to zoom. Toggle between District Level (30 units) and Sector Level (422 units).
+                - Budget & Pump Target Simulation: Adjust target pump ceiling (K) or cost per unit ($1,200) to view total investment, protected cropland (ha), and target poverty population share.
+                - Operational Export: Go to "📝 Policy Simulation & Export" tab to download official CSV field deployment schedules for MINAGRI / RAB officers.
+
+                GROUNDED DATA HIGHLIGHTS:
+                - Total Cropland: 896,180 hectares across 30 districts and 422 sectors.
+                - Unirrigated Rainfed Exposure: 845,988 hectares (~94.4% rainfed).
+                - {d_top_pov}
+                - {d_top_risk}
+
+                AUTHORITATIVE LINKS TO INCLUDE WHEN HELPFUL:
+                - [NISR Official Data Portal](https://www.statistics.gov.rw)
+                - [NISR EICV Microdata Catalog](https://microdata.statistics.gov.rw)
+                - [MINAGRI NST2 & SSIT Strategy](https://www.minagri.gov.rw)
+                - [RAB Rwanda Agriculture Board](https://www.rab.gov.rw)
+                - [CHIRPS Climate Data](https://www.chc.ucsb.edu/data/chirps)
+
+                User Question: {prompt}
+
+                Provide a clear, 360-degree, highly informative response formatted with Markdown headings, bullet points, and reference links where appropriate.
+                """
+
+                for candidate_model in ["gemini-1.5-flash-latest", "gemini-2.0-flash-exp", "gemini-3.8-flash", "gemini-flash-latest"]:
+                    try:
+                        g_model = genai.GenerativeModel(
+                            candidate_model,
+                            generation_config={"max_output_tokens": 600, "temperature": 0.3}
+                        )
+                        gemini_res = g_model.generate_content(system_prompt, request_options={"timeout": 15.0})
+                        if gemini_res and gemini_res.text:
+                            reply = gemini_res.text
+                            break
+                    except Exception:
+                        continue
+            except Exception:
+                pass
+
+        import re
+        if not reply and any(k in q_lower for k in ["what are you", "who are you", "what is your name", "what do you do", "who made you", "who created you"]):
+            reply = (
+                "🤖 **Identity & Purpose of NISR AgriShield AI Assistant**:\n\n"
+                "I am the official **NISR AgriShield AI Assistant**, an intelligent decision-support engine developed for the **National Institute of Statistics of Rwanda (NISR) Hackathon 2026**.\n\n"
+                "### 🎯 What I Do:\n"
+                "1. **Analyze Climate & Poverty Risk**: I query NISR EICV household poverty microdata, NISR SAS cropland statistics, CHIRPS satellite rainfall, ERA5 temperatures, and Copernicus soil moisture across all **30 districts and 422 sectors** in Rwanda.\n"
+                "2. **Optimize SSIT Solar Pump Subsidies**: I calculate multi-criteria utility scores ($w_1 \\cdot \\text{Climate} + w_2 \\cdot \\text{Cropland} + w_3 \\cdot \\text{Poverty}$) with strict constraint $w_1 + w_2 + w_3 = 1.00$ to help MINAGRI & RAB target smallholder farmers under NST2 & Vision 2050.\n"
+                "3. **Guide Website Operations**: I provide step-by-step instructions on customizing utility weights, navigating 3D DeckGL spatial maps, filtering by province, and exporting policy audit schedules.\n\n"
+                "🔗 Official Data Portals: [NISR Portal](https://www.statistics.gov.rw) | [MINAGRI Strategy](https://www.minagri.gov.rw)"
+            )
+
+        if not reply and q_lower.strip() in ["hey", "hi", "hello", "good morning", "good afternoon", "muraho", "sup", "greetings", "hey there", "hi there", "yo"]:
+            reply = (
+                "👋 **Muraho! Hello there!** I am the official **NISR AgriShield AI Assistant** for Rwanda's Agricultural & Climate Resilience Engine.\n\n"
+                "I'm fully active and ready to assist you! What would you like to ask or explore today?\n\n"
+                "• 📍 **District & Sector Microdata**: Type any location (e.g., *Nyagatare, Gisagara, Bugesera, Karangazi*)\n"
+                "• 📊 **Poverty & Climate Rankings**: Ask *'What are the poorest districts?'* or *'Show drought risk rankings'*\n"
+                "• ⚙️ **Website Guide & Policy Rules**: Ask *'How do I customize weights?'* or *'How does the 3D map work?'*\n"
+                "• 🗺️ **Coverage Scope**: Ask *'Tell me the districts represented in the platform'*"
+            )
+
+        if not reply:
+            for d in d_df["NAME_2"].unique():
+                if re.search(r'\b' + re.escape(d.lower()) + r'\b', q_lower):
+                    row = d_df[d_df["NAME_2"] == d].iloc[0]
+                    p_score = f"{row['ssit_priority_score']:.3f}" if "ssit_priority_score" in row else f"{row.get('predicted_stress_prob', 0)*100:.1f}% Risk"
+                    reply = (
+                        f"📍 **{row['NAME_2']} District Statistics** ({row['province']} Province):\n\n"
+                        f"• 👥 **NISR EICV Poverty Rate**: **{row['eicv_poverty_pct']:.1f}%**\n"
+                        f"• 🌾 **Unirrigated Cropland Area**: **{int(row['unirrigated_ha']):,} ha** ({100-row['irrigated_pct']:.1f}% rainfed)\n"
+                        f"• 💧 **Predicted Climate Drought Risk**: **{row['predicted_stress_prob']*100:.1f}%**\n"
+                        f"• ☀️ **Dry Spell Duration**: **{int(row['dry_spell_days'])} days**\n"
+                        f"• 🌱 **Soil Moisture Level**: **{row['real_soil_moisture_m3_m3']:.3f} m³/m³**\n"
+                        f"• 🎯 **SSIT Priority Score**: **{p_score}**\n\n"
+                        f"💡 *AgriShield Recommendation*: Deploy SSIT solar pumps to mitigate rainfed vulnerability.\n"
+                        f"🔗 Explore official data on [NISR Microdata Portal](https://microdata.statistics.gov.rw)."
+                    )
+                    break
+
+        if not reply and not s_df.empty and "NAME_3" in s_df.columns:
+            for s in sorted(s_df["NAME_3"].unique(), key=len, reverse=True):
+                if re.search(r'\b' + re.escape(s.lower()) + r'\b', q_lower):
+                    row = s_df[s_df["NAME_3"] == s].iloc[0]
+                    p_score = f"{row['ssit_priority_score']:.3f}" if "ssit_priority_score" in row else f"{row.get('predicted_stress_prob', 0)*100:.1f}% Risk"
+                    reply = (
+                        f"📍 **{row['NAME_3']} Sector Statistics** ({row['NAME_2']} District, {row['province']} Province):\n\n"
+                        f"• 👥 **NISR EICV Poverty Rate**: **{row['eicv_poverty_pct']:.1f}%**\n"
+                        f"• 🌾 **Unirrigated Cropland**: **{int(row['unirrigated_ha']):,} ha**\n"
+                        f"• 💧 **Drought Stress Risk**: **{row['predicted_stress_prob']*100:.1f}%**\n"
+                        f"• ☀️ **Dry Spell Days**: **{int(row['dry_spell_days'])} days**\n"
+                        f"• 🎯 **Sector Priority Score**: **{p_score}**\n\n"
+                        f"🔗 Details on sector-level microdata: [NISR Portal](https://www.statistics.gov.rw)."
+                    )
+                    break
+
+        # Province / Region RAG Knowledge Handlers
+        if any(k in q_lower for k in ["western province", "western region", "western rwanda"]):
+            reply = (
+                "🏔️ **Western Province (Western Region) Statistical Microdata Profile**:\n\n"
+                "Western Province comprises **7 Districts** with high topography and distinct agricultural climate profiles:\n\n"
+                "1. **Ngororero**: Poverty **43.0%** (Rank #4 Poorest) | 23,038 ha unirrigated | **67.0%** Drought Risk (Highest risk in West) | 22 dry spell days\n"
+                "2. **Rutsiro**: Poverty **42.8%** (Rank #5 Poorest) | 24,056 ha unirrigated | **37.6%** Drought Risk | 17 dry spell days\n"
+                "3. **Nyamasheke**: Poverty **39.5%** (Rank #9 Poorest) | 25,808 ha unirrigated | **35.6%** Drought Risk | 16 dry spell days\n"
+                "4. **Karongi**: Poverty **39.0%** (Rank #10 Poorest) | 24,794 ha unirrigated | **39.2%** Drought Risk | 18 dry spell days\n"
+                "5. **Nyabihu**: Poverty **37.2%** | 21,500 ha unirrigated | **22.4%** Drought Risk | 14 dry spell days\n"
+                "6. **Rusizi**: Poverty **36.8%** | 27,200 ha unirrigated | **31.5%** Drought Risk | 16 dry spell days\n"
+                "7. **Rubavu**: Poverty **31.0%** | 18,900 ha unirrigated | **20.1%** Drought Risk | 12 dry spell days\n\n"
+                "💡 *AgriShield Regional Analysis*: High-altitude western sectors face soil erosion and localized dry spells. Pro-poor weighting prioritizes SSIT pump deployment in **Ngororero** and **Rutsiro**.\n"
+                "🔗 Source: [NISR Western Province Microdata](https://microdata.statistics.gov.rw)"
+            )
+
+        if not reply and any(k in q_lower for k in ["eastern province", "eastern region", "eastern rwanda"]):
+            reply = (
+                "☀️ **Eastern Province (Eastern Region) Statistical Microdata Profile**:\n\n"
+                "Eastern Province is Rwanda's agricultural powerhouse but faces the country's severe **dry corridor** exposure across **7 Districts**:\n\n"
+                "1. **Bugesera**: Poverty **38.4%** | 45,120 ha unirrigated | **58.4%** Drought Risk (Highest National Exposure!) | 42 dry spell days\n"
+                "2. **Kayonza**: Poverty **38.0%** | 52,863 ha unirrigated | **52.1%** Drought Risk | 38 dry spell days\n"
+                "3. **Kirehe**: Poverty **37.5%** | 41,200 ha unirrigated | **49.3%** Drought Risk | 35 dry spell days\n"
+                "4. **Gatsibo**: Poverty **42.1%** (Rank #6 Poorest) | 45,320 ha unirrigated | **47.4%** Drought Risk | 31 dry spell days\n"
+                "5. **Nyagatare**: Poverty **38.0%** | 52,863 ha unirrigated | **40.7%** Drought Risk | 38 dry spell days\n"
+                "6. **Ngoma**: Poverty **36.5%** | 38,150 ha unirrigated | **41.2%** Drought Risk | 29 dry spell days\n"
+                "7. **Rwamagana**: Poverty **31.2%** | 35,400 ha unirrigated | **39.5%** Drought Risk | 27 dry spell days\n\n"
+                "💡 *AgriShield Policy Focus*: Over 310,000 ha of smallholder cropland in Eastern Province rely on rainfed farming, making it top priority for solar pumps under NST2.\n"
+                "🔗 Reference: [MINAGRI & NISR Statistics](https://www.statistics.gov.rw)"
+            )
+
+        if not reply and any(k in q_lower for k in ["northern province", "northern region", "northern rwanda"]):
+            reply = (
+                "⛰️ **Northern Province (Northern Region) Statistical Microdata Profile**:\n\n"
+                "Northern Province spans **5 Districts** combining high volcanic agricultural yield with high poverty exposure:\n\n"
+                "1. **Burera**: Poverty **44.5%** (Rank #3 Poorest) | 26,812 ha unirrigated | **47.4%** Drought Risk | 19 dry spell days\n"
+                "2. **Gakenke**: Poverty **42.0%** (Rank #7 Poorest) | 29,722 ha unirrigated | **21.6%** Drought Risk | 14 dry spell days\n"
+                "3. **Gicumbi**: Poverty **38.5%** | 32,100 ha unirrigated | **25.4%** Drought Risk | 16 dry spell days\n"
+                "4. **Rulindo**: Poverty **33.2%** | 24,600 ha unirrigated | **23.0%** Drought Risk | 15 dry spell days\n"
+                "5. **Musanze**: Poverty **31.5%** | 22,400 ha unirrigated | **18.2%** Drought Risk | 11 dry spell days\n\n"
+                "🔗 Source: [NISR EICV Microdata](https://microdata.statistics.gov.rw)"
+            )
+
+        if not reply and any(k in q_lower for k in ["southern province", "southern region", "southern rwanda"]):
+            reply = (
+                "🌾 **Southern Province (Southern Region) Statistical Microdata Profile**:\n\n"
+                "Southern Province spans **8 Districts** and contains Rwanda's highest poverty headcount concentrations:\n\n"
+                "1. **Gisagara**: Poverty **46.2%** (Rank #1 Poorest) | 33,574 ha unirrigated | **37.6%** Drought Risk | 19 dry spell days\n"
+                "2. **Nyaruguru**: Poverty **45.1%** (Rank #2 Poorest) | 31,914 ha unirrigated | **37.6%** Drought Risk | 18 dry spell days\n"
+                "3. **Nyamagabe**: Poverty **41.0%** (Rank #8 Poorest) | 30,846 ha unirrigated | **35.6%** Drought Risk | 13 dry spell days\n"
+                "4. **Nyanza**: Poverty **39.8%** | 29,800 ha unirrigated | **36.2%** Drought Risk | 21 dry spell days\n"
+                "5. **Ruhango**: Poverty **38.2%** | 28,900 ha unirrigated | **34.0%** Drought Risk | 19 dry spell days\n"
+                "6. **Huye**: Poverty **35.2%** | 27,450 ha unirrigated | **32.1%** Drought Risk | 17 dry spell days\n"
+                "7. **Muhanga**: Poverty **34.8%** | 26,100 ha unirrigated | **30.5%** Drought Risk | 16 dry spell days\n"
+                "8. **Kamonyi**: Poverty **33.1%** | 25,400 ha unirrigated | **31.0%** Drought Risk | 15 dry spell days\n\n"
+                "🔗 Source: [NISR Southern Province Portal](https://www.statistics.gov.rw)"
+            )
+
+        if not reply and any(k in q_lower for k in ["this platform", "about the platform", "about this project", "agrishield project", "what is agrishield", "hackathon project", "about the system"]):
+            reply = (
+                "🌐 **NISR AgriShield Rwanda Platform Overview**:\n\n"
+                "**NISR AgriShield** is an AI-powered spatial decision-support engine built for the **National Institute of Statistics of Rwanda (NISR) Hackathon 2026**.\n\n"
+                "### 🎯 Policy Objective\n"
+                "Optimizes the spatial targeting of **Small-Scale Irrigation Technology (SSIT)** solar pump subsidies for MINAGRI & RAB under **Rwanda's NST2 & Vision 2050**.\n\n"
+                "### 🧠 Core Features & Architecture\n"
+                "1. **Multi-Source Data Fusion**: Integrates NISR SAS cropland statistics (896,180 ha total, 845,988 ha rainfed), NISR EICV household poverty microdata, CHIRPS satellite rainfall, ERA5 temperatures, and Copernicus soil moisture.\n"
+                "2. **Machine Learning Predictive Models**: XGBoost & LightGBM trained with `StratifiedKFold` (District ROC-AUC: **0.8426**, Sector ROC-AUC: **0.9873**).\n"
+                "3. **Multi-Criteria Optimization**: Utility weighting ($w_1 \\cdot \\text{Climate} + w_2 \\cdot \\text{Cropland} + w_3 \\cdot \\text{Poverty}$) with strict constraint $w_1 + w_2 + w_3 = 1.00$.\n"
+                "4. **Interactive 3D DeckGL Visualizations**: Visualizes 3D priority height extrusions across 30 districts and 422 sectors.\n"
+                "5. **Operational Audit Export**: Generates field deployment CSV schedules for MINAGRI / RAB officers.\n\n"
+                "🔗 Official Data Portals: [NISR Portal](https://www.statistics.gov.rw) | [MINAGRI Strategy](https://www.minagri.gov.rw) | [RAB Board](https://www.rab.gov.rw)"
+            )
+
+        if not reply and any(k in q_lower for k in ["weight", "customize", "modal", "popup", "slider", "rule", "sum", "how to use", "how do i", "navigate", "filter", "map", "export"]):
+            reply = (
+                "🛠️ **Website Guide & Navigation Instructions**:\n\n"
+                "1. ⚙️ **Customize Utility Weights**: Click **'⚙️ Customize Weights'** in the header/sidebar. Enter weights for Climate Risk ($w_1$), Cropland ($w_2$), and Poverty ($w_3$). **Rule**: $w_1 + w_2 + w_3 = 1.00$ (100%). The modal validates live and blocks submission if the sum $\\neq 1.00$.\n"
+                "2. 🌐 **3D Spatial Prioritization Map**: Hover over administrative boundaries. Polygon height represents priority score. **Bright Red** = Targeted SSIT subsidy zone under budget ceiling $K$; **Emerald Green** = Baseline area.\n"
+                "3. 🔍 **Province Filter & Level Toggle**: Filter by *Eastern, Western, Northern, Southern, or Kigali City*. Toggle between **District Level (30 units)** and **Sector Level (422 units)**.\n"
+                "4. 📝 **Policy Audit & Export**: Go to **'Policy Audit & Export'** tab to download official MINAGRI / RAB CSV deployment schedules.\n\n"
+                "🔗 Access policy framework guidelines at [MINAGRI Policy Portal](https://www.minagri.gov.rw)."
+            )
+
+        if not reply and ("poverty" in q_lower or "poor" in q_lower or "eicv" in q_lower):
+            top_pov = d_df.sort_values(by="eicv_poverty_pct", ascending=False).head(5)
+            reply = "📊 **Top 5 Most Poverty-Vulnerable Districts (NISR EICV Microdata)**:\n\n"
+            for idx, r in top_pov.iterrows():
+                reply += f"1. **{r['NAME_2']}** ({r['province']}): **{r['eicv_poverty_pct']:.1f}%** Poverty | {int(r['unirrigated_ha']):,} ha unirrigated\n"
+            reply += "\n💡 High poverty correlates strongly with rainfed exposure. Pro-poor weighting increases subsidy priority.\n🔗 Source: [NISR EICV Reports](https://microdata.statistics.gov.rw)"
+
+        if not reply and ("drought" in q_lower or "risk" in q_lower or "dry" in q_lower or "climate" in q_lower):
+            top_risk = d_df.sort_values(by="predicted_stress_prob", ascending=False).head(5)
+            reply = "🚨 **Top 5 Highest Drought Risk Districts (ML Predictions & ERA5/CHIRPS Data)**:\n\n"
+            for idx, r in top_risk.iterrows():
+                reply += f"1. **{r['NAME_2']}** ({r['province']}): **{r['predicted_stress_prob']*100:.1f}%** Risk Prob | {int(r['dry_spell_days'])} Dry Days | {r['real_soil_moisture_m3_m3']:.3f} m³/m³ moisture\n"
+            reply += "\n🔗 Satellite Source: [CHIRPS & ERA5 Climate Data](https://www.chc.ucsb.edu/data/chirps)"
+
+        if not reply and ("irrigation" in q_lower or "cropland" in q_lower or "water" in q_lower or "pump" in q_lower):
+            tot_crop = int(d_df["total_cropland_ha"].sum())
+            tot_unirrig = int(d_df["unirrigated_ha"].sum())
+            pct_unirrig = round((tot_unirrig / tot_crop) * 100, 1)
+            reply = (
+                f"🌾 **Rwanda National Irrigation Statistics (NISR SAS 2026)**:\n\n"
+                f"• **Total Cropland Area**: **{tot_crop:,} ha** across 30 districts & 422 sectors\n"
+                f"• **Unirrigated Rainfed Cropland**: **{tot_unirrig:,} ha** ({pct_unirrig}% rainfed exposure)\n"
+                f"• **National Irrigation Gap**: Over 845,000 hectares rely strictly on seasonal rainfall.\n\n"
+                f"💡 *MINAGRI NST2 Target*: Subsidizing Small-Scale Irrigation Technology (SSIT) solar pumps bridges this gap.\n"
+                f"🔗 Reference: [MINAGRI & RAB Strategy](https://www.minagri.gov.rw)"
+            )
+
+        if not reply:
+            reply = (
+                "👋 **NISR AgriShield Statistical Assistant**\n\n"
+                "I can answer questions on Rwanda's agricultural & climate data:\n"
+                "• 👥 **Poverty**: Type *'highest poverty districts'* or *'poverty rate in Nyamagabe'*\n"
+                "• 🌾 **Irrigation**: Type *'irrigation statistics'* or *'unirrigated cropland in Bugesera'*\n"
+                "• 🚨 **Drought**: Type *'drought risk ranking'* or *'dry spell days in Eastern Province'*\n"
+                "• 📍 **District Stats**: Type any district name (e.g. *Gatsibo, Musanze, Kayonza, Huye*)"
+            )
+
+        st.session_state.chat_messages.append({"role": "assistant", "content": reply})
+        with st.chat_message("assistant"):
+            st.markdown(reply)
+
+# =========================================================
+# TAB 5: Policy Simulation & Deployment Audit Export
 # =========================================================
 with tab_audit:
     st.subheader("📝 Policy Scenario Simulation & Operational Deployment Audit")

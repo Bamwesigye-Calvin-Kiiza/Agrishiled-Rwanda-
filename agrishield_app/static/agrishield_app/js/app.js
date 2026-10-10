@@ -5,9 +5,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // DOM Elements
     const levelSelect = document.getElementById("level-select");
-    const sliderStress = document.getElementById("slider-stress");
-    const sliderCropland = document.getElementById("slider-cropland");
-    const sliderPoverty = document.getElementById("slider-poverty");
     const valStress = document.getElementById("val-stress");
     const valCropland = document.getElementById("val-cropland");
     const valPoverty = document.getElementById("val-poverty");
@@ -52,28 +49,114 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 
+    // Weight state tracking
+    let currentWeights = { w1: 0.50, w2: 0.30, w3: 0.20 };
+
+    // Modal DOM Elements
+    const btnOpenModal = document.getElementById("btn-open-weights-modal");
+    const weightsModal = document.getElementById("weights-modal");
+    const btnCloseModal = document.getElementById("btn-close-modal");
+    const btnApplyModalWeights = document.getElementById("btn-apply-modal-weights");
+    const modalW1 = document.getElementById("modal-w1");
+    const modalW2 = document.getElementById("modal-w2");
+    const modalW3 = document.getElementById("modal-w3");
+    const modalFeedback = document.getElementById("modal-sum-feedback");
+
+    // Open & Close Modal
+    if (btnOpenModal) {
+        btnOpenModal.addEventListener("click", () => {
+            if (modalW1) modalW1.value = currentWeights.w1.toFixed(2);
+            if (modalW2) modalW2.value = currentWeights.w2.toFixed(2);
+            if (modalW3) modalW3.value = currentWeights.w3.toFixed(2);
+            validateModalSum();
+            if (weightsModal) weightsModal.style.display = "flex";
+        });
+    }
+
+    if (btnCloseModal) {
+        btnCloseModal.addEventListener("click", () => {
+            if (weightsModal) weightsModal.style.display = "none";
+        });
+    }
+
+    if (weightsModal) {
+        weightsModal.addEventListener("click", (e) => {
+            if (e.target === weightsModal) weightsModal.style.display = "none";
+        });
+    }
+
+    // Modal Live Validation
+    function validateModalSum() {
+        if (!modalW1 || !modalW2 || !modalW3 || !modalFeedback) return;
+        const w1 = parseFloat(modalW1.value) || 0;
+        const w2 = parseFloat(modalW2.value) || 0;
+        const w3 = parseFloat(modalW3.value) || 0;
+        const sum = Math.round((w1 + w2 + w3) * 100) / 100;
+
+        if (Math.abs(sum - 1.0) < 0.001) {
+            modalFeedback.style.background = "rgba(16, 185, 129, 0.15)";
+            modalFeedback.style.color = "#10b981";
+            modalFeedback.style.border = "1px solid rgba(16, 185, 129, 0.3)";
+            modalFeedback.innerHTML = `✅ Valid Allocation: Total Sum = <strong>1.00 (100%)</strong>`;
+            if (btnApplyModalWeights) {
+                btnApplyModalWeights.disabled = false;
+                btnApplyModalWeights.style.opacity = "1";
+                btnApplyModalWeights.style.cursor = "pointer";
+            }
+        } else {
+            modalFeedback.style.background = "rgba(239, 68, 68, 0.15)";
+            modalFeedback.style.color = "#ef4444";
+            modalFeedback.style.border = "1px solid rgba(239, 68, 68, 0.3)";
+            modalFeedback.innerHTML = `❌ Invalid Sum: <strong>${sum.toFixed(2)}</strong>. Weights MUST sum to <strong>1.00</strong> to save.`;
+            if (btnApplyModalWeights) {
+                btnApplyModalWeights.disabled = true;
+                btnApplyModalWeights.style.opacity = "0.4";
+                btnApplyModalWeights.style.cursor = "not-allowed";
+            }
+        }
+    }
+
+    [modalW1, modalW2, modalW3].forEach(inp => {
+        if (inp) {
+            inp.addEventListener("input", validateModalSum);
+            inp.addEventListener("change", validateModalSum);
+        }
+    });
+
+    if (btnApplyModalWeights) {
+        btnApplyModalWeights.addEventListener("click", () => {
+            const w1 = parseFloat(modalW1.value) || 0;
+            const w2 = parseFloat(modalW2.value) || 0;
+            const w3 = parseFloat(modalW3.value) || 0;
+            const sum = Math.round((w1 + w2 + w3) * 100) / 100;
+
+            if (Math.abs(sum - 1.0) < 0.001) {
+                setWeights(w1, w2, w3);
+                if (weightsModal) weightsModal.style.display = "none";
+            }
+        });
+    }
+
     // Preset Buttons
     document.getElementById("btn-preset-minagri").addEventListener("click", () => setWeights(0.50, 0.30, 0.20));
     document.getElementById("btn-preset-drought").addEventListener("click", () => setWeights(0.75, 0.15, 0.10));
     document.getElementById("btn-preset-propoor").addEventListener("click", () => setWeights(0.20, 0.20, 0.60));
-    document.getElementById("btn-preset-equal").addEventListener("click", () => setWeights(0.33, 0.33, 0.34));
+    document.getElementById("btn-preset-equal").addEventListener("click", () => setWeights(0.34, 0.33, 0.33));
 
     function setWeights(ws, wc, wp) {
-        sliderStress.value = ws;
-        sliderCropland.value = wc;
-        sliderPoverty.value = wp;
+        currentWeights = { w1: ws, w2: wc, w3: wp };
         updateSliderDisplays();
         triggerSimulation();
     }
 
     function updateSliderDisplays() {
-        valStress.textContent = parseFloat(sliderStress.value).toFixed(2);
-        valCropland.textContent = parseFloat(sliderCropland.value).toFixed(2);
-        valPoverty.textContent = parseFloat(sliderPoverty.value).toFixed(2);
-        valBudget.textContent = sliderBudget.value;
+        valStress.textContent = `${currentWeights.w1.toFixed(2)} (${Math.round(currentWeights.w1 * 100)}%)`;
+        valCropland.textContent = `${currentWeights.w2.toFixed(2)} (${Math.round(currentWeights.w2 * 100)}%)`;
+        valPoverty.textContent = `${currentWeights.w3.toFixed(2)} (${Math.round(currentWeights.w3 * 100)}%)`;
+        if (valBudget) valBudget.textContent = sliderBudget.value;
     }
 
-    [sliderStress, sliderCropland, sliderPoverty, sliderBudget, inputCost, provinceSelect, levelSelect].forEach(input => {
+    [sliderBudget, inputCost, provinceSelect, levelSelect].forEach(input => {
         if (input) {
             input.addEventListener("change", () => {
                 updateSliderDisplays();
@@ -82,6 +165,10 @@ document.addEventListener("DOMContentLoaded", function () {
             input.addEventListener("input", updateSliderDisplays);
         }
     });
+
+    // Initialize Map and Trigger Initial Simulation on Load
+    initDeckGLMap();
+    triggerSimulation();
 
     // Fetch Metrics on Load
     fetch("/api/metrics/")
@@ -109,9 +196,9 @@ document.addEventListener("DOMContentLoaded", function () {
     // ---------------------------------------------------------
     function triggerSimulation() {
         const level = levelSelect.value;
-        const w_stress = sliderStress.value;
-        const w_cropland = sliderCropland.value;
-        const w_poverty = sliderPoverty.value;
+        const w_stress = currentWeights.w1;
+        const w_cropland = currentWeights.w2;
+        const w_poverty = currentWeights.w3;
         const budget_units = sliderBudget.value;
         const unit_cost = inputCost.value;
         const province = provinceSelect.value;
@@ -207,6 +294,10 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function updateDeckGLMap(geojson, level) {
+        if (!deckInstance) {
+            initDeckGLMap();
+        }
+
         const polygonLayer = new deck.GeoJsonLayer({
             id: "rwanda-3d-polygons",
             data: geojson,
@@ -401,6 +492,85 @@ document.addEventListener("DOMContentLoaded", function () {
 
                 Plotly.newPlot('chart-shap-waterfall', [traceWaterfall], layoutWaterfall, { responsive: true });
             });
+    }
+
+    // ---------------------------------------------------------
+    // NISR AI Assistant Chatbot Controller
+    // ---------------------------------------------------------
+    const btnToggleChatbot = document.getElementById("btn-toggle-chatbot");
+    const chatbotWindow = document.getElementById("chatbot-window");
+    const btnCloseChatbot = document.getElementById("btn-close-chatbot");
+    const chatbotForm = document.getElementById("chatbot-form");
+    const chatbotInput = document.getElementById("chatbot-input");
+    const chatbotMessages = document.getElementById("chatbot-messages");
+
+    if (btnToggleChatbot && chatbotWindow) {
+        btnToggleChatbot.addEventListener("click", () => {
+            const isHidden = chatbotWindow.style.display === "none";
+            chatbotWindow.style.display = isHidden ? "flex" : "none";
+            if (isHidden && chatbotInput) chatbotInput.focus();
+        });
+    }
+
+    if (btnCloseChatbot && chatbotWindow) {
+        btnCloseChatbot.addEventListener("click", () => {
+            chatbotWindow.style.display = "none";
+        });
+    }
+
+    function appendChatMessage(sender, text) {
+        if (!chatbotMessages) return;
+        const msgDiv = document.createElement("div");
+        msgDiv.className = `chat-msg ${sender === 'user' ? 'user-msg' : 'bot-msg'}`;
+        
+        let formattedText = text
+            .replace(/\*\*(.*?)\*\*/g, '<b>$1</b>')
+            .replace(/\*(.*?)\*/g, '<i>$1</i>')
+            .replace(/\n/g, '<br/>');
+
+        msgDiv.innerHTML = formattedText;
+        chatbotMessages.appendChild(msgDiv);
+        chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
+    }
+
+    let chatHistory = [];
+
+    if (chatbotForm) {
+        chatbotForm.addEventListener("submit", function (e) {
+            e.preventDefault();
+            const query = chatbotInput.value.trim();
+            if (!query) return;
+
+            appendChatMessage("user", query);
+            chatHistory.push({ role: "user", content: query });
+            chatbotInput.value = "";
+
+            const typingDiv = document.createElement("div");
+            typingDiv.className = "chat-msg bot-msg";
+            typingDiv.id = "chat-typing-indicator";
+            typingDiv.innerHTML = "<i>Thinking... querying NISR statistics database...</i>";
+            chatbotMessages.appendChild(typingDiv);
+            chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
+
+            fetch("/api/chatbot/", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ query: query, history: chatHistory.slice(-6) })
+            })
+            .then(res => res.json())
+            .then(data => {
+                const indicator = document.getElementById("chat-typing-indicator");
+                if (indicator) indicator.remove();
+                const botReply = data.reply || "No response received.";
+                appendChatMessage("bot", botReply);
+                chatHistory.push({ role: "assistant", content: botReply });
+            })
+            .catch(err => {
+                const indicator = document.getElementById("chat-typing-indicator");
+                if (indicator) indicator.remove();
+                appendChatMessage("bot", "❌ Failed to connect to NISR statistics service.");
+            });
+        });
     }
 
     // Initialize Deck.gl Map and trigger initial simulation

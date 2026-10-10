@@ -57,30 +57,26 @@
                 <button type="button" class="btn-preset" id="btn-preset-equal">⚖️ Equal</button>
             </div>
 
-            <div class="sidebar-section-title" style="margin-top: 14px;">Multi-Criteria Utility Weights</div>
+            <div class="sidebar-section-title" style="margin-top: 14px;">⚖️ Active Utility Weights</div>
             
-            <div class="control-group">
-                <div class="control-label">
-                    <span>💧 Climate Risk (w1)</span>
-                    <span class="slider-val" id="val-stress">0.50</span>
-                </div>
-                <input type="range" id="slider-stress" min="0.0" max="1.0" step="0.05" value="0.50">
-            </div>
+            <button type="button" class="btn-preset" id="btn-open-weights-modal" style="width: 100%; margin-bottom: 8px; background: rgba(59, 130, 246, 0.2); border-color: rgba(59, 130, 246, 0.4); color: #60a5fa;">
+                ✏️ Customize Weights Pop-Up
+            </button>
 
-            <div class="control-group">
-                <div class="control-label">
-                    <span>🌾 Cropland Area (w2)</span>
-                    <span class="slider-val" id="val-cropland">0.30</span>
+            <div style="background: rgba(30, 41, 59, 0.7); padding: 10px; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.08); font-size: 0.82rem; margin-bottom: 12px;">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+                    <span>💧 Climate Risk (w1):</span> <strong id="val-stress" style="color: #38bdf8;">0.50 (50%)</strong>
                 </div>
-                <input type="range" id="slider-cropland" min="0.0" max="1.0" step="0.05" value="0.30">
-            </div>
-
-            <div class="control-group">
-                <div class="control-label">
-                    <span>👥 EICV Poverty (w3)</span>
-                    <span class="slider-val" id="val-poverty">0.20</span>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+                    <span>🌾 Cropland Area (w2):</span> <strong id="val-cropland" style="color: #34d399;">0.30 (30%)</strong>
                 </div>
-                <input type="range" id="slider-poverty" min="0.0" max="1.0" step="0.05" value="0.20">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+                    <span>👥 EICV Poverty (w3):</span> <strong id="val-poverty" style="color: #fbbf24;">0.20 (20%)</strong>
+                </div>
+                <hr style="border-color: rgba(255, 255, 255, 0.1); margin: 6px 0;"/>
+                <div style="text-align: center; color: #10b981; font-weight: 700; font-size: 0.78rem;" id="val-total-weight">
+                    ✅ Total Weight = 1.00 (100%)
+                </div>
             </div>
 
             <div class="sidebar-section-title" style="margin-top: 14px;">💰 Subsidy Ceiling & Investment</div>
@@ -285,6 +281,76 @@
             </div>
 
         </main>
+    </div>
+
+    <!-- Modal for Custom Weight Allocation -->
+    <div id="weights-modal" class="modal-overlay" style="display: none;">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3 style="font-size: 1.1rem; color: #fff;">⚙️ Custom Utility Weight Allocation</h3>
+                <button type="button" id="btn-close-modal" class="modal-close">&times;</button>
+            </div>
+            <p style="font-size: 0.82rem; color: #94a3b8; margin-bottom: 14px;">
+                Specify custom weight values. The total sum of all three weights <strong>MUST equal 1.00 (100%)</strong>.
+            </p>
+            
+            <div class="control-group" style="margin-bottom: 10px;">
+                <label class="control-label" style="display: block; margin-bottom: 4px; font-size: 0.85rem;">💧 Climate Moisture Stress Risk (w1)</label>
+                <input type="number" id="modal-w1" min="0.0" max="1.0" step="0.05" value="0.50" style="width: 100%; padding: 8px; border-radius: 6px; background: #1e293b; border: 1px solid #334155; color: #fff;">
+            </div>
+
+            <div class="control-group" style="margin-bottom: 10px;">
+                <label class="control-label" style="display: block; margin-bottom: 4px; font-size: 0.85rem;">🌾 Unirrigated Cropland Area (w2)</label>
+                <input type="number" id="modal-w2" min="0.0" max="1.0" step="0.05" value="0.30" style="width: 100%; padding: 8px; border-radius: 6px; background: #1e293b; border: 1px solid #334155; color: #fff;">
+            </div>
+
+            <div class="control-group" style="margin-bottom: 14px;">
+                <label class="control-label" style="display: block; margin-bottom: 4px; font-size: 0.85rem;">👥 EICV Poverty Vulnerability (w3)</label>
+                <input type="number" id="modal-w3" min="0.0" max="1.0" step="0.05" value="0.20" style="width: 100%; padding: 8px; border-radius: 6px; background: #1e293b; border: 1px solid #334155; color: #fff;">
+            </div>
+
+            <div id="modal-sum-feedback" style="padding: 8px; border-radius: 6px; font-size: 0.82rem; text-align: center; margin-bottom: 14px; font-weight: 600;"></div>
+
+            <button type="button" id="btn-apply-modal-weights" style="width: 100%; padding: 10px; border-radius: 8px; border: none; background: #10b981; color: #fff; font-weight: 700; cursor: pointer;">
+                💾 Save & Apply Weights
+            </button>
+        </div>
+    </div>
+
+    <!-- NISR AI Assistant Chatbot Floating Widget -->
+    <div id="chatbot-widget-container">
+        <button type="button" id="btn-toggle-chatbot" class="chatbot-fab">
+            💬 <span>NISR Stats Assistant</span>
+        </button>
+
+        <div id="chatbot-window" class="chatbot-window" style="display: none;">
+            <div class="chatbot-header">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <span style="font-size: 1.3rem;">📊</span>
+                    <div>
+                        <div style="font-weight: 800; font-size: 0.95rem; color: #fff;">NISR Statistics AI Assistant</div>
+                        <div style="font-size: 0.72rem; color: #f4b41a;">EICV Poverty, SAS Irrigation & Climate Risk</div>
+                    </div>
+                </div>
+                <button type="button" id="btn-close-chatbot" class="modal-close">&times;</button>
+            </div>
+
+            <div id="chatbot-messages" class="chatbot-messages">
+                <div class="chat-msg bot-msg">
+                    👋 <b>Muraho!</b> I am the official <b>NISR AgriShield AI Assistant</b>.<br/><br/>
+                    Ask me any question about Rwanda's:<br/>
+                    • 👥 <b>EICV Poverty Rates</b><br/>
+                    • 🌾 <b>Cropland & SSIT Irrigation Targets</b><br/>
+                    • 🚨 <b>Climate & Drought Risk Predictions</b><br/>
+                    • 📍 <b>Specific District / Sector Statistics</b>
+                </div>
+            </div>
+
+            <form id="chatbot-form" class="chatbot-input-row">
+                <input type="text" id="chatbot-input" placeholder="Ask about poverty, irrigation, or district..." autocomplete="off">
+                <button type="submit" id="btn-send-chat">Send</button>
+            </form>
+        </div>
     </div>
 
     <!-- Application JavaScript Controller -->
