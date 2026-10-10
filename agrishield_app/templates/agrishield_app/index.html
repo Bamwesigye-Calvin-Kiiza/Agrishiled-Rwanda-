@@ -34,15 +34,15 @@
             </div>
         </div>
         <nav class="header-nav" style="display: flex; align-items: center; gap: 18px;">
-            <a href="{% url 'agrishield:landing' %}" class="nav-link" style="color: #94A3B8; text-decoration: none; font-weight: 500; font-size: 0.9rem;">🏠 Home</a>
-            <a href="{% url 'agrishield:index' %}" class="nav-link active" style="color: #F4B41A; text-decoration: none; font-weight: 700; font-size: 0.9rem;">🌐 3D Spatial Engine</a>
+            <a href="{% url 'agrishield:landing' %}" class="nav-link" style="color: #4A6DAE; text-decoration: none; font-weight: 500; font-size: 0.9rem;">Home</a>
+            <a href="{% url 'agrishield:index' %}" class="nav-link active" style="color: #265BA5; text-decoration: none; font-weight: 700; font-size: 0.9rem;">3D Spatial Engine</a>
         </nav>
     </header>
 
     <div class="app-layout">
         <!-- Sidebar Controls -->
         <aside class="app-sidebar">
-            <div class="sidebar-section-title">⚙️ Policy & Model Setup</div>
+            <div class="sidebar-section-title">Policy & Model Setup</div>
             
             <div class="control-group">
                 <label class="control-label">Administrative Level</label>
@@ -52,40 +52,40 @@
                 </select>
             </div>
 
-            <div class="sidebar-section-title" style="margin-top: 10px;">🎯 Policy Presets</div>
+            <div class="sidebar-section-title" style="margin-top: 10px;">Policy Presets</div>
             <div class="preset-grid">
-                <button type="button" class="btn-preset" id="btn-preset-minagri">🎯 MINAGRI</button>
-                <button type="button" class="btn-preset" id="btn-preset-drought">🚨 Drought</button>
-                <button type="button" class="btn-preset" id="btn-preset-propoor">🤝 Pro-Poor</button>
-                <button type="button" class="btn-preset" id="btn-preset-equal">⚖️ Equal</button>
+                <button type="button" class="btn-preset" id="btn-preset-minagri">MINAGRI</button>
+                <button type="button" class="btn-preset" id="btn-preset-drought">Drought</button>
+                <button type="button" class="btn-preset" id="btn-preset-propoor">Pro-Poor</button>
+                <button type="button" class="btn-preset" id="btn-preset-equal">Equal</button>
             </div>
 
-            <div class="sidebar-section-title" style="margin-top: 14px;">⚖️ Active Utility Weights</div>
+            <div class="sidebar-section-title" style="margin-top: 14px;">Active Utility Weights</div>
             
             <button type="button" class="btn-preset" id="btn-open-weights-modal" style="width: 100%; margin-bottom: 10px; background: var(--nisr-primary); border: none; color: #FFFFFF; font-weight: 700; padding: 10px; border-radius: 8px; box-shadow: 0 2px 8px rgba(38, 91, 165, 0.2);">
-                ⚙️ Customize Weights Modal
+                Customize Weights
             </button>
 
             <div style="background: var(--nisr-white); padding: 12px 14px; border-radius: 10px; border: 1px solid var(--nisr-wave-3); font-size: 0.84rem; margin-bottom: 14px; box-shadow: 0 2px 8px rgba(38, 91, 165, 0.05);">
                 <div style="display: flex; justify-content: space-between; margin-bottom: 6px; align-items: center;">
-                    <span style="color: #1E293B; font-weight: 500;">💧 Climate Risk (w1):</span> 
+                    <span style="color: #1E293B; font-weight: 500;">Climate Risk (w1):</span> 
                     <strong id="val-stress" style="color: var(--nisr-primary); font-weight: 700;">0.50 (50%)</strong>
                 </div>
                 <div style="display: flex; justify-content: space-between; margin-bottom: 6px; align-items: center;">
-                    <span style="color: #1E293B; font-weight: 500;">🌾 Cropland Area (w2):</span> 
+                    <span style="color: #1E293B; font-weight: 500;">Cropland Area (w2):</span> 
                     <strong id="val-cropland" style="color: var(--nisr-accent); font-weight: 700;">0.30 (30%)</strong>
                 </div>
                 <div style="display: flex; justify-content: space-between; margin-bottom: 6px; align-items: center;">
-                    <span style="color: #1E293B; font-weight: 500;">👥 EICV Poverty (w3):</span> 
+                    <span style="color: #1E293B; font-weight: 500;">EICV Poverty (w3):</span> 
                     <strong id="val-poverty" style="color: var(--nisr-orange); font-weight: 700;">0.20 (20%)</strong>
                 </div>
                 <hr style="border-top: 1px solid var(--nisr-bar-gray); border-bottom: none; margin: 8px 0;"/>
                 <div style="text-align: center; color: var(--nisr-primary); background: rgba(38, 91, 165, 0.08); border-radius: 6px; padding: 6px; font-weight: 700; font-size: 0.78rem;" id="val-total-weight">
-                    ✅ Total Weight = 1.00 (100%)
+                    Total Weight = 1.00 (100%)
                 </div>
             </div>
 
-            <div class="sidebar-section-title" style="margin-top: 14px;">💰 Subsidy Ceiling & Investment</div>
+            <div class="sidebar-section-title" style="margin-top: 14px;">Subsidy Ceiling & Investment</div>
             
             <div class="control-group">
                 <div class="control-label">
@@ -152,17 +152,17 @@
 
             <!-- Tab Navigation -->
             <div class="tabs-nav">
-                <button class="tab-btn active" data-tab="tab-map">🌐 3D Spatial Prioritization Map</button>
-                <button class="tab-btn" data-tab="tab-shap">🧠 LightGBM & TreeSHAP Explainability</button>
-                <button class="tab-btn" data-tab="tab-data">📊 NISR & Climate Data Explorer</button>
-                <button class="tab-btn" data-tab="tab-audit">📝 Policy Simulation & Export</button>
+                <button class="tab-btn active" data-tab="tab-map">3D Spatial Prioritization Map</button>
+                <button class="tab-btn" data-tab="tab-shap">LightGBM & TreeSHAP Explainability</button>
+                <button class="tab-btn" data-tab="tab-data">NISR & Climate Data Explorer</button>
+                <button class="tab-btn" data-tab="tab-audit">Policy Simulation & Export</button>
             </div>
 
             <!-- TAB 1: 3D Spatial Prioritization Deck -->
             <div class="tab-pane active" id="tab-map">
                 <div class="glass-box">
                     <div class="glass-box-header">
-                        <div class="glass-box-title">🗺️ Interactive 3D SSIT Subsidy Allocation Deck</div>
+                        <div class="glass-box-title">Interactive 3D SSIT Subsidy Allocation Deck</div>
                     </div>
                     <p style="color: var(--text-muted); font-size: 0.88rem; margin-bottom: 16px;">
                         Extruded 3D polygon height represents the computed <b>SSIT Priority Score</b>. 
@@ -175,7 +175,7 @@
 
                 <div class="glass-box">
                     <div class="glass-box-header">
-                        <div class="glass-box-title">📋 Prioritized SSIT Deployment Schedule</div>
+                        <div class="glass-box-title">Prioritized SSIT Deployment Schedule</div>
                     </div>
                     
                     <div class="data-table-wrapper">
@@ -206,7 +206,7 @@
             <div class="tab-pane" id="tab-shap">
                 <div class="glass-box">
                     <div class="glass-box-header">
-                        <div class="glass-box-title">🧠 Spatial Group K-Fold LightGBM Performance</div>
+                        <div class="glass-box-title">Spatial Group K-Fold LightGBM Performance</div>
                     </div>
                     <p style="color: var(--text-muted); font-size: 0.88rem;">
                         AgriShield enforces <b>Leave-One-Province-Out</b> spatial group cross-validation across Rwanda's 5 provinces to eliminate spatial autocorrelation leakage.
@@ -235,14 +235,14 @@
                 <div class="charts-grid">
                     <div class="glass-box">
                         <div class="glass-box-header">
-                            <div class="glass-box-title">📊 Global TreeSHAP Feature Importances</div>
+                            <div class="glass-box-title">Global TreeSHAP Feature Importances</div>
                         </div>
                         <div id="chart-global-shap" style="width: 100%; height: 380px;"></div>
                     </div>
 
                     <div class="glass-box">
                         <div class="glass-box-header">
-                            <div class="glass-box-title">🔍 Local Unit TreeSHAP Waterfall Driver</div>
+                            <div class="glass-box-title">Local Unit TreeSHAP Waterfall Driver</div>
                             <div>
                                 <select id="unit-shap-select" style="width: 200px;">
                                     {% for name in district_names %}
@@ -260,7 +260,7 @@
             <div class="tab-pane" id="tab-data">
                 <div class="glass-box">
                     <div class="glass-box-header">
-                        <div class="glass-box-title">📊 NISR Survey Microdata & ERA5-Land Explorer</div>
+                        <div class="glass-box-title">NISR Survey Microdata & ERA5-Land Explorer</div>
                     </div>
 
                     <div class="charts-grid">
@@ -274,14 +274,14 @@
             <div class="tab-pane" id="tab-audit">
                 <div class="glass-box">
                     <div class="glass-box-header">
-                        <div class="glass-box-title">📝 Operational Deployment Schedule Export</div>
+                        <div class="glass-box-title">Operational Deployment Schedule Export</div>
                     </div>
                     <p style="color: var(--text-muted); margin-bottom: 20px;">
                         Generate and download the optimized priority deployment schedule ready for administrative dispatch to MINAGRI, RAB, and district agronomists.
                     </p>
 
                     <a href="/api/export-csv/?level=district" id="btn-export-csv" class="btn-export">
-                        📥 Download Official MINAGRI Deployment Schedule (CSV)
+                        Download Official MINAGRI Deployment Schedule (CSV)
                     </a>
                 </div>
             </div>
@@ -293,7 +293,7 @@
     <div id="weights-modal" class="modal-overlay" style="display: none;">
         <div class="modal-card">
             <div class="modal-header">
-                <h3 style="font-size: 1.1rem; color: var(--nisr-primary);">⚙️ Custom Utility Weight Allocation</h3>
+                <h3 style="font-size: 1.1rem; color: var(--nisr-primary);">Custom Utility Weight Allocation</h3>
                 <button type="button" id="btn-close-modal" class="modal-close">&times;</button>
             </div>
             <p style="font-size: 0.82rem; color: var(--nisr-wave-1); margin-bottom: 14px;">
@@ -301,24 +301,24 @@
             </p>
             
             <div class="control-group" style="margin-bottom: 10px;">
-                <label class="control-label" style="display: block; margin-bottom: 4px; font-size: 0.85rem;">💧 Climate Moisture Stress Risk (w1)</label>
+                <label class="control-label" style="display: block; margin-bottom: 4px; font-size: 0.85rem;">Climate Moisture Stress Risk (w1)</label>
                 <input type="number" id="modal-w1" min="0.0" max="1.0" step="0.05" value="0.50" style="width: 100%; padding: 8px; border-radius: 6px; background: var(--nisr-bg-light); border: 1px solid var(--nisr-wave-3); color: #1E293B;">
             </div>
 
             <div class="control-group" style="margin-bottom: 10px;">
-                <label class="control-label" style="display: block; margin-bottom: 4px; font-size: 0.85rem;">🌾 Unirrigated Cropland Area (w2)</label>
+                <label class="control-label" style="display: block; margin-bottom: 4px; font-size: 0.85rem;">Unirrigated Cropland Area (w2)</label>
                 <input type="number" id="modal-w2" min="0.0" max="1.0" step="0.05" value="0.30" style="width: 100%; padding: 8px; border-radius: 6px; background: var(--nisr-bg-light); border: 1px solid var(--nisr-wave-3); color: #1E293B;">
             </div>
 
             <div class="control-group" style="margin-bottom: 14px;">
-                <label class="control-label" style="display: block; margin-bottom: 4px; font-size: 0.85rem;">👥 EICV Poverty Vulnerability (w3)</label>
+                <label class="control-label" style="display: block; margin-bottom: 4px; font-size: 0.85rem;">EICV Poverty Vulnerability (w3)</label>
                 <input type="number" id="modal-w3" min="0.0" max="1.0" step="0.05" value="0.20" style="width: 100%; padding: 8px; border-radius: 6px; background: var(--nisr-bg-light); border: 1px solid var(--nisr-wave-3); color: #1E293B;">
             </div>
 
             <div id="modal-sum-feedback" style="padding: 8px; border-radius: 6px; font-size: 0.82rem; text-align: center; margin-bottom: 14px; font-weight: 600;"></div>
 
             <button type="button" id="btn-apply-modal-weights" style="width: 100%; padding: 10px; border-radius: 8px; border: none; background: var(--nisr-primary); color: #fff; font-weight: 700; cursor: pointer;">
-                💾 Save & Apply Weights
+                Save & Apply Weights
             </button>
         </div>
     </div>
@@ -326,13 +326,12 @@
     <!-- NISR AI Assistant Chatbot Floating Widget -->
     <div id="chatbot-widget-container">
         <button type="button" id="btn-toggle-chatbot" class="chatbot-fab">
-            💬 <span>NISR Stats Assistant</span>
+            <span>NISR Stats Assistant</span>
         </button>
 
         <div id="chatbot-window" class="chatbot-window" style="display: none;">
             <div class="chatbot-header">
                 <div style="display: flex; align-items: center; gap: 10px;">
-                    <span style="font-size: 1.3rem;">📊</span>
                     <div>
                         <div style="font-weight: 800; font-size: 0.95rem; color: #fff;">NISR Statistics AI Assistant</div>
                         <div style="font-size: 0.72rem; color: var(--nisr-orange);">EICV Poverty, SAS Irrigation & Climate Risk</div>
@@ -343,12 +342,12 @@
 
             <div id="chatbot-messages" class="chatbot-messages">
                 <div class="chat-msg bot-msg">
-                    👋 <b>Muraho!</b> I am the official <b>NISR AgriShield AI Assistant</b>.<br/><br/>
+                    <b>Muraho.</b> I am the official <b>NISR AgriShield AI Assistant</b>.<br/><br/>
                     Ask me any question about Rwanda's:<br/>
-                    • 👥 <b>EICV Poverty Rates</b><br/>
-                    • 🌾 <b>Cropland & SSIT Irrigation Targets</b><br/>
-                    • 🚨 <b>Climate & Drought Risk Predictions</b><br/>
-                    • 📍 <b>Specific District / Sector Statistics</b>
+                    • <b>EICV Poverty Rates</b><br/>
+                    • <b>Cropland & SSIT Irrigation Targets</b><br/>
+                    • <b>Climate & Drought Risk Predictions</b><br/>
+                    • <b>Specific District / Sector Statistics</b>
                 </div>
             </div>
 

@@ -381,6 +381,96 @@
             text-decoration: none;
             font-weight: 600;
         }
+
+        /* Field Operations & SSIT Gallery Section */
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 24px;
+            margin-top: 40px;
+        }
+
+        .gallery-card {
+            position: relative;
+            background: var(--nisr-white);
+            border: 1px solid var(--nisr-wave-3);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 16px rgba(38, 91, 165, 0.08);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            height: 290px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+        }
+
+        .gallery-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 12px 30px rgba(38, 91, 165, 0.18);
+            border-color: var(--nisr-accent);
+        }
+
+        .gallery-card-featured {
+            grid-column: span 2;
+        }
+
+        @media (max-width: 900px) {
+            .gallery-card-featured {
+                grid-column: span 1;
+            }
+        }
+
+        .gallery-img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .gallery-card:hover .gallery-img {
+            transform: scale(1.08);
+        }
+
+        .gallery-overlay {
+            position: relative;
+            z-index: 2;
+            padding: 24px;
+            background: linear-gradient(180deg, rgba(30, 41, 59, 0) 0%, rgba(38, 91, 165, 0.88) 45%, rgba(15, 30, 60, 0.96) 100%);
+            color: var(--nisr-white);
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .gallery-badge {
+            display: inline-block;
+            background: var(--nisr-orange);
+            color: var(--nisr-white);
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 4px 10px;
+            border-radius: 6px;
+            margin-bottom: 8px;
+        }
+
+        .gallery-title {
+            font-size: 1.25rem;
+            font-weight: 800;
+            margin: 0 0 6px 0;
+            color: var(--nisr-white);
+            letter-spacing: -0.01em;
+        }
+
+        .gallery-desc {
+            font-size: 0.88rem;
+            color: rgba(255, 255, 255, 0.92);
+            margin: 0;
+            line-height: 1.45;
+        }
     </style>
 </head>
 <body>
@@ -396,16 +486,17 @@
         </a>
 
         <nav class="nav-menu">
-            <a href="{% url 'agrishield:landing' %}" class="nav-link active">🏠 Home</a>
-            <a href="{% url 'agrishield:index' %}" class="nav-link">🌐 3D Spatial Engine</a>
-            <a href="{% url 'agrishield:index' %}" class="btn-cta-nav">Launch Engine 🚀</a>
+            <a href="{% url 'agrishield:landing' %}" class="nav-link active">Home</a>
+            <a href="#gallery" class="nav-link">Field Operations</a>
+            <a href="{% url 'agrishield:index' %}" class="nav-link">3D Spatial Engine</a>
+            <a href="{% url 'agrishield:index' %}" class="btn-cta-nav">Launch Engine</a>
         </nav>
     </header>
 
     <!-- Hero Section -->
     <section class="hero-section">
         <div class="hero-badge">
-            🏛️ NISR Hackathon 2026 | MINAGRI & RAB SSIT Policy Engine
+            NISR HACKATHON 2026 | MINAGRI & RAB SSIT POLICY ENGINE
         </div>
         <h1 class="hero-title">
             Data-Driven Spatial AI for <span>Rwanda’s Climate Resilience</span>
@@ -416,10 +507,10 @@
 
         <div class="hero-cta-group">
             <a href="{% url 'agrishield:index' %}" class="btn-hero-primary">
-                <span>🚀 Launch 3D Spatial Engine</span>
+                <span>Launch 3D Spatial Engine</span>
             </a>
             <a href="#features" class="btn-hero-secondary">
-                <span>⚡ Core Technical Features</span>
+                <span>Technical Architecture</span>
             </a>
         </div>
 
@@ -453,7 +544,6 @@
 
         <div class="features-grid">
             <div class="feature-card">
-                <div class="feature-icon">🚨</div>
                 <h3 class="feature-h3">Seasonal Dry Spell Vulnerability</h3>
                 <p class="feature-p">
                     Over 845,000 hectares of smallholder farmland rely entirely on seasonal rainfall. Prolonged dry spells in Eastern and Southern Rwanda severely impair crop yields and threaten rural food security.
@@ -461,7 +551,6 @@
             </div>
 
             <div class="feature-card">
-                <div class="feature-icon">🎯</div>
                 <h3 class="feature-h3">Targeted SSIT Solar Pump Subsidies</h3>
                 <p class="feature-p">
                     Under Rwanda's NST2 strategy, MINAGRI subsidizes small-scale solar irrigation by up to 50%. AgriShield replaces manual distribution with transparent, multi-criteria data-driven targeting.
@@ -469,7 +558,6 @@
             </div>
 
             <div class="feature-card">
-                <div class="feature-icon">🧠</div>
                 <h3 class="feature-h3">Explainable Machine Learning</h3>
                 <p class="feature-p">
                     Combining XGBoost and LightGBM models trained on NISR microdata with TreeSHAP explainability, every priority score is fully traceable back to empirical climate, crop, and poverty factors.
@@ -481,7 +569,7 @@
         <div class="priority-teaser-box">
             <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
                 <div>
-                    <h3 style="font-size: 1.4rem; color: var(--nisr-primary); font-weight: 700; margin: 0;">🏆 Top Priority Target Districts (Baseline Simulation)</h3>
+                    <h3 style="font-size: 1.4rem; color: var(--nisr-primary); font-weight: 700; margin: 0;">Top Priority Target Districts (Baseline Simulation)</h3>
                     <p style="color: var(--nisr-wave-1); font-size: 0.9rem; margin-top: 4px;">Ranked by multi-criteria optimization ($w_1\text{Climate} + w_2\text{Cropland} + w_3\text{Poverty}$):</p>
                 </div>
                 <a href="{% url 'agrishield:index' %}" style="color: var(--nisr-orange); font-weight: 700; text-decoration: none; font-size: 0.95rem;">Customize Weights in 3D Engine →</a>
@@ -505,6 +593,66 @@
         </div>
     </section>
 
+    <!-- Field Operations & SSIT Gallery Section -->
+    <section id="gallery" class="section-container" style="margin-top: 60px;">
+        <div class="section-header">
+            <div class="section-tag">Agricultural Operations & Field Impact</div>
+            <h2 class="section-title">Small-Scale Irrigation & Farming in Action</h2>
+        </div>
+
+        <div class="gallery-grid">
+            <!-- Featured Card: Smallholder Farmers -->
+            <div class="gallery-card gallery-card-featured">
+                <img src="{% static 'agrishield_app/images/farmers.jpg' %}" alt="Rwandan Smallholder Farmers" class="gallery-img">
+                <div class="gallery-overlay">
+                    <span class="gallery-badge">Empowering Communities</span>
+                    <h3 class="gallery-title">Smallholder Farmers & Rural Resilience</h3>
+                    <p class="gallery-desc">Supporting Rwanda’s agricultural workforce across 30 districts through targeted NST2 irrigation subsidies and localized climate risk intelligence.</p>
+                </div>
+            </div>
+
+            <!-- Card 2: Solar Pump Irrigation -->
+            <div class="gallery-card">
+                <img src="{% static 'agrishield_app/images/irrigation_2.jpg' %}" alt="Solar Pump Irrigation System" class="gallery-img">
+                <div class="gallery-overlay">
+                    <span class="gallery-badge">SSIT Technology</span>
+                    <h3 class="gallery-title">Solar-Powered Irrigation Systems</h3>
+                    <p class="gallery-desc">MINAGRI 50% subsidized solar pump units mitigating drought exposure in high-vulnerability rainfed sectors.</p>
+                </div>
+            </div>
+
+            <!-- Card 3: High-Value Cash Crops & Coffee -->
+            <div class="gallery-card">
+                <img src="{% static 'agrishield_app/images/coffee1.jpeg' %}" alt="Rwanda Coffee Crops" class="gallery-img">
+                <div class="gallery-overlay">
+                    <span class="gallery-badge">Export Crop Yields</span>
+                    <h3 class="gallery-title">High-Value Coffee & Cash Crops</h3>
+                    <p class="gallery-desc">Protecting essential export crop yields and smallholder revenues during dry spell cycles.</p>
+                </div>
+            </div>
+
+            <!-- Card 4: Micro-Sprinkler & Drip Irrigation -->
+            <div class="gallery-card">
+                <img src="{% static 'agrishield_app/images/irrigation_1.jpeg' %}" alt="Field Sprinkler Irrigation" class="gallery-img">
+                <div class="gallery-overlay">
+                    <span class="gallery-badge">Precision Water Management</span>
+                    <h3 class="gallery-title">Micro-Sprinkler & Drip Networks</h3>
+                    <p class="gallery-desc">Modern water efficiency solutions tailored for hillside terrain and small agricultural plots.</p>
+                </div>
+            </div>
+
+            <!-- Card 5: Rainfed Farmlands -->
+            <div class="gallery-card">
+                <img src="{% static 'agrishield_app/images/farm_1.jpeg' %}" alt="Rwandan Agricultural Landscape" class="gallery-img">
+                <div class="gallery-overlay">
+                    <span class="gallery-badge">Spatial Coverage</span>
+                    <h3 class="gallery-title">Rwanda Rainfed Agricultural Lands</h3>
+                    <p class="gallery-desc">Over 845,000 hectares of cropland monitored via NISR Seasonal Agricultural Survey (SAS) microdata.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- Platform Features Grid -->
     <section class="section-container" style="margin-top: 60px;">
         <div class="section-header">
@@ -514,7 +662,6 @@
 
         <div class="features-grid">
             <div class="feature-card">
-                <div class="feature-icon">🌐</div>
                 <h3 class="feature-h3">3D DeckGL Spatial Maps</h3>
                 <p class="feature-p">
                     Interactive 3D choropleth map layers with extrusion elevation representing targeted SSIT solar pump density across Rwanda's 30 districts and 422 sectors.
@@ -522,7 +669,6 @@
             </div>
 
             <div class="feature-card">
-                <div class="feature-icon">⚖️</div>
                 <h3 class="feature-h3">Live Weight Simulation</h3>
                 <p class="feature-p">
                     Policy makers can dynamically adjust climate risk, cropland area, and poverty weights in real time with an automated live constraint enforcement ($w_1 + w_2 + w_3 = 1.00$).
@@ -530,7 +676,6 @@
             </div>
 
             <div class="feature-card">
-                <div class="feature-icon">💬</div>
                 <h3 class="feature-h3">Conversational AI Assistant</h3>
                 <p class="feature-p">
                     Built-in 360° RAG assistant powered by official NISR SAS survey reports, EICV microdata, and MINAGRI policy guidelines for instant natural language queries.
@@ -546,7 +691,7 @@
             Interact with the live 3D spatial map, simulate subsidy scenarios, inspect TreeSHAP feature contributions, and export field deployment schedules.
         </p>
         <a href="{% url 'agrishield:index' %}" class="btn-hero-primary" style="font-size: 1.15rem; padding: 18px 42px;">
-            <span>🚀 Launch 3D Decision Engine Now</span>
+            <span>Launch 3D Decision Engine Now</span>
         </a>
     </section>
 
@@ -561,13 +706,12 @@
     <!-- NISR AI Assistant Chatbot Floating Widget -->
     <div id="chatbot-widget-container">
         <button type="button" id="btn-toggle-chatbot" class="chatbot-fab">
-            💬 <span>NISR Stats Assistant</span>
+            <span>NISR Stats Assistant</span>
         </button>
 
         <div id="chatbot-window" class="chatbot-window" style="display: none;">
             <div class="chatbot-header">
                 <div style="display: flex; align-items: center; gap: 10px;">
-                    <span style="font-size: 1.3rem;">📊</span>
                     <div>
                         <div style="font-weight: 800; font-size: 0.95rem; color: #fff;">NISR Statistics AI Assistant</div>
                         <div style="font-size: 0.72rem; color: #f4b41a;">EICV Poverty, SAS Irrigation & Climate Risk</div>
@@ -578,12 +722,12 @@
 
             <div id="chatbot-messages" class="chatbot-messages">
                 <div class="chat-msg bot-msg">
-                    👋 <b>Muraho!</b> I am the official <b>NISR AgriShield AI Assistant</b>.<br/><br/>
+                    <b>Muraho.</b> I am the official <b>NISR AgriShield AI Assistant</b>.<br/><br/>
                     Ask me any question about Rwanda's:<br/>
-                    • 👥 <b>EICV Poverty Rates</b><br/>
-                    • 🌾 <b>Cropland & SSIT Irrigation Targets</b><br/>
-                    • 🚨 <b>Climate & Drought Risk Predictions</b><br/>
-                    • 📍 <b>Specific District / Sector Statistics</b>
+                    • <b>EICV Poverty Rates</b><br/>
+                    • <b>Cropland & SSIT Irrigation Targets</b><br/>
+                    • <b>Climate & Drought Risk Predictions</b><br/>
+                    • <b>Specific District / Sector Statistics</b>
                 </div>
             </div>
 
