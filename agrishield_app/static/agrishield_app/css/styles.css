@@ -800,3 +800,388 @@ table.custom-table tr:hover {
 .chatbot-input-row button:hover {
     background: var(--nisr-logo);
 }
+
+/* ==========================================================================
+   Comprehensive Mobile & Tablet Responsiveness System
+   ========================================================================== */
+
+/* Base mobile container safeguards */
+img, svg, canvas {
+    max-width: 100%;
+}
+
+/* Sidebar Mobile Accordion Toggle Header */
+.sidebar-mobile-toggle {
+    display: none;
+    width: 100%;
+    background: var(--nisr-white);
+    border: 1px solid var(--nisr-wave-3);
+    border-radius: 10px;
+    padding: 12px 16px;
+    font-weight: 700;
+    font-size: 0.9rem;
+    color: var(--nisr-primary);
+    cursor: pointer;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 2px 8px rgba(38, 91, 165, 0.06);
+    transition: all 0.2s;
+}
+
+.sidebar-mobile-toggle:hover {
+    background: var(--nisr-bg-light);
+    border-color: var(--nisr-primary);
+}
+
+.sidebar-mobile-toggle .toggle-icon {
+    font-size: 0.75rem;
+    transition: transform 0.2s ease;
+}
+
+.sidebar-mobile-toggle.active .toggle-icon {
+    transform: rotate(180deg);
+}
+
+.sidebar-inner {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* CV Metrics Grid for Tab 2 */
+.cv-metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-top: 18px;
+}
+
+/* --- Breakpoint 1: Large Tablets & Small Laptops (<= 1200px) --- */
+@media (max-width: 1200px) {
+    .metrics-ribbon {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 12px;
+    }
+}
+
+/* --- Breakpoint 2: Medium Tablets & Mobile Stacking (<= 992px) --- */
+@media (max-width: 992px) {
+    .app-header {
+        padding: 12px 20px;
+        flex-wrap: wrap;
+        gap: 12px;
+    }
+
+    .brand-title {
+        font-size: 1.25rem;
+        flex-wrap: wrap;
+    }
+
+    .badge-tag {
+        font-size: 0.65rem;
+        padding: 2px 8px;
+    }
+
+    .brand-sub {
+        font-size: 0.76rem;
+    }
+
+    /* Stack sidebar on top of main content */
+    .app-layout {
+        display: flex;
+        flex-direction: column;
+        min-height: auto;
+    }
+
+    .sidebar-mobile-toggle {
+        display: flex;
+    }
+
+    .app-sidebar {
+        width: 100%;
+        border-right: none;
+        border-bottom: 1px solid var(--nisr-bar-gray);
+        padding: 16px 20px;
+        box-shadow: 0 2px 8px rgba(38, 91, 165, 0.04);
+    }
+
+    .sidebar-inner {
+        display: none;
+    }
+
+    .sidebar-inner.is-open {
+        display: flex;
+        padding-top: 14px;
+    }
+
+    .app-content {
+        padding: 20px 18px;
+        gap: 20px;
+    }
+
+    .cv-metrics-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+    }
+
+    .charts-grid {
+        grid-template-columns: 1fr;
+        gap: 18px;
+    }
+
+    .map-controls-toolbar {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+    }
+
+    .map-toolbar-group {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .map-select-control {
+        width: 100%;
+        max-width: 100%;
+    }
+
+    .btn-group-segmented {
+        width: 100%;
+    }
+
+    .btn-segmented {
+        flex: 1;
+        text-align: center;
+    }
+
+    .map-controls-toolbar > div[style*="display: flex"] {
+        width: 100%;
+    }
+
+    .btn-map-action {
+        flex: 1;
+        text-align: center;
+        padding: 8px 12px;
+    }
+}
+
+/* --- Breakpoint 3: Portrait Tablets & Phablets (<= 768px) --- */
+@media (max-width: 768px) {
+    .app-header {
+        padding: 10px 16px;
+    }
+
+    .tabs-nav {
+        overflow-x: auto;
+        flex-wrap: nowrap;
+        -webkit-overflow-scrolling: touch;
+        gap: 8px;
+        padding-bottom: 8px;
+        margin-bottom: 16px;
+        scrollbar-width: none;
+    }
+
+    .tabs-nav::-webkit-scrollbar {
+        display: none;
+    }
+
+    .tab-btn {
+        flex-shrink: 0;
+        font-size: 0.82rem;
+        padding: 8px 14px;
+        white-space: nowrap;
+    }
+
+    .glass-box {
+        padding: 18px 16px;
+        border-radius: 14px;
+        margin-bottom: 18px;
+    }
+
+    .glass-box-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+
+    .glass-box-title {
+        font-size: 1.05rem;
+    }
+
+    #deck-map-container {
+        height: 420px;
+    }
+
+    .map-legend-box {
+        position: relative;
+        bottom: auto;
+        right: auto;
+        margin: 12px;
+        width: calc(100% - 24px);
+        min-width: unset;
+        box-shadow: 0 4px 14px rgba(38, 91, 165, 0.08);
+    }
+
+    /* Horizontal table scrolling */
+    .data-table-wrapper {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        width: 100%;
+    }
+
+    table.custom-table {
+        min-width: 720px;
+    }
+
+    /* Charts sizing */
+    #chart-global-shap,
+    #chart-shap-waterfall,
+    #chart-scatter,
+    #chart-prov-bar {
+        height: 330px !important;
+        width: 100% !important;
+    }
+}
+
+/* --- Breakpoint 4: Standard Mobile Phones (<= 640px) --- */
+@media (max-width: 640px) {
+    .app-header {
+        padding: 10px 12px;
+    }
+
+    .brand-container {
+        gap: 8px;
+    }
+
+    .brand-logo {
+        width: 34px;
+        height: 34px;
+    }
+
+    .brand-title {
+        font-size: 1.08rem;
+        gap: 4px;
+    }
+
+    .badge-tag {
+        font-size: 0.58rem;
+        padding: 2px 6px;
+    }
+
+    .brand-sub {
+        display: none;
+    }
+
+    .header-nav {
+        gap: 8px !important;
+    }
+
+    .header-nav .nav-link {
+        font-size: 0.78rem !important;
+        padding: 4px 8px;
+        border-radius: 6px;
+        background: rgba(38, 91, 165, 0.06);
+    }
+
+    .app-content {
+        padding: 14px 10px;
+        gap: 14px;
+    }
+
+    .app-sidebar {
+        padding: 14px 12px;
+    }
+
+    .metrics-ribbon {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+    }
+
+    .metric-card {
+        padding: 12px 8px;
+        border-radius: 10px;
+    }
+
+    .metric-title {
+        font-size: 0.65rem;
+        letter-spacing: 0.03em;
+        margin-bottom: 2px;
+    }
+
+    .metric-value {
+        font-size: 1.25rem;
+    }
+
+    .metric-sub {
+        font-size: 0.65rem;
+    }
+
+    .preset-grid {
+        gap: 6px;
+    }
+
+    .btn-preset {
+        padding: 7px 8px;
+        font-size: 0.74rem;
+    }
+
+    .glass-box {
+        padding: 14px 12px;
+        border-radius: 12px;
+    }
+
+    #deck-map-container {
+        height: 360px;
+    }
+
+    .cv-metrics-grid {
+        grid-template-columns: 1fr;
+        gap: 8px;
+    }
+
+    /* Modal Mobile Form */
+    .modal-card {
+        width: 94%;
+        padding: 18px 14px;
+        max-height: 90vh;
+        overflow-y: auto;
+    }
+
+    /* Chatbot Floating Window Mobile */
+    #chatbot-widget-container {
+        bottom: 14px;
+        right: 14px;
+    }
+
+    .chatbot-fab {
+        padding: 9px 15px;
+        font-size: 0.82rem;
+    }
+
+    .chatbot-window {
+        bottom: 68px;
+        right: 8px;
+        left: 8px;
+        width: calc(100vw - 16px);
+        height: calc(100vh - 90px);
+        max-height: 500px;
+        border-radius: 14px;
+    }
+}
+
+/* --- Breakpoint 5: Extra Narrow Phones (<= 380px) --- */
+@media (max-width: 380px) {
+    .metrics-ribbon {
+        grid-template-columns: 1fr;
+    }
+    
+    .brand-title {
+        font-size: 0.95rem;
+    }
+
+    .btn-segmented {
+        font-size: 0.72rem;
+        padding: 5px 6px;
+    }
+}
+

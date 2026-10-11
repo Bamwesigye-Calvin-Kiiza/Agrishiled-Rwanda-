@@ -7,7 +7,7 @@
     <title>AgriShield Rwanda — SSIT Climate Resilience Engine (Django App)</title>
     
     <!-- CSS Stylesheet -->
-    <link rel="stylesheet" href="{% static 'agrishield_app/css/styles.css' %}?v=20261011_4">
+    <link rel="stylesheet" href="{% static 'agrishield_app/css/styles.css' %}?v=20261011_5">
     
     <!-- Deck.gl 3D Map Library -->
     <script src="https://unpkg.com/deck.gl@latest/dist.min.js"></script>
@@ -41,75 +41,82 @@
 
     <div class="app-layout">
         <!-- Sidebar Controls -->
-        <aside class="app-sidebar">
-            <div class="sidebar-section-title">Policy & Model Setup</div>
-            
-            <div class="control-group">
-                <label class="control-label">Administrative Level</label>
-                <select id="level-select">
-                    <option value="district" selected>District (Level 2 — 30 Units)</option>
-                    <option value="sector">Sector (Level 3 — 422 Units)</option>
-                </select>
-            </div>
-
-            <div class="sidebar-section-title" style="margin-top: 10px;">Policy Presets</div>
-            <div class="preset-grid">
-                <button type="button" class="btn-preset" id="btn-preset-minagri">MINAGRI</button>
-                <button type="button" class="btn-preset" id="btn-preset-drought">Drought</button>
-                <button type="button" class="btn-preset" id="btn-preset-propoor">Pro-Poor</button>
-                <button type="button" class="btn-preset" id="btn-preset-equal">Equal</button>
-            </div>
-
-            <div class="sidebar-section-title" style="margin-top: 14px;">Active Utility Weights</div>
-            
-            <button type="button" class="btn-preset" id="btn-open-weights-modal" style="width: 100%; margin-bottom: 10px; background: var(--nisr-primary); border: none; color: #FFFFFF; font-weight: 700; padding: 10px; border-radius: 8px; box-shadow: 0 2px 8px rgba(38, 91, 165, 0.2);">
-                Customize Weights
+        <aside class="app-sidebar" id="app-sidebar">
+            <button type="button" class="sidebar-mobile-toggle" id="sidebar-mobile-toggle" aria-expanded="false" aria-controls="sidebar-inner">
+                <span>Policy & Filter Controls</span>
+                <span class="toggle-icon">▼</span>
             </button>
 
-            <div style="background: var(--nisr-white); padding: 12px 14px; border-radius: 10px; border: 1px solid var(--nisr-wave-3); font-size: 0.84rem; margin-bottom: 14px; box-shadow: 0 2px 8px rgba(38, 91, 165, 0.05);">
-                <div style="display: flex; justify-content: space-between; margin-bottom: 6px; align-items: center;">
-                    <span style="color: #1E293B; font-weight: 500;">Climate Risk (w1):</span> 
-                    <strong id="val-stress" style="color: var(--nisr-primary); font-weight: 700;">0.50 (50%)</strong>
+            <div class="sidebar-inner" id="sidebar-inner">
+                <div class="sidebar-section-title">Policy & Model Setup</div>
+                
+                <div class="control-group">
+                    <label class="control-label">Administrative Level</label>
+                    <select id="level-select">
+                        <option value="district" selected>District (Level 2 — 30 Units)</option>
+                        <option value="sector">Sector (Level 3 — 422 Units)</option>
+                    </select>
                 </div>
-                <div style="display: flex; justify-content: space-between; margin-bottom: 6px; align-items: center;">
-                    <span style="color: #1E293B; font-weight: 500;">Cropland Area (w2):</span> 
-                    <strong id="val-cropland" style="color: var(--nisr-accent); font-weight: 700;">0.30 (30%)</strong>
-                </div>
-                <div style="display: flex; justify-content: space-between; margin-bottom: 6px; align-items: center;">
-                    <span style="color: #1E293B; font-weight: 500;">EICV Poverty (w3):</span> 
-                    <strong id="val-poverty" style="color: var(--nisr-orange); font-weight: 700;">0.20 (20%)</strong>
-                </div>
-                <hr style="border-top: 1px solid var(--nisr-bar-gray); border-bottom: none; margin: 8px 0;"/>
-                <div style="text-align: center; color: var(--nisr-primary); background: rgba(38, 91, 165, 0.08); border-radius: 6px; padding: 6px; font-weight: 700; font-size: 0.78rem;" id="val-total-weight">
-                    Total Weight = 1.00 (100%)
-                </div>
-            </div>
 
-            <div class="sidebar-section-title" style="margin-top: 14px;">Subsidy Ceiling & Investment</div>
-            
-            <div class="control-group">
-                <div class="control-label">
-                    <span>SSIT Pump Ceiling (K)</span>
-                    <span class="slider-val" id="val-budget">10</span>
+                <div class="sidebar-section-title" style="margin-top: 10px;">Policy Presets</div>
+                <div class="preset-grid">
+                    <button type="button" class="btn-preset" id="btn-preset-minagri">MINAGRI</button>
+                    <button type="button" class="btn-preset" id="btn-preset-drought">Drought</button>
+                    <button type="button" class="btn-preset" id="btn-preset-propoor">Pro-Poor</button>
+                    <button type="button" class="btn-preset" id="btn-preset-equal">Equal</button>
                 </div>
-                <input type="range" id="slider-budget" min="1" max="100" step="1" value="10">
-            </div>
 
-            <div class="control-group">
-                <label class="control-label">Estimated Pump Cost ($)</label>
-                <input type="number" id="input-cost" min="500" max="5000" step="100" value="1200">
-            </div>
+                <div class="sidebar-section-title" style="margin-top: 14px;">Active Utility Weights</div>
+                
+                <button type="button" class="btn-preset" id="btn-open-weights-modal" style="width: 100%; margin-bottom: 10px; background: var(--nisr-primary); border: none; color: #FFFFFF; font-weight: 700; padding: 10px; border-radius: 8px; box-shadow: 0 2px 8px rgba(38, 91, 165, 0.2);">
+                    Customize Weights
+                </button>
 
-            <div class="control-group">
-                <label class="control-label">Province Filter</label>
-                <select id="province-select">
-                    <option value="All Rwanda" selected>All Rwanda</option>
-                    <option value="Eastern">Eastern Province</option>
-                    <option value="Northern">Northern Province</option>
-                    <option value="Southern">Southern Province</option>
-                    <option value="Western">Western Province</option>
-                    <option value="Kigali City">Kigali City</option>
-                </select>
+                <div style="background: var(--nisr-white); padding: 12px 14px; border-radius: 10px; border: 1px solid var(--nisr-wave-3); font-size: 0.84rem; margin-bottom: 14px; box-shadow: 0 2px 8px rgba(38, 91, 165, 0.05);">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 6px; align-items: center;">
+                        <span style="color: #1E293B; font-weight: 500;">Climate Risk (w1):</span> 
+                        <strong id="val-stress" style="color: var(--nisr-primary); font-weight: 700;">0.50 (50%)</strong>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 6px; align-items: center;">
+                        <span style="color: #1E293B; font-weight: 500;">Cropland Area (w2):</span> 
+                        <strong id="val-cropland" style="color: var(--nisr-accent); font-weight: 700;">0.30 (30%)</strong>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 6px; align-items: center;">
+                        <span style="color: #1E293B; font-weight: 500;">EICV Poverty (w3):</span> 
+                        <strong id="val-poverty" style="color: var(--nisr-orange); font-weight: 700;">0.20 (20%)</strong>
+                    </div>
+                    <hr style="border-top: 1px solid var(--nisr-bar-gray); border-bottom: none; margin: 8px 0;"/>
+                    <div style="text-align: center; color: var(--nisr-primary); background: rgba(38, 91, 165, 0.08); border-radius: 6px; padding: 6px; font-weight: 700; font-size: 0.78rem;" id="val-total-weight">
+                        Total Weight = 1.00 (100%)
+                    </div>
+                </div>
+
+                <div class="sidebar-section-title" style="margin-top: 14px;">Subsidy Ceiling & Investment</div>
+                
+                <div class="control-group">
+                    <div class="control-label">
+                        <span>SSIT Pump Ceiling (K)</span>
+                        <span class="slider-val" id="val-budget">10</span>
+                    </div>
+                    <input type="range" id="slider-budget" min="1" max="100" step="1" value="10">
+                </div>
+
+                <div class="control-group">
+                    <label class="control-label">Estimated Pump Cost ($)</label>
+                    <input type="number" id="input-cost" min="500" max="5000" step="100" value="1200">
+                </div>
+
+                <div class="control-group">
+                    <label class="control-label">Province Filter</label>
+                    <select id="province-select">
+                        <option value="All Rwanda" selected>All Rwanda</option>
+                        <option value="Eastern">Eastern Province</option>
+                        <option value="Northern">Northern Province</option>
+                        <option value="Southern">Southern Province</option>
+                        <option value="Western">Western Province</option>
+                        <option value="Kigali City">Kigali City</option>
+                    </select>
+                </div>
             </div>
         </aside>
 
@@ -270,7 +277,7 @@
                         AgriShield enforces <b>Leave-One-Province-Out</b> spatial group cross-validation across Rwanda's 5 provinces to eliminate spatial autocorrelation leakage.
                     </p>
 
-                    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-top: 18px;">
+                    <div class="cv-metrics-grid">
                         <div style="background: var(--nisr-white); padding: 18px 16px; border-radius: 12px; border: 1px solid var(--nisr-wave-3); box-shadow: 0 4px 14px rgba(38, 91, 165, 0.05); text-align: center;">
                             <div style="color: var(--nisr-wave-1); font-size: 0.8rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 6px;">Spatial Group CV AUC</div>
                             <div style="font-size: 1.65rem; font-weight: 800; color: var(--nisr-primary);" id="cv-metric-auc">{{ metrics.sector.overall_auc }}</div>
@@ -417,6 +424,6 @@
     </div>
 
     <!-- Application JavaScript Controller -->
-    <script src="{% static 'agrishield_app/js/app.js' %}?v=20261011_4"></script>
+    <script src="{% static 'agrishield_app/js/app.js' %}?v=20261011_5"></script>
 </body>
 </html>

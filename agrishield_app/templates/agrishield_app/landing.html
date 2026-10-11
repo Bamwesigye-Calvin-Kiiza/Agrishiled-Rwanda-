@@ -7,7 +7,7 @@
     <title>NISR AgriShield Rwanda — Spatial AI Engine for Climate Resilience</title>
     
     <!-- CSS Stylesheet -->
-    <link rel="stylesheet" href="{% static 'agrishield_app/css/styles.css' %}">
+    <link rel="stylesheet" href="{% static 'agrishield_app/css/styles.css' %}?v=20261011_5">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     
     <style>
@@ -470,6 +470,188 @@
             color: rgba(255, 255, 255, 0.92);
             margin: 0;
             line-height: 1.45;
+        }
+
+        /* Comprehensive Mobile Responsiveness */
+        @media (max-width: 992px) {
+            .landing-header {
+                padding: 14px 24px;
+            }
+            .hero-title {
+                font-size: 2.6rem;
+            }
+            .hero-subtitle {
+                font-size: 1.05rem;
+            }
+            .section-container {
+                margin: 50px auto;
+                padding: 0 16px;
+            }
+            .section-title {
+                font-size: 1.85rem;
+            }
+            .cta-banner {
+                padding: 40px 24px;
+                margin: 50px auto;
+            }
+            .cta-title {
+                font-size: 1.85rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .landing-header {
+                padding: 12px 16px;
+                flex-wrap: wrap;
+                gap: 12px;
+            }
+            .brand-pill {
+                gap: 8px;
+            }
+            .brand-logo-img {
+                width: 36px;
+                height: 36px;
+            }
+            .brand-name {
+                font-size: 1.15rem;
+            }
+            .brand-tag {
+                font-size: 0.7rem;
+            }
+            .nav-menu {
+                gap: 10px;
+                flex-wrap: wrap;
+                width: 100%;
+                justify-content: space-between;
+                border-top: 1px solid var(--nisr-bar-gray);
+                padding-top: 10px;
+            }
+            .nav-link {
+                font-size: 0.82rem;
+                padding: 4px 6px;
+            }
+            .btn-cta-nav {
+                padding: 8px 14px;
+                font-size: 0.82rem;
+            }
+            .hero-section {
+                padding: 40px 16px 36px;
+            }
+            .hero-badge {
+                font-size: 0.72rem;
+                padding: 4px 12px;
+                margin-bottom: 16px;
+            }
+            .hero-title {
+                font-size: 1.95rem;
+                margin-bottom: 12px;
+                line-height: 1.2;
+            }
+            .hero-subtitle {
+                font-size: 0.95rem;
+                margin-bottom: 24px;
+                line-height: 1.5;
+            }
+            .hero-cta-group {
+                flex-direction: column;
+                width: 100%;
+                max-width: 320px;
+                margin: 0 auto 30px;
+                gap: 12px;
+            }
+            .btn-hero-primary, .btn-hero-secondary {
+                width: 100%;
+                text-align: center;
+                justify-content: center;
+                padding: 14px 20px;
+                font-size: 0.95rem;
+            }
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 10px;
+                padding: 0 10px;
+            }
+            .stat-card-landing {
+                padding: 16px 10px;
+                border-radius: 12px;
+            }
+            .stat-val-landing {
+                font-size: 1.6rem;
+            }
+            .stat-lbl-landing {
+                font-size: 0.72rem;
+            }
+            .features-grid {
+                grid-template-columns: 1fr;
+                gap: 16px;
+            }
+            .feature-card {
+                padding: 22px 18px;
+                border-radius: 14px;
+            }
+            .feature-h3 {
+                font-size: 1.15rem;
+            }
+            .feature-p {
+                font-size: 0.9rem;
+            }
+            .priority-teaser-box {
+                padding: 20px 16px;
+                border-radius: 14px;
+            }
+            .district-pill-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 10px;
+            }
+            .district-pill {
+                padding: 12px 10px;
+            }
+            .district-pill-name {
+                font-size: 0.95rem;
+            }
+            .gallery-grid {
+                grid-template-columns: 1fr;
+                gap: 16px;
+            }
+            .gallery-card {
+                height: 240px;
+                border-radius: 14px;
+            }
+            .gallery-overlay {
+                padding: 16px;
+            }
+            .gallery-title {
+                font-size: 1.15rem;
+            }
+            .gallery-desc {
+                font-size: 0.82rem;
+            }
+            .cta-banner {
+                padding: 30px 16px;
+                border-radius: 16px;
+                margin: 40px auto;
+            }
+            .cta-title {
+                font-size: 1.5rem;
+            }
+            .cta-desc {
+                font-size: 0.92rem;
+            }
+            .landing-footer {
+                padding: 30px 16px;
+            }
+        }
+
+        @media (max-width: 440px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            .district-pill-grid {
+                grid-template-columns: 1fr;
+            }
+            .hero-title {
+                font-size: 1.7rem;
+            }
         }
     </style>
 </head>

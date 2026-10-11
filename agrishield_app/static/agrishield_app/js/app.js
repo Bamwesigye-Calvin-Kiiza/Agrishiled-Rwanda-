@@ -42,6 +42,34 @@ document.addEventListener("DOMContentLoaded", function () {
     const kpiPoverty = document.getElementById("kpi-poverty");
     const kpiInvestment = document.getElementById("kpi-investment");
 
+    // Mobile Sidebar Accordion Toggle
+    const btnToggleSidebar = document.getElementById("sidebar-mobile-toggle");
+    const sidebarInner = document.getElementById("sidebar-inner");
+    if (btnToggleSidebar && sidebarInner) {
+        btnToggleSidebar.addEventListener("click", () => {
+            const isOpen = sidebarInner.classList.toggle("is-open");
+            btnToggleSidebar.classList.toggle("active", isOpen);
+            btnToggleSidebar.setAttribute("aria-expanded", isOpen);
+            const icon = btnToggleSidebar.querySelector(".toggle-icon");
+            if (icon) icon.textContent = isOpen ? "▲" : "▼";
+        });
+    }
+
+    // Helper to resize all rendered Plotly charts smoothly on window or tab resize
+    function resizePlotlyCharts() {
+        if (!window.Plotly) return;
+        ['chart-global-shap', 'chart-shap-waterfall', 'chart-scatter', 'chart-prov-bar'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el && el.data && typeof Plotly.Plots.resize === "function") {
+                Plotly.Plots.resize(el);
+            }
+        });
+    }
+
+    window.addEventListener("resize", () => {
+        resizePlotlyCharts();
+    });
+
     // Tab Switching Logic
     const tabBtns = document.querySelectorAll(".tab-btn");
     const tabPanes = document.querySelectorAll(".tab-pane");
@@ -55,8 +83,9 @@ document.addEventListener("DOMContentLoaded", function () {
             const targetPane = document.getElementById(btn.dataset.tab);
             if (targetPane) targetPane.classList.add("active");
 
-            // Trigger window resize to re-layout Deck.gl & Plotly
+            // Trigger window resize and Plotly resize to re-layout Deck.gl & Plotly
             window.dispatchEvent(new Event("resize"));
+            setTimeout(resizePlotlyCharts, 120);
             
             if (btn.dataset.tab === "tab-shap") {
                 renderGlobalShapChart();
