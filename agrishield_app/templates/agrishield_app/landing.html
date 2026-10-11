@@ -570,7 +570,7 @@
             <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
                 <div>
                     <h3 style="font-size: 1.4rem; color: var(--nisr-primary); font-weight: 700; margin: 0;">Top Priority Target Districts (Baseline Simulation)</h3>
-                    <p style="color: var(--nisr-wave-1); font-size: 0.9rem; margin-top: 4px;">Ranked by multi-criteria optimization ($w_1\text{Climate} + w_2\text{Cropland} + w_3\text{Poverty}$):</p>
+                    <p style="color: var(--nisr-wave-1); font-size: 0.9rem; margin-top: 4px;">Ranked by multi-criteria optimization (weight 1 (Climate) + weight 2(Cropland) + weight 3(Poverty))</p>
                 </div>
                 <a href="{% url 'agrishield:index' %}" style="color: var(--nisr-orange); font-weight: 700; text-decoration: none; font-size: 0.95rem;">Customize Weights in 3D Engine →</a>
             </div>
@@ -671,7 +671,7 @@
             <div class="feature-card">
                 <h3 class="feature-h3">Live Weight Simulation</h3>
                 <p class="feature-p">
-                    Policy makers can dynamically adjust climate risk, cropland area, and poverty weights in real time with an automated live constraint enforcement ($w_1 + w_2 + w_3 = 1.00$).
+                    Policy makers can dynamically adjust climate risk, cropland area, and poverty weights in real time with an automated live constraint enforcement (w_1 + w_2 + w_3 = 1.0).
                 </p>
             </div>
 
