@@ -7,13 +7,13 @@
     <title>AgriShield Rwanda — SSIT Climate Resilience Engine (Django App)</title>
     
     <!-- CSS Stylesheet -->
-    <link rel="stylesheet" href="{% static 'agrishield_app/css/styles.css' %}">
+    <link rel="stylesheet" href="{% static 'agrishield_app/css/styles.css' %}?v=20261011_4">
     
     <!-- Deck.gl 3D Map Library -->
     <script src="https://unpkg.com/deck.gl@latest/dist.min.js"></script>
-    <!-- Mapbox GL JS for basemap rendering -->
-    <script src="https://api.mapbox.com/mapbox-gl-js/v2.14.1/mapbox-gl.js"></script>
-    <link href="https://api.mapbox.com/mapbox-gl-js/v2.14.1/mapbox-gl.css" rel="stylesheet" />
+    <!-- MapLibre GL for Token-Free High-Performance Vector Basemaps -->
+    <script src="https://unpkg.com/maplibre-gl@3.6.2/dist/maplibre-gl.js"></script>
+    <link href="https://unpkg.com/maplibre-gl@3.6.2/dist/maplibre-gl.css" rel="stylesheet" />
     
     <!-- Plotly.js for interactive charts -->
     <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
@@ -168,9 +168,9 @@
                         Explore multi-dimensional spatial risk layers with real-time Carto basemaps, 3D extruded pillars vs 2D flat heatmap modes, continuous metric color gradients, and click-to-inspect district intelligence.
                     </p>
                     
-                    <div class="map-viewport-wrapper">
-                        <!-- Map Floating Control Toolbar -->
-                        <div class="map-controls-toolbar">
+                    <div class="map-viewport-wrapper" id="map-viewport-wrapper">
+                        <!-- Dedicated Map Control Toolbar - Positioned ABOVE the map area -->
+                        <div class="map-controls-toolbar" id="map-controls-toolbar">
                             <div class="map-toolbar-group">
                                 <label class="map-toolbar-label">Projection</label>
                                 <div class="btn-group-segmented">
@@ -205,19 +205,27 @@
                                 <input type="range" id="slider-elev-scale" min="0.2" max="3.0" step="0.2" value="1.0" class="map-range-control">
                             </div>
 
-                            <button type="button" id="btn-recenter-map" class="btn-map-action" title="Recenter Camera View">
-                                Reset Camera
-                            </button>
+                            <div style="display: flex; gap: 8px;">
+                                <button type="button" id="btn-recenter-map" class="btn-map-action" title="Recenter Camera View">
+                                    Reset Camera
+                                </button>
+                                <button type="button" id="btn-toggle-fullscreen" class="btn-map-action" title="Toggle Fullscreen Map">
+                                    Fullscreen
+                                </button>
+                            </div>
                         </div>
 
-                        <!-- DeckGL Map Container -->
-                        <div id="deck-map-container"></div>
+                        <!-- Map Canvas Container (DeckGL & MapLibre) -->
+                        <div class="map-canvas-container" id="map-canvas-container">
+                            <!-- DeckGL Map Container -->
+                            <div id="deck-map-container"></div>
 
-                        <!-- Floating Map Legend Overlay -->
-                        <div id="map-legend-overlay" class="map-legend-box">
-                            <div class="legend-header" id="legend-title">🎯 Subsidy Target Allocation</div>
-                            <div class="legend-body" id="legend-content">
-                                <!-- Dynamic JS Legend -->
+                            <!-- Floating Map Legend Overlay -->
+                            <div id="map-legend-overlay" class="map-legend-box">
+                                <div class="legend-header" id="legend-title">Subsidy Target Allocation</div>
+                                <div class="legend-body" id="legend-content">
+                                    <!-- Dynamic JS Legend -->
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -409,6 +417,6 @@
     </div>
 
     <!-- Application JavaScript Controller -->
-    <script src="{% static 'agrishield_app/js/app.js' %}"></script>
+    <script src="{% static 'agrishield_app/js/app.js' %}?v=20261011_4"></script>
 </body>
 </html>

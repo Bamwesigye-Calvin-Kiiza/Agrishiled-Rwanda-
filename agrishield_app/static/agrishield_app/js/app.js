@@ -3,6 +3,24 @@ document.addEventListener("DOMContentLoaded", function () {
     let deckInstance = null;
     let globalMetrics = null;
 
+    // ---------------------------------------------------------
+    // Map State & Basemap Configuration
+    // ---------------------------------------------------------
+    let currentMapMode = "3D"; // "3D" or "2D"
+    let currentMetricMode = "allocation"; // "allocation", "score", "risk", "poverty", "cropland"
+    let currentBasemap = "light"; // "light", "dark", "voyager", "none"
+    let currentElevScale = 1.0;
+    let selectedUnitName = null;
+    let currentGeojson = null;
+    let currentGeoLevel = "District";
+
+    const BASEMAP_STYLES = {
+        light: "https://basemaps.cartocdn.com/gl/positron-gl-style/style.json",
+        dark: "https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json",
+        voyager: "https://basemaps.cartocdn.com/gl/voyager-gl-style/style.json",
+        none: { version: 8, sources: {}, layers: [] }
+    };
+
     // DOM Elements
     const levelSelect = document.getElementById("level-select");
     const valStress = document.getElementById("val-stress");
@@ -173,21 +191,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
-    // Initialize Map and Trigger Initial Simulation on Load
-    if (document.getElementById("deck-map-container")) {
-        initDeckGLMap();
-        triggerSimulation();
 
-        // Fetch Metrics on Load
-        fetch("/api/metrics/")
-            .then(res => res.json())
-            .then(metrics => {
-                globalMetrics = metrics;
-                updateMetricsDisplay();
-                renderGlobalShapChart();
-            })
-            .catch(err => console.log("Metrics fetch bypassed"));
-    }
 
     function updateMetricsDisplay() {
         if (!globalMetrics || !levelSelect) return;
@@ -268,23 +272,7 @@ document.addEventListener("DOMContentLoaded", function () {
         if (kpiInvestment) kpiInvestment.textContent = "$" + kpis.total_investment_usd.toLocaleString();
     }
 
-    // ---------------------------------------------------------
-    // Comprehensive Interactive Map Controller
-    // ---------------------------------------------------------
-    let currentMapMode = "3D"; // "3D" or "2D"
-    let currentMetricMode = "allocation"; // "allocation", "score", "risk", "poverty", "cropland"
-    let currentBasemap = "light"; // "light", "dark", "voyager", "none"
-    let currentElevScale = 1.0;
-    let selectedUnitName = null;
-    let currentGeojson = null;
-    let currentGeoLevel = "District";
 
-    const BASEMAP_TILES = {
-        light: "https://a.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png",
-        dark: "https://a.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png",
-        voyager: "https://a.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png",
-        none: null
-    };
 
     function getColorForFeature(props, metricMode) {
         const isTarget = props.selected_for_intervention;
@@ -320,8 +308,15 @@ document.addEventListener("DOMContentLoaded", function () {
         const container = document.getElementById("deck-map-container");
         if (!container) return;
 
+        // Ensure Deck.gl uses MapLibre GL for vector basemaps
+        if (window.maplibregl) {
+            window.mapboxgl = window.maplibregl;
+        }
+
         deckInstance = new deck.DeckGL({
             container: "deck-map-container",
+            map: window.maplibregl || window.mapboxgl,
+            mapStyle: BASEMAP_STYLES[currentBasemap],
             initialViewState: {
                 latitude: -1.94,
                 longitude: 29.87,
@@ -341,12 +336,11 @@ document.addEventListener("DOMContentLoaded", function () {
                             <b>SSIT Priority Score:</b> <span style="color: #d79b52; font-weight: 800;">${p.ssit_priority_score}</span><br/>
                             <b>Priority Rank:</b> #${p.allocated_subsidy_rank}<br/>
                             <b>Allocation Status:</b> ${p.target_status}<br/>
-                            <hr style="border-color: #e2e8f0; margin: 6px 0;"/>
-                            💧 <b>Predicted Stress Risk:</b> ${(p.predicted_stress_prob * 100).toFixed(1)}%<br/>
-                            🌱 <b>Soil Moisture:</b> ${p.real_soil_moisture_m3_m3} m³/m³<br/>
-                            ☀️ <b>Dry Spell Duration:</b> ${p.dry_spell_days} days<br/>
-                            👥 <b>EICV Poverty Rate:</b> ${p.eicv_poverty_pct}%<br/>
-                            🌾 <b>Unirrigated Area:</b> ${p.unirrigated_ha.toLocaleString()} ha
+                            <b>Predicted Stress Risk:</b> ${(p.predicted_stress_prob * 100).toFixed(1)}%<br/>
+                            <b>Soil Moisture:</b> ${p.real_soil_moisture_m3_m3} m³/m³<br/>
+                            <b>Dry Spell Duration:</b> ${p.dry_spell_days} days<br/>
+                            <b>EICV Poverty Rate:</b> ${p.eicv_poverty_pct}%<br/>
+                            <b>Unirrigated Area:</b> ${p.unirrigated_ha.toLocaleString()} ha
                         </div>
                     `
                 };
@@ -378,6 +372,10 @@ document.addEventListener("DOMContentLoaded", function () {
                             transitionDuration: 800
                         }
                     });
+                    const map = deckInstance.getMapboxMap ? deckInstance.getMapboxMap() : null;
+                    if (map && typeof map.easeTo === "function") {
+                        map.easeTo({ pitch: 48, bearing: -10, duration: 800 });
+                    }
                 }
                 updateDeckGLMap();
             });
@@ -398,6 +396,10 @@ document.addEventListener("DOMContentLoaded", function () {
                             transitionDuration: 800
                         }
                     });
+                    const map = deckInstance.getMapboxMap ? deckInstance.getMapboxMap() : null;
+                    if (map && typeof map.easeTo === "function") {
+                        map.easeTo({ pitch: 0, bearing: 0, duration: 800 });
+                    }
                 }
                 updateDeckGLMap();
             });
@@ -415,7 +417,14 @@ document.addEventListener("DOMContentLoaded", function () {
         if (selectMapBasemap) {
             selectMapBasemap.addEventListener("change", (e) => {
                 currentBasemap = e.target.value;
-                updateDeckGLMap();
+                const style = BASEMAP_STYLES[currentBasemap];
+                if (deckInstance) {
+                    deckInstance.setProps({ mapStyle: style });
+                    const map = deckInstance.getMapboxMap ? deckInstance.getMapboxMap() : null;
+                    if (map && typeof map.setStyle === "function") {
+                        map.setStyle(style);
+                    }
+                }
             });
         }
 
@@ -434,16 +443,61 @@ document.addEventListener("DOMContentLoaded", function () {
             btnRecenter.addEventListener("click", () => {
                 if (deckInstance) {
                     const is3D = currentMapMode === "3D";
+                    const pitch = is3D ? 48 : 0;
+                    const bearing = is3D ? -10 : 0;
                     deckInstance.setProps({
                         initialViewState: {
                             latitude: -1.94,
                             longitude: 29.87,
                             zoom: 8.5,
-                            pitch: is3D ? 48 : 0,
-                            bearing: is3D ? -10 : 0,
+                            pitch: pitch,
+                            bearing: bearing,
                             transitionDuration: 800
                         }
                     });
+                    const map = deckInstance.getMapboxMap ? deckInstance.getMapboxMap() : null;
+                    if (map && typeof map.easeTo === "function") {
+                        map.easeTo({ pitch: pitch, bearing: bearing, duration: 800 });
+                    }
+                }
+            });
+        }
+
+        // Fullscreen Toggle
+        const btnFullscreen = document.getElementById("btn-toggle-fullscreen");
+        const mapWrapper = document.getElementById("map-viewport-wrapper");
+        if (btnFullscreen && mapWrapper) {
+            btnFullscreen.addEventListener("click", () => {
+                const isFs = mapWrapper.classList.toggle("is-fullscreen");
+                btnFullscreen.textContent = isFs ? "✕ Exit Fullscreen" : "Fullscreen";
+                btnFullscreen.classList.toggle("active", isFs);
+
+                // Resize MapLibre and DeckGL canvas
+                setTimeout(() => {
+                    window.dispatchEvent(new Event("resize"));
+                    const map = deckInstance && deckInstance.getMapboxMap ? deckInstance.getMapboxMap() : null;
+                    if (map && typeof map.resize === "function") {
+                        map.resize();
+                    }
+                    if (deckInstance && typeof deckInstance.redraw === "function") {
+                        deckInstance.redraw();
+                    }
+                }, 100);
+            });
+
+            // Allow exiting fullscreen with Escape key
+            document.addEventListener("keydown", (e) => {
+                if (e.key === "Escape" && mapWrapper.classList.contains("is-fullscreen")) {
+                    mapWrapper.classList.remove("is-fullscreen");
+                    btnFullscreen.textContent = "Fullscreen";
+                    btnFullscreen.classList.remove("active");
+                    setTimeout(() => {
+                        window.dispatchEvent(new Event("resize"));
+                        const map = deckInstance && deckInstance.getMapboxMap ? deckInstance.getMapboxMap() : null;
+                        if (map && typeof map.resize === "function") {
+                            map.resize();
+                        }
+                    }, 100);
                 }
             });
         }
@@ -459,41 +513,47 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         const is3D = currentMapMode === "3D";
+        const isDistrict = (currentGeoLevel || "").toLowerCase().includes("district");
+        const defaultLineWidth = isDistrict ? 2.5 : 1.5;
         const layers = [];
 
-        // Carto Basemap Tile Layer
-        if (currentBasemap !== "none" && BASEMAP_TILES[currentBasemap]) {
-            const tileLayer = new deck.TileLayer({
-                id: "carto-basemap-tiles",
-                data: BASEMAP_TILES[currentBasemap],
-                minZoom: 0,
-                maxZoom: 19,
-                tileSize: 256,
-                renderSubLayers: props => {
-                    const { bbox: { left, bottom, right, top } } = props.tile;
-                    return new deck.BitmapLayer(props, {
-                        data: null,
-                        image: props.data,
-                        bounds: [left, bottom, right, top]
-                    });
+        // Ground footprint border layer in 3D for clear boundary demarcation on the map floor
+        if (is3D) {
+            const groundBordersLayer = new deck.GeoJsonLayer({
+                id: "rwanda-ground-borders",
+                data: currentGeojson,
+                stroked: true,
+                filled: false,
+                extruded: false,
+                getLineColor: [15, 23, 42, 190],
+                lineWidthMinPixels: defaultLineWidth,
+                pickable: false,
+                updateTriggers: {
+                    lineWidthMinPixels: [currentGeoLevel]
                 }
             });
-            layers.push(tileLayer);
+            layers.push(groundBordersLayer);
         }
 
-        // Polygon Choropleth Layer
+        // Main Polygon Layer with bold high-contrast boundary demarcation
         const polygonLayer = new deck.GeoJsonLayer({
             id: "rwanda-3d-polygons",
             data: currentGeojson,
-            opacity: is3D ? 0.88 : 0.75,
+            opacity: is3D ? 0.90 : 0.82,
             stroked: true,
             filled: true,
             extruded: is3D,
             wireframe: is3D,
             getElevation: f => is3D ? (f.properties.elevation_m * currentElevScale) : 0,
             getFillColor: f => getColorForFeature(f.properties, currentMetricMode),
-            getLineColor: f => (f.properties.unit_name === selectedUnitName) ? [250, 204, 21, 255] : [255, 255, 255, 140],
-            lineWidthMinPixels: f => (f.properties.unit_name === selectedUnitName) ? 3 : 1,
+            getLineColor: f => {
+                if (f.properties.unit_name === selectedUnitName) {
+                    return [250, 204, 21, 255]; // Selected unit: Bright golden outline
+                }
+                // High contrast dark navy/slate boundary for clear district and sector separation
+                return [15, 23, 42, 235];
+            },
+            lineWidthMinPixels: f => (f.properties.unit_name === selectedUnitName) ? 4 : defaultLineWidth,
             pickable: true,
             onClick: ({ object }) => {
                 if (!object) return;
@@ -507,8 +567,8 @@ document.addEventListener("DOMContentLoaded", function () {
             updateTriggers: {
                 getElevation: [currentMapMode, currentElevScale],
                 getFillColor: [currentMetricMode],
-                getLineColor: [selectedUnitName],
-                lineWidthMinPixels: [selectedUnitName],
+                getLineColor: [selectedUnitName, currentGeoLevel],
+                lineWidthMinPixels: [selectedUnitName, currentGeoLevel],
                 extruded: [currentMapMode]
             }
         });
@@ -527,7 +587,7 @@ document.addEventListener("DOMContentLoaded", function () {
         if (!titleEl || !contentEl) return;
 
         if (currentMetricMode === "allocation") {
-            titleEl.textContent = "🎯 Subsidy Target Allocation";
+            titleEl.textContent = "Subsidy Target Allocation";
             contentEl.innerHTML = `
                 <div style="display: flex; flex-direction: column; gap: 6px; font-size: 0.78rem;">
                     <div style="display: flex; align-items: center; gap: 8px;">
@@ -541,7 +601,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 </div>
             `;
         } else if (currentMetricMode === "score") {
-            titleEl.textContent = "📊 SSIT Priority Score";
+            titleEl.textContent = "SSIT Priority Score";
             contentEl.innerHTML = `
                 <div class="legend-bar-container" style="background: linear-gradient(to right, #10b981, #f59e0b, #d79b52, #ef4444);"></div>
                 <div class="legend-scale-labels">
@@ -551,7 +611,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 </div>
             `;
         } else if (currentMetricMode === "risk") {
-            titleEl.textContent = "💧 Climate Drought Risk";
+            titleEl.textContent = "Climate Drought Risk";
             contentEl.innerHTML = `
                 <div class="legend-bar-container" style="background: linear-gradient(to right, #3b82f6, #f59e0b, #ef4444);"></div>
                 <div class="legend-scale-labels">
@@ -561,7 +621,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 </div>
             `;
         } else if (currentMetricMode === "poverty") {
-            titleEl.textContent = "👥 EICV Poverty Rate";
+            titleEl.textContent = "EICV Poverty Rate";
             contentEl.innerHTML = `
                 <div class="legend-bar-container" style="background: linear-gradient(to right, #cbd5e1, #f97316, #b91c1c);"></div>
                 <div class="legend-scale-labels">
@@ -571,7 +631,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 </div>
             `;
         } else if (currentMetricMode === "cropland") {
-            titleEl.textContent = "🌾 Unirrigated Cropland";
+            titleEl.textContent = "Unirrigated Cropland";
             contentEl.innerHTML = `
                 <div class="legend-bar-container" style="background: linear-gradient(to right, #bbf7d0, #22c55e, #15803d);"></div>
                 <div class="legend-scale-labels">
@@ -837,7 +897,19 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     // Initialize Deck.gl Map and trigger initial simulation
-    initDeckGLMap();
-    updateSliderDisplays();
-    triggerSimulation();
+    if (document.getElementById("deck-map-container")) {
+        initDeckGLMap();
+        updateSliderDisplays();
+        triggerSimulation();
+
+        // Fetch Metrics on Load
+        fetch("/api/metrics/")
+            .then(res => res.json())
+            .then(metrics => {
+                globalMetrics = metrics;
+                updateMetricsDisplay();
+                renderGlobalShapChart();
+            })
+            .catch(err => console.log("Metrics fetch bypassed"));
+    }
 });
