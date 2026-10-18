@@ -15,7 +15,40 @@ except ImportError:
 
 SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-glecfj_w4d9q=-ful1obuz7@oo00sir+d2@g&+-(_9at$tai4l')
 DEBUG = os.getenv('DEBUG', 'True') == 'True'
-ALLOWED_HOSTS = ['*']
+
+# Allowed Hosts (domains, subdomains, server IPs)
+allowed_hosts_env = os.getenv('ALLOWED_HOSTS')
+if allowed_hosts_env:
+    ALLOWED_HOSTS = [h.strip() for h in allowed_hosts_env.split(',') if h.strip()]
+else:
+    ALLOWED_HOSTS = [
+        'agrishieldrw.com',
+        'www.agrishieldrw.com',
+        '.agrishieldrw.com',
+        '173.208.162.233',
+        'localhost',
+        '127.0.0.1',
+        '*',
+    ]
+
+# CSRF Trusted Origins (required for HTTP and HTTPS form submissions & API calls)
+csrf_origins_env = os.getenv('CSRF_TRUSTED_ORIGINS')
+if csrf_origins_env:
+    CSRF_TRUSTED_ORIGINS = [o.strip() for o in csrf_origins_env.split(',') if o.strip()]
+else:
+    CSRF_TRUSTED_ORIGINS = [
+        'http://agrishieldrw.com',
+        'https://agrishieldrw.com',
+        'http://www.agrishieldrw.com',
+        'https://www.agrishieldrw.com',
+        'http://173.208.162.233',
+        'http://173.208.162.233:8004',
+        'http://localhost:8000',
+        'http://127.0.0.1:8000',
+    ]
+
+# Detect HTTPS when requests are reverse-proxied by Nginx
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 INSTALLED_APPS = [
     'django.contrib.admin',

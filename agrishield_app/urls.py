@@ -11,4 +11,6 @@ urlpatterns = [
     path('api/export-csv/', views.api_export_csv, name='api_export_csv'),
     path('api/metrics/', views.api_metrics, name='api_metrics'),
     path('api/chatbot/', views.api_chatbot, name='api_chatbot'),
+    path('robots.txt', views.robots_txt_view, name='robots_txt'),
+    path('sitemap.xml', views.sitemap_xml_view, name='sitemap_xml'),
 ]
