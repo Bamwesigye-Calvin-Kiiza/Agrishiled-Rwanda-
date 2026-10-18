@@ -105,15 +105,20 @@ def perform_simulation(params):
 
     df = df.sort_values(by="ssit_priority_score", ascending=False).reset_index(drop=True)
     df["allocated_subsidy_rank"] = np.arange(1, len(df) + 1)
-    df["selected_for_intervention"] = df["allocated_subsidy_rank"] <= budget_units
-    df["target_status"] = df["selected_for_intervention"].map(
-        {True: "🎯 Target Allocated", False: "Baseline (Unallocated)"}
+    df["is_identified_target"] = df["allocated_subsidy_rank"] <= budget_units
+    df["is_allocated"] = False
+    df["allocation_status"] = df["is_identified_target"].map(
+        {True: "identified", False: "unallocated"}
     )
+    df["target_status"] = df["is_identified_target"].map(
+        {True: "🔍 Identified Target", False: "Baseline (Unallocated)"}
+    )
+    df["selected_for_intervention"] = df["is_identified_target"]
 
     # KPI Summaries
     total_cropland_ha = int(df["total_cropland_ha"].sum())
     total_unirrigated_ha = int(df["unirrigated_ha"].sum())
-    selected_df = df[df["selected_for_intervention"]]
+    selected_df = df[df["is_identified_target"]]
     target_units_count = len(selected_df)
     protected_ha_targeted = int(selected_df["unirrigated_ha"].sum())
     target_poverty_share = round(float(selected_df["eicv_poverty_pct"].mean()), 1) if not selected_df.empty else 0.0
@@ -122,11 +127,14 @@ def perform_simulation(params):
     kpis = {
         "total_cropland_ha": total_cropland_ha,
         "total_unirrigated_ha": total_unirrigated_ha,
+        "identified_targets_count": target_units_count,
+        "allocated_units_count": 0,
         "target_units_count": target_units_count,
         "protected_ha_targeted": protected_ha_targeted,
         "target_share_pct": round(protected_ha_targeted / total_unirrigated_ha * 100, 1) if total_unirrigated_ha > 0 else 0,
         "target_poverty_share": target_poverty_share,
-        "total_investment_usd": total_investment_usd,
+        "total_investment_usd": 0.0,
+        "potential_investment_usd": total_investment_usd,
         "cost_per_unit": cost_per_unit,
         "level_key": level_key,
         "total_units_count": len(df)
@@ -150,6 +158,9 @@ def perform_simulation(params):
                 "province": row_data["province"],
                 "ssit_priority_score": float(row_data["ssit_priority_score"]),
                 "allocated_subsidy_rank": int(row_data["allocated_subsidy_rank"]),
+                "is_identified_target": bool(row_data["is_identified_target"]),
+                "is_allocated": bool(row_data["is_allocated"]),
+                "allocation_status": row_data["allocation_status"],
                 "target_status": row_data["target_status"],
                 "predicted_stress_prob": float(row_data["predicted_stress_prob"]),
                 "real_soil_moisture_m3_m3": float(row_data["real_soil_moisture_m3_m3"]),
@@ -157,7 +168,7 @@ def perform_simulation(params):
                 "eicv_poverty_pct": float(row_data["eicv_poverty_pct"]),
                 "unirrigated_ha": int(row_data["unirrigated_ha"]),
                 "selected_for_intervention": bool(row_data["selected_for_intervention"]),
-                "fill_color": [239, 68, 68, 220] if row_data["selected_for_intervention"] else [16, 185, 129, 140],
+                "fill_color": [245, 158, 11, 230] if row_data["is_identified_target"] else [148, 163, 184, 120],
                 "elevation_m": float(row_data["ssit_priority_score"] * elev_scale)
             })
             map_features.append({"type": feat["type"], "geometry": feat["geometry"], "properties": updated_props})

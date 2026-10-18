@@ -15,7 +15,7 @@
     <meta property="og:type" content="website">
 
     <!-- CSS Stylesheet -->
-    <link rel="stylesheet" href="{% static 'agrishield_app/css/styles.css' %}?v=20261011_5">
+    <link rel="stylesheet" href="{% static 'agrishield_app/css/styles.css' %}?v=20261018_2">
     
     <!-- Deck.gl 3D Map Library -->
     <script src="https://unpkg.com/deck.gl@latest/dist.min.js"></script>
@@ -210,6 +210,16 @@
                             </div>
 
                             <div class="map-toolbar-group">
+                                <label class="map-toolbar-label">Map Filter</label>
+                                <select id="select-map-allocation-filter" class="map-select-control">
+                                    <option value="all" selected>All Units (Rwanda)</option>
+                                    <option value="allocated">✅ Allocated Only</option>
+                                    <option value="identified">🔍 Identified Targets Only</option>
+                                    <option value="unallocated">Baseline (Unallocated) Only</option>
+                                </select>
+                            </div>
+
+                            <div class="map-toolbar-group">
                                 <label class="map-toolbar-label">Basemap</label>
                                 <select id="select-map-basemap" class="map-select-control">
                                     <option value="light" selected>Positron Light (NISR Standard)</option>
@@ -239,6 +249,11 @@
                             <!-- DeckGL Map Container -->
                             <div id="deck-map-container"></div>
 
+                            <!-- Empty Filter State Floating Overlay -->
+                            <div id="map-empty-filter-notice" class="map-empty-overlay" style="display: none;">
+                                <span id="map-empty-notice-text">ℹ️ 0 units match the active filter.</span>
+                            </div>
+
                             <!-- Floating Map Legend Overlay -->
                             <div id="map-legend-overlay" class="map-legend-box">
                                 <div class="legend-header" id="legend-title">Subsidy Target Allocation</div>
@@ -251,8 +266,35 @@
                 </div>
 
                 <div class="glass-box">
-                    <div class="glass-box-header">
-                        <div class="glass-box-title">Prioritized SSIT Deployment Schedule</div>
+                    <div class="glass-box-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+                        <div>
+                            <div class="glass-box-title">Prioritized SSIT Deployment Schedule</div>
+                            <div style="font-size: 0.8rem; color: #64748B; margin-top: 2px;">
+                                Allocate or deallocate pumps dynamically, or filter view by status.
+                            </div>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+                            <div class="btn-group-segmented" id="table-filter-group">
+                                <button type="button" class="btn-segmented active" data-filter="all" id="btn-filter-all">
+                                    All (<span id="count-filter-all">30</span>)
+                                </button>
+                                <button type="button" class="btn-segmented" data-filter="allocated" id="btn-filter-allocated">
+                                    ✅ Allocated (<span id="count-filter-allocated">0</span>)
+                                </button>
+                                <button type="button" class="btn-segmented" data-filter="identified" id="btn-filter-identified">
+                                    🔍 Identified (<span id="count-filter-identified">10</span>)
+                                </button>
+                                <button type="button" class="btn-segmented" data-filter="unallocated" id="btn-filter-unallocated">
+                                    Unallocated (<span id="count-filter-unallocated">30</span>)
+                                </button>
+                            </div>
+                            <button type="button" id="btn-allocate-all-targets" class="btn-map-action" style="background: rgba(16, 185, 129, 0.12); color: #059669; border: 1px solid rgba(16, 185, 129, 0.35); font-weight: 700;" title="Allocate solar pumps to all identified targets">
+                                + Allocate All Identified
+                            </button>
+                            <button type="button" id="btn-reset-allocation" class="btn-map-action" style="background: rgba(38, 91, 165, 0.08); color: var(--nisr-primary); border: 1px solid var(--nisr-wave-3);" title="Reset manual overrides to algorithm ceiling">
+                                ↺ Reset Auto-Rank
+                            </button>
+                        </div>
                     </div>
                     
                     <div class="data-table-wrapper">
@@ -263,7 +305,8 @@
                                     <th>Administrative Unit</th>
                                     <th>Province</th>
                                     <th>Priority Score</th>
-                                    <th>Allocation Target</th>
+                                    <th>Allocation Status</th>
+                                    <th style="text-align: center;">Manual Action</th>
                                     <th>Predicted Risk (Prob)</th>
                                     <th>Unirrigated Cropland</th>
                                     <th>EICV Poverty Rate</th>
@@ -436,6 +479,6 @@
     </div>
 
     <!-- Application JavaScript Controller -->
-    <script src="{% static 'agrishield_app/js/app.js' %}?v=20261018_1"></script>
+    <script src="{% static 'agrishield_app/js/app.js' %}?v=20261018_2"></script>
 </body>
 </html>

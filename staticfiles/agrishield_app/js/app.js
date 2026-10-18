@@ -13,6 +13,9 @@ document.addEventListener("DOMContentLoaded", function () {
     let selectedUnitName = null;
     let currentGeojson = null;
     let currentGeoLevel = "District";
+    let currentRankings = [];
+    let currentAllocationFilter = "all"; // "all", "allocated", "identified", "unallocated"
+    let allocStateVersion = 0;
 
     const BASEMAP_STYLES = {
         light: "https://basemaps.cartocdn.com/gl/positron-gl-style/style.json",
@@ -269,6 +272,106 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     // ---------------------------------------------------------
+    // Allocation State Persistence (Survives Reloads & Budget Ceiling Changes)
+    // ---------------------------------------------------------
+    function getAllocationStorageKey(level) {
+        const isDistrict = (level || (levelSelect ? levelSelect.value : currentGeoLevel) || "district").toLowerCase().includes("district");
+        return isDistrict ? "agrishield_allocations_district" : "agrishield_allocations_sector";
+    }
+
+    function loadPersistedAllocations(level) {
+        try {
+            const key = getAllocationStorageKey(level);
+            const stored = localStorage.getItem(key);
+            if (stored) {
+                const arr = JSON.parse(stored);
+                if (Array.isArray(arr)) {
+                    return new Set(arr);
+                }
+            }
+        } catch (e) {
+            console.warn("Could not read allocations from localStorage:", e);
+        }
+        return new Set();
+    }
+
+    function savePersistedAllocations(level, allocatedSet) {
+        try {
+            const key = getAllocationStorageKey(level);
+            localStorage.setItem(key, JSON.stringify(Array.from(allocatedSet)));
+        } catch (e) {
+            console.warn("Could not save allocations to localStorage:", e);
+        }
+    }
+
+    function clearPersistedAllocations(level) {
+        try {
+            const key = getAllocationStorageKey(level);
+            localStorage.removeItem(key);
+        } catch (e) {
+            console.warn("Could not clear allocations from localStorage:", e);
+        }
+    }
+
+    function applyPersistedAllocationsToRankings(rankings, geojson, level) {
+        if (!rankings || rankings.length === 0) return;
+        const isDistrict = (level || (levelSelect ? levelSelect.value : currentGeoLevel) || "district").toLowerCase().includes("district");
+        const nameKey = isDistrict ? "NAME_2" : "NAME_3";
+        const allocatedSet = loadPersistedAllocations(level);
+
+        // Synchronize rankings
+        rankings.forEach(row => {
+            const unitName = row[nameKey];
+            const isAlloc = allocatedSet.has(unitName);
+            row.is_allocated = isAlloc;
+
+            if (isAlloc) {
+                row.allocation_status = "allocated";
+                row.target_status = "✅ Allocated";
+                row.selected_for_intervention = true;
+            } else {
+                if (row.is_identified_target) {
+                    row.allocation_status = "identified";
+                    row.target_status = "🔍 Identified Target";
+                    row.selected_for_intervention = true;
+                } else {
+                    row.allocation_status = "unallocated";
+                    row.target_status = "Baseline (Unallocated)";
+                    row.selected_for_intervention = false;
+                }
+            }
+        });
+
+        // Synchronize GeoJSON features
+        if (geojson && geojson.features) {
+            geojson.features.forEach(feat => {
+                const unitName = feat.properties.unit_name;
+                const isAlloc = allocatedSet.has(unitName);
+                feat.properties.is_allocated = isAlloc;
+
+                if (isAlloc) {
+                    feat.properties.allocation_status = "allocated";
+                    feat.properties.target_status = "✅ Allocated";
+                    feat.properties.selected_for_intervention = true;
+                    feat.properties.fill_color = [16, 185, 129, 245];
+                } else {
+                    if (feat.properties.is_identified_target) {
+                        feat.properties.allocation_status = "identified";
+                        feat.properties.target_status = "🔍 Identified Target";
+                        feat.properties.selected_for_intervention = true;
+                        feat.properties.fill_color = [245, 158, 11, 235];
+                    } else {
+                        feat.properties.allocation_status = "unallocated";
+                        feat.properties.target_status = "Baseline (Unallocated)";
+                        feat.properties.selected_for_intervention = false;
+                        feat.properties.fill_color = [148, 163, 184, 120];
+                    }
+                }
+            });
+        }
+    }
+
+    // ---------------------------------------------------------
     // REST API Simulation Function
     // ---------------------------------------------------------
     function triggerSimulation() {
@@ -288,11 +391,19 @@ document.addEventListener("DOMContentLoaded", function () {
         fetch(`/api/simulate/?${queryStr}`)
             .then(res => res.json())
             .then(data => {
-                updateKPIs(data.kpis);
-                updateDeckGLMap(data.geojson, level);
-                renderTable(data.rankings, level);
-                renderDataExplorerCharts(data.rankings);
-                updateShapUnitSelect(data.rankings, level);
+                currentRankings = data.rankings || [];
+                currentGeojson = data.geojson;
+                currentGeoLevel = level;
+
+                // Re-apply any persisted manual allocations for this level
+                applyPersistedAllocationsToRankings(currentRankings, currentGeojson, level);
+
+                allocStateVersion++;
+                recalculateKPIsFromRankings();
+                updateDeckGLMap(currentGeojson, level);
+                renderTable(currentRankings, level);
+                renderDataExplorerCharts(currentRankings);
+                updateShapUnitSelect(currentRankings, level);
                 updateMetricsDisplay();
             })
             .catch(err => console.error("Error running simulation:", err));
@@ -324,24 +435,45 @@ document.addEventListener("DOMContentLoaded", function () {
         if (!kpis) return;
         if (kpiCropland) kpiCropland.textContent = kpis.total_cropland_ha.toLocaleString() + " ha";
         if (kpiUnirrigated) kpiUnirrigated.textContent = kpis.total_unirrigated_ha.toLocaleString() + " ha";
-        if (kpiBudgetUnits) kpiBudgetUnits.textContent = kpis.target_units_count + " Pumps";
+        if (kpiBudgetUnits) {
+            kpiBudgetUnits.textContent = typeof kpis.target_units_count === "number" 
+                ? `${kpis.target_units_count} Targets` 
+                : kpis.target_units_count;
+        }
         if (kpiProtected) kpiProtected.textContent = kpis.protected_ha_targeted.toLocaleString() + " ha";
-        if (kpiTargetShare) kpiTargetShare.textContent = kpis.target_share_pct + "% Target Share";
+        if (kpiTargetShare) {
+            kpiTargetShare.textContent = typeof kpis.target_share_pct === "string" && kpis.target_share_pct.includes("%")
+                ? kpis.target_share_pct
+                : kpis.target_share_pct + "% Target Share";
+        }
         if (kpiPoverty) kpiPoverty.textContent = kpis.target_poverty_share + "%";
-        if (kpiInvestment) kpiInvestment.textContent = "$" + kpis.total_investment_usd.toLocaleString();
+        if (kpiInvestment) kpiInvestment.textContent = "$" + Math.round(kpis.total_investment_usd).toLocaleString();
     }
 
 
 
+    function isFeatureInFilter(props, filterMode) {
+        if (!filterMode || filterMode === "all") return true;
+        if (filterMode === "allocated") return !!props.is_allocated;
+        if (filterMode === "identified") return !!props.is_identified_target;
+        if (filterMode === "unallocated") return !props.is_allocated;
+        return true;
+    }
+
     function getColorForFeature(props, metricMode) {
-        const isTarget = props.selected_for_intervention;
         const score = props.ssit_priority_score || 0;
         const risk = props.predicted_stress_prob || 0;
         const pov = props.eicv_poverty_pct || 0;
         const crop = props.unirrigated_ha || 0;
 
         if (metricMode === "allocation") {
-            return isTarget ? [239, 68, 68, 220] : [16, 185, 129, 140];
+            if (props.is_allocated) {
+                return [16, 185, 129, 245]; // Vivid Emerald Green for Allocated
+            }
+            if (props.is_identified_target) {
+                return [245, 158, 11, 235]; // Warm Gold / Amber for Identified Target
+            }
+            return [148, 163, 184, 120]; // Muted Slate Gray for Baseline Unallocated
         } else if (metricMode === "score") {
             if (score <= 0.35) return [16, 185, 129, 180];
             if (score <= 0.55) return [245, 158, 11, 200];
@@ -387,6 +519,10 @@ document.addEventListener("DOMContentLoaded", function () {
             getTooltip: ({ object }) => {
                 if (!object) return null;
                 const p = object.properties;
+                if (!isFeatureInFilter(p, currentAllocationFilter)) return null;
+                const statusHtml = p.is_allocated 
+                    ? '<span style="color: #10b981; font-weight: 700;">✅ Allocated</span>'
+                    : (p.is_identified_target ? '<span style="color: #f59e0b; font-weight: 700;">🔍 Identified Target</span>' : '<span style="color: #64748b;">Baseline (Unallocated)</span>');
                 return {
                     html: `
                         <div class="deck-tooltip">
@@ -394,7 +530,7 @@ document.addEventListener("DOMContentLoaded", function () {
                             <hr style="border-color: #e2e8f0; margin: 6px 0;"/>
                             <b>SSIT Priority Score:</b> <span style="color: #d79b52; font-weight: 800;">${p.ssit_priority_score}</span><br/>
                             <b>Priority Rank:</b> #${p.allocated_subsidy_rank}<br/>
-                            <b>Allocation Status:</b> ${p.target_status}<br/>
+                            <b>Allocation Status:</b> ${statusHtml}<br/>
                             <b>Predicted Stress Risk:</b> ${(p.predicted_stress_prob * 100).toFixed(1)}%<br/>
                             <b>Soil Moisture:</b> ${p.real_soil_moisture_m3_m3} m³/m³<br/>
                             <b>Dry Spell Duration:</b> ${p.dry_spell_days} days<br/>
@@ -469,6 +605,13 @@ document.addEventListener("DOMContentLoaded", function () {
             selectMapMetric.addEventListener("change", (e) => {
                 currentMetricMode = e.target.value;
                 updateDeckGLMap();
+            });
+        }
+
+        const selectMapAlloc = document.getElementById("select-map-allocation-filter");
+        if (selectMapAlloc) {
+            selectMapAlloc.addEventListener("change", (e) => {
+                setAllocationFilter(e.target.value);
             });
         }
 
@@ -584,11 +727,12 @@ document.addEventListener("DOMContentLoaded", function () {
                 stroked: true,
                 filled: false,
                 extruded: false,
-                getLineColor: [15, 23, 42, 190],
-                lineWidthMinPixels: defaultLineWidth,
+                getLineColor: f => isFeatureInFilter(f.properties, currentAllocationFilter) ? [15, 23, 42, 190] : [0, 0, 0, 0],
+                lineWidthMinPixels: f => isFeatureInFilter(f.properties, currentAllocationFilter) ? defaultLineWidth : 0,
                 pickable: false,
                 updateTriggers: {
-                    lineWidthMinPixels: [currentGeoLevel]
+                    getLineColor: [currentAllocationFilter, allocStateVersion],
+                    lineWidthMinPixels: [currentGeoLevel, currentAllocationFilter, allocStateVersion]
                 }
             });
             layers.push(groundBordersLayer);
@@ -598,25 +742,36 @@ document.addEventListener("DOMContentLoaded", function () {
         const polygonLayer = new deck.GeoJsonLayer({
             id: "rwanda-3d-polygons",
             data: currentGeojson,
-            opacity: is3D ? 0.90 : 0.82,
+            opacity: is3D ? 0.92 : 0.84,
             stroked: true,
             filled: true,
             extruded: is3D,
             wireframe: is3D,
-            getElevation: f => is3D ? (f.properties.elevation_m * currentElevScale) : 0,
-            getFillColor: f => getColorForFeature(f.properties, currentMetricMode),
+            getElevation: f => {
+                if (!isFeatureInFilter(f.properties, currentAllocationFilter)) return 0;
+                return is3D ? (f.properties.elevation_m * currentElevScale) : 0;
+            },
+            getFillColor: f => {
+                if (!isFeatureInFilter(f.properties, currentAllocationFilter)) return [0, 0, 0, 0];
+                return getColorForFeature(f.properties, currentMetricMode);
+            },
             getLineColor: f => {
+                if (!isFeatureInFilter(f.properties, currentAllocationFilter)) return [0, 0, 0, 0];
                 if (f.properties.unit_name === selectedUnitName) {
                     return [250, 204, 21, 255]; // Selected unit: Bright golden outline
                 }
                 // High contrast dark navy/slate boundary for clear district and sector separation
                 return [15, 23, 42, 235];
             },
-            lineWidthMinPixels: f => (f.properties.unit_name === selectedUnitName) ? 4 : defaultLineWidth,
+            lineWidthMinPixels: f => {
+                if (!isFeatureInFilter(f.properties, currentAllocationFilter)) return 0;
+                return (f.properties.unit_name === selectedUnitName) ? 4 : defaultLineWidth;
+            },
             pickable: true,
             onClick: ({ object }) => {
-                if (!object) return;
+                if (!object || !isFeatureInFilter(object.properties, currentAllocationFilter)) return;
                 selectedUnitName = object.properties.unit_name;
+                allocStateVersion++;
                 updateDeckGLMap();
                 if (unitShapSelect) {
                     unitShapSelect.value = selectedUnitName;
@@ -624,10 +779,10 @@ document.addEventListener("DOMContentLoaded", function () {
                 }
             },
             updateTriggers: {
-                getElevation: [currentMapMode, currentElevScale],
-                getFillColor: [currentMetricMode],
-                getLineColor: [selectedUnitName, currentGeoLevel],
-                lineWidthMinPixels: [selectedUnitName, currentGeoLevel],
+                getElevation: [currentMapMode, currentElevScale, currentAllocationFilter, allocStateVersion],
+                getFillColor: [currentMetricMode, currentAllocationFilter, allocStateVersion],
+                getLineColor: [selectedUnitName, currentGeoLevel, currentAllocationFilter, allocStateVersion],
+                lineWidthMinPixels: [selectedUnitName, currentGeoLevel, currentAllocationFilter, allocStateVersion],
                 extruded: [currentMapMode]
             }
         });
@@ -635,6 +790,27 @@ document.addEventListener("DOMContentLoaded", function () {
 
         if (deckInstance) {
             deckInstance.setProps({ layers });
+        }
+
+        // Update empty filter notification overlay on map
+        const emptyNotice = document.getElementById("map-empty-filter-notice");
+        const emptyNoticeText = document.getElementById("map-empty-notice-text");
+        if (emptyNotice && currentGeojson && currentGeojson.features) {
+            const matchCount = currentGeojson.features.filter(f => isFeatureInFilter(f.properties, currentAllocationFilter)).length;
+            if (matchCount === 0) {
+                emptyNotice.style.display = "flex";
+                if (emptyNoticeText) {
+                    if (currentAllocationFilter === "allocated") {
+                        emptyNoticeText.innerHTML = `ℹ️ <b>0 units currently allocated.</b> Click <b>"+ Allocate Pump"</b> in the deployment table below or <b>"+ Allocate All Identified"</b> to allocate.`;
+                    } else if (currentAllocationFilter === "identified") {
+                        emptyNoticeText.innerHTML = `ℹ️ <b>0 identified targets.</b> Increase the SSIT Pump Ceiling slider in the sidebar.`;
+                    } else {
+                        emptyNoticeText.innerHTML = `ℹ️ No units found for the active filter.`;
+                    }
+                }
+            } else {
+                emptyNotice.style.display = "none";
+            }
         }
 
         updateLegendDisplay();
@@ -646,16 +822,20 @@ document.addEventListener("DOMContentLoaded", function () {
         if (!titleEl || !contentEl) return;
 
         if (currentMetricMode === "allocation") {
-            titleEl.textContent = "Subsidy Target Allocation";
+            titleEl.textContent = "SSIT Subsidy Status";
             contentEl.innerHTML = `
-                <div style="display: flex; flex-direction: column; gap: 6px; font-size: 0.78rem;">
+                <div style="display: flex; flex-direction: column; gap: 8px; font-size: 0.78rem;">
                     <div style="display: flex; align-items: center; gap: 8px;">
-                        <span style="width: 14px; height: 14px; background: #ef4444; border-radius: 4px; display: inline-block;"></span>
-                        <b>Target Allocated ($K$ Subsidies)</b>
+                        <span style="width: 14px; height: 14px; background: #10b981; border-radius: 4px; display: inline-block; box-shadow: 0 0 6px rgba(16, 185, 129, 0.4);"></span>
+                        <b>✅ Allocated (SSIT Pump Assigned)</b>
                     </div>
                     <div style="display: flex; align-items: center; gap: 8px;">
-                        <span style="width: 14px; height: 14px; background: #10b981; border-radius: 4px; display: inline-block;"></span>
-                        <span>Baseline (Unallocated)</span>
+                        <span style="width: 14px; height: 14px; background: #f59e0b; border-radius: 4px; display: inline-block; box-shadow: 0 0 6px rgba(245, 158, 11, 0.4);"></span>
+                        <b>🔍 Identified Target (Top-Ranked)</b>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <span style="width: 14px; height: 14px; background: #94a3b8; border-radius: 4px; display: inline-block;"></span>
+                        <span style="color: #64748b;">Baseline (Unallocated)</span>
                     </div>
                 </div>
             `;
@@ -703,25 +883,291 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     // ---------------------------------------------------------
-    // Prioritized Deployment Schedule Table
+    // Prioritized Deployment Schedule Table & Interactive Allocation
     // ---------------------------------------------------------
+    function updateFilterCounts(rankings) {
+        if (!rankings) return;
+        const countAll = rankings.length;
+        const countAlloc = rankings.filter(r => !!r.is_allocated).length;
+        const countIdentified = rankings.filter(r => !!r.is_identified_target).length;
+        const countUnalloc = countAll - countAlloc;
+
+        const elAll = document.getElementById("count-filter-all");
+        if (elAll) elAll.textContent = countAll;
+        const elAlloc = document.getElementById("count-filter-allocated");
+        if (elAlloc) elAlloc.textContent = countAlloc;
+        const elIdentified = document.getElementById("count-filter-identified");
+        if (elIdentified) elIdentified.textContent = countIdentified;
+        const elUnalloc = document.getElementById("count-filter-unallocated");
+        if (elUnalloc) elUnalloc.textContent = countUnalloc;
+    }
+
+    function setAllocationFilter(filterVal) {
+        currentAllocationFilter = filterVal || "all";
+
+        // Sync map dropdown
+        const selectMapAlloc = document.getElementById("select-map-allocation-filter");
+        if (selectMapAlloc && selectMapAlloc.value !== currentAllocationFilter) {
+            selectMapAlloc.value = currentAllocationFilter;
+        }
+
+        // Sync table buttons
+        const filterBtns = document.querySelectorAll("#table-filter-group button");
+        filterBtns.forEach(btn => {
+            btn.classList.toggle("active", btn.dataset.filter === currentAllocationFilter);
+        });
+
+        allocStateVersion++;
+
+        // Re-render table and map smoothly
+        if (currentRankings) {
+            renderTable(currentRankings, levelSelect ? levelSelect.value : "district");
+        }
+        updateDeckGLMap();
+    }
+
+    function toggleUnitAllocation(unitName) {
+        if (!currentRankings || currentRankings.length === 0) return;
+        const level = levelSelect ? levelSelect.value : currentGeoLevel;
+        const isDistrict = level.toLowerCase().includes("district");
+        const nameKey = isDistrict ? "NAME_2" : "NAME_3";
+
+        const row = currentRankings.find(r => r[nameKey] === unitName);
+        if (!row) return;
+
+        const allocatedSet = loadPersistedAllocations(level);
+
+        // Toggle allocation boolean
+        row.is_allocated = !row.is_allocated;
+        if (row.is_allocated) {
+            allocatedSet.add(unitName);
+            row.allocation_status = "allocated";
+            row.target_status = "✅ Allocated";
+            row.selected_for_intervention = true;
+        } else {
+            allocatedSet.delete(unitName);
+            if (row.is_identified_target) {
+                row.allocation_status = "identified";
+                row.target_status = "🔍 Identified Target";
+                row.selected_for_intervention = true;
+            } else {
+                row.allocation_status = "unallocated";
+                row.target_status = "Baseline (Unallocated)";
+                row.selected_for_intervention = false;
+            }
+        }
+
+        // Persist to localStorage
+        savePersistedAllocations(level, allocatedSet);
+
+        // Synchronize in GeoJSON features
+        if (currentGeojson && currentGeojson.features) {
+            const feat = currentGeojson.features.find(f => f.properties.unit_name === unitName);
+            if (feat) {
+                feat.properties.is_allocated = row.is_allocated;
+                feat.properties.allocation_status = row.allocation_status;
+                feat.properties.target_status = row.target_status;
+                feat.properties.selected_for_intervention = row.selected_for_intervention;
+                feat.properties.fill_color = row.is_allocated 
+                    ? [16, 185, 129, 245] 
+                    : (row.is_identified_target ? [245, 158, 11, 235] : [148, 163, 184, 120]);
+            }
+        }
+
+        allocStateVersion++;
+
+        // Recalculate KPIs ribbon & slider count
+        recalculateKPIsFromRankings();
+
+        // Re-render table, map, and charts
+        renderTable(currentRankings, level);
+        updateDeckGLMap();
+        renderDataExplorerCharts(currentRankings);
+    }
+
+    function allocateAllTargets() {
+        if (!currentRankings || currentRankings.length === 0) return;
+        const level = levelSelect ? levelSelect.value : currentGeoLevel;
+        const isDistrict = level.toLowerCase().includes("district");
+        const nameKey = isDistrict ? "NAME_2" : "NAME_3";
+        const allocatedSet = loadPersistedAllocations(level);
+
+        currentRankings.forEach(row => {
+            if (row.is_identified_target) {
+                row.is_allocated = true;
+                row.allocation_status = "allocated";
+                row.target_status = "✅ Allocated";
+                row.selected_for_intervention = true;
+                allocatedSet.add(row[nameKey]);
+
+                if (currentGeojson && currentGeojson.features) {
+                    const feat = currentGeojson.features.find(f => f.properties.unit_name === row[nameKey]);
+                    if (feat) {
+                        feat.properties.is_allocated = true;
+                        feat.properties.allocation_status = "allocated";
+                        feat.properties.target_status = "✅ Allocated";
+                        feat.properties.selected_for_intervention = true;
+                        feat.properties.fill_color = [16, 185, 129, 245];
+                    }
+                }
+            }
+        });
+
+        // Persist to localStorage
+        savePersistedAllocations(level, allocatedSet);
+
+        allocStateVersion++;
+        recalculateKPIsFromRankings();
+        renderTable(currentRankings, level);
+        updateDeckGLMap();
+        renderDataExplorerCharts(currentRankings);
+    }
+
+    function recalculateKPIsFromRankings() {
+        if (!currentRankings || currentRankings.length === 0) return;
+        const allocatedList = currentRankings.filter(r => r.is_allocated);
+        const identifiedList = currentRankings.filter(r => r.is_identified_target);
+        const allocCount = allocatedList.length;
+        const targetCount = identifiedList.length;
+        const costPerUnit = parseFloat(inputCost ? inputCost.value : 1200) || 1200;
+
+        const totalCropland = currentRankings.reduce((sum, r) => sum + (r.total_cropland_ha || 0), 0);
+        const totalUnirrigated = currentRankings.reduce((sum, r) => sum + (r.unirrigated_ha || 0), 0);
+        
+        // Active list for protection & poverty stats
+        const activeList = allocCount > 0 ? allocatedList : identifiedList;
+        const protectedHa = activeList.reduce((sum, r) => sum + (r.unirrigated_ha || 0), 0);
+        const targetShare = totalUnirrigated > 0 ? ((protectedHa / totalUnirrigated) * 100).toFixed(1) : "0.0";
+        const avgPoverty = activeList.length > 0 
+            ? (activeList.reduce((sum, r) => sum + (r.eicv_poverty_pct || 0), 0) / activeList.length).toFixed(1)
+            : "0.0";
+        const totalInvestment = allocCount * costPerUnit;
+
+        updateKPIs({
+            total_cropland_ha: totalCropland,
+            total_unirrigated_ha: totalUnirrigated,
+            target_units_count: `${allocCount} Allocated (${targetCount} Targets)`,
+            protected_ha_targeted: protectedHa,
+            target_share_pct: `${targetShare}% ${allocCount > 0 ? 'Allocated' : 'Target'} Share`,
+            target_poverty_share: avgPoverty,
+            total_investment_usd: totalInvestment
+        });
+
+        updateFilterCounts(currentRankings);
+    }
+
+    function downloadCustomCSV(rankings, level) {
+        const isDistrict = (level || "district").toLowerCase().includes("district");
+        const nameCol = isDistrict ? "NAME_2" : "NAME_3";
+
+        const headers = [
+            "Rank", "Administrative Unit", "Province", "Priority Score",
+            "Allocation Status", "Is Allocated (Boolean)", "Is Identified Target (Boolean)",
+            "Predicted Drought Risk (Prob)", "Unirrigated Cropland (ha)",
+            "EICV Poverty Rate (%)", "Dry Spell Days", "Soil Moisture (m³/m³)"
+        ];
+
+        const rows = rankings.map(r => [
+            r.allocated_subsidy_rank || "",
+            `"${(r[nameCol] || "").replace(/"/g, '""')}"`,
+            `"${(r.province || "").replace(/"/g, '""')}"`,
+            r.ssit_priority_score || "",
+            `"${r.target_status || ""}"`,
+            r.is_allocated ? "YES" : "NO",
+            r.is_identified_target ? "YES" : "NO",
+            r.predicted_stress_prob || "",
+            r.unirrigated_ha || "",
+            r.eicv_poverty_pct || "",
+            r.dry_spell_days || "",
+            r.real_soil_moisture_m3_m3 || ""
+        ]);
+
+        const csvContent = [headers.join(",")].concat(rows.map(e => e.join(","))).join("\n");
+        const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.setAttribute("href", url);
+        link.setAttribute("download", `agrishield_rwanda_ssit_deployment_${level}_customized.csv`);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+    }
+
     function renderTable(rankings, level) {
         const tbody = document.getElementById("table-body");
         if (!tbody) return;
 
-        const isDistrict = level.toLowerCase().includes("district");
+        updateFilterCounts(rankings);
+
+        const isDistrict = (level || "district").toLowerCase().includes("district");
         const nameKey = isDistrict ? "NAME_2" : "NAME_3";
 
-        let html = "";
-        rankings.forEach(r => {
-            const statusClass = r.selected_for_intervention ? "status-target" : "status-baseline";
-            html += `
+        // Filter according to currentAllocationFilter
+        const displayRankings = (rankings || []).filter(r => {
+            if (currentAllocationFilter === "all") return true;
+            if (currentAllocationFilter === "allocated") return !!r.is_allocated;
+            if (currentAllocationFilter === "identified") return !!r.is_identified_target;
+            if (currentAllocationFilter === "unallocated") return !r.is_allocated;
+            return true;
+        });
+
+        if (displayRankings.length === 0) {
+            let filterLabel = "All Units";
+            if (currentAllocationFilter === "allocated") filterLabel = "✅ Allocated Only";
+            else if (currentAllocationFilter === "identified") filterLabel = "🔍 Identified Targets Only";
+            else if (currentAllocationFilter === "unallocated") filterLabel = "Baseline (Unallocated) Only";
+
+            tbody.innerHTML = `
                 <tr>
+                    <td colspan="11" style="text-align: center; padding: 32px; color: #64748B; font-weight: 500;">
+                        No administrative units found for filter: <b>${filterLabel}</b>.
+                        ${currentAllocationFilter === "allocated" ? '<br/><span style="font-size: 0.85rem; color: #10b981; margin-top: 6px; display: inline-block;">Click "+ Allocate Pump" on any identified target or "+ Allocate All Identified" to allocate.</span>' : ''}
+                    </td>
+                </tr>
+            `;
+            return;
+        }
+
+        let html = "";
+        displayRankings.forEach(r => {
+            const isAlloc = !!r.is_allocated;
+            const isTarget = !!r.is_identified_target;
+            let statusClass = "status-baseline";
+            let statusLabel = "Baseline (Unallocated)";
+            let rowClass = "row-unallocated";
+
+            if (isAlloc) {
+                statusClass = "status-allocated";
+                statusLabel = "✅ Allocated";
+                rowClass = "row-allocated";
+            } else if (isTarget) {
+                statusClass = "status-identified";
+                statusLabel = "🔍 Identified Target";
+                rowClass = "row-identified";
+            }
+
+            const unitName = r[nameKey];
+
+            html += `
+                <tr class="${rowClass}">
                     <td><b>#${r.allocated_subsidy_rank}</b></td>
-                    <td><b>${r[nameKey]}</b></td>
+                    <td><b>${unitName}</b></td>
                     <td>${r.province}</td>
                     <td><b style="color: #f59e0b;">${r.ssit_priority_score}</b></td>
-                    <td><span class="status-badge ${statusClass}">${r.target_status}</span></td>
+                    <td>
+                        <span class="status-badge ${statusClass}">
+                            ${statusLabel}
+                        </span>
+                    </td>
+                    <td style="text-align: center;">
+                        <button type="button" 
+                            class="btn-alloc-toggle ${isAlloc ? 'btn-dealloc' : 'btn-alloc'}" 
+                            data-unit="${unitName}"
+                            title="${isAlloc ? 'Click to deallocate solar pump' : 'Click to allocate solar pump to ' + unitName}">
+                            ${isAlloc ? 'Deallocate ✕' : '+ Allocate Pump'}
+                        </button>
+                    </td>
                     <td>${r.predicted_stress_prob}</td>
                     <td>${r.unirrigated_ha.toLocaleString()} ha</td>
                     <td>${r.eicv_poverty_pct}%</td>
@@ -952,6 +1398,56 @@ document.addEventListener("DOMContentLoaded", function () {
                 if (indicator) indicator.remove();
                 appendChatMessage("bot", "❌ Failed to connect to NISR statistics service.");
             });
+        });
+    }
+
+    // Interactive Table Allocation Delegation
+    const tableBody = document.getElementById("table-body");
+    if (tableBody) {
+        tableBody.addEventListener("click", (e) => {
+            const btn = e.target.closest(".btn-alloc-toggle");
+            if (btn && btn.dataset.unit) {
+                toggleUnitAllocation(btn.dataset.unit);
+            }
+        });
+    }
+
+    // Interactive Table Filter Group (All / Allocated / Unallocated)
+    const tableFilterGroup = document.getElementById("table-filter-group");
+    if (tableFilterGroup) {
+        tableFilterGroup.addEventListener("click", (e) => {
+            const btn = e.target.closest("button[data-filter]");
+            if (btn) {
+                setAllocationFilter(btn.dataset.filter);
+            }
+        });
+    }
+
+    // Allocate All Targets Button
+    const btnAllocAll = document.getElementById("btn-allocate-all-targets");
+    if (btnAllocAll) {
+        btnAllocAll.addEventListener("click", () => {
+            allocateAllTargets();
+        });
+    }
+
+    // Reset Auto-Rank Allocation Button
+    const btnResetAlloc = document.getElementById("btn-reset-allocation");
+    if (btnResetAlloc) {
+        btnResetAlloc.addEventListener("click", () => {
+            const level = levelSelect ? levelSelect.value : currentGeoLevel;
+            clearPersistedAllocations(level);
+            triggerSimulation();
+        });
+    }
+
+    // Custom CSV Export Interceptor
+    if (btnExport) {
+        btnExport.addEventListener("click", (e) => {
+            if (currentRankings && currentRankings.length > 0) {
+                e.preventDefault();
+                downloadCustomCSV(currentRankings, levelSelect ? levelSelect.value : "district");
+            }
         });
     }
 

@@ -593,18 +593,111 @@ table.custom-table tr:hover {
     border-radius: 12px;
     font-size: 0.75rem;
     font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
 }
 
+.status-identified,
 .status-target {
-    background: rgba(215, 155, 82, 0.15);
-    color: var(--nisr-orange);
-    border: 1px solid rgba(215, 155, 82, 0.35);
+    background: rgba(245, 158, 11, 0.15);
+    color: #d97706;
+    border: 1px solid rgba(245, 158, 11, 0.35);
+}
+
+.status-allocated {
+    background: rgba(16, 185, 129, 0.15);
+    color: #059669;
+    border: 1px solid rgba(16, 185, 129, 0.35);
 }
 
 .status-baseline {
-    background: rgba(38, 91, 165, 0.12);
-    color: var(--nisr-primary);
-    border: 1px solid var(--nisr-wave-2);
+    background: rgba(100, 116, 139, 0.12);
+    color: #475569;
+    border: 1px solid rgba(148, 163, 184, 0.3);
+}
+
+/* Interactive Table Allocation Controls */
+.btn-alloc-toggle {
+    padding: 5px 12px;
+    border-radius: 6px;
+    font-size: 0.76rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    border: none;
+    outline: none;
+    white-space: nowrap;
+}
+
+.btn-alloc-toggle.btn-alloc {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: #ffffff;
+    box-shadow: 0 2px 6px rgba(16, 185, 129, 0.25);
+}
+
+.btn-alloc-toggle.btn-alloc:hover {
+    background: linear-gradient(135deg, #059669 0%, #047857 100%);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 10px rgba(16, 185, 129, 0.35);
+}
+
+.btn-alloc-toggle.btn-dealloc {
+    background: rgba(239, 68, 68, 0.12);
+    color: #dc2626;
+    border: 1px solid rgba(239, 68, 68, 0.35);
+}
+
+.btn-alloc-toggle.btn-dealloc:hover {
+    background: #ef4444;
+    color: #ffffff;
+    border-color: #ef4444;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 10px rgba(239, 68, 68, 0.3);
+}
+
+/* Row highlighting */
+table.custom-table tr.row-allocated {
+    background: rgba(16, 185, 129, 0.045);
+}
+table.custom-table tr.row-allocated:hover {
+    background: rgba(16, 185, 129, 0.09);
+}
+table.custom-table tr.row-identified {
+    background: rgba(245, 158, 11, 0.035);
+}
+table.custom-table tr.row-identified:hover {
+    background: rgba(245, 158, 11, 0.075);
+}
+
+/* Floating notice for map empty filter */
+.map-empty-overlay {
+    position: absolute;
+    top: 16px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 30;
+    background: rgba(15, 23, 42, 0.90);
+    backdrop-filter: blur(8px);
+    color: #f8fafc;
+    padding: 10px 20px;
+    border-radius: 24px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.35);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    pointer-events: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    animation: fadeInDown 0.25s ease-out;
+}
+@keyframes fadeInDown {
+    from { opacity: 0; transform: translate(-50%, -10px); }
+    to { opacity: 1; transform: translate(-50%, 0); }
 }
 
 /* Charts Containers */
