@@ -104,6 +104,17 @@ body {
     border: 1px solid var(--nisr-accent);
 }
 
+.officer-session-tag {
+    transition: all 0.2s ease;
+}
+
+.btn-logout-header:hover {
+    background: rgba(220, 38, 38, 0.14) !important;
+    border-color: #dc2626 !important;
+    color: #991b1b !important;
+    transform: translateY(-1px);
+}
+
 /* App Layout Grid */
 .app-layout {
     display: grid;

@@ -707,7 +707,15 @@
             <a href="{% url 'agrishield:landing' %}" class="nav-link active">Home</a>
             <a href="#gallery" class="nav-link">Field Operations</a>
             <a href="{% url 'agrishield:index' %}" class="nav-link">3D Spatial Engine</a>
+            {% if request.user.is_authenticated %}
+            <span class="officer-session-tag" style="font-size: 0.84rem; font-weight: 600; color: var(--nisr-primary); background: rgba(38, 91, 165, 0.08); padding: 6px 14px; border-radius: 20px; border: 1px solid rgba(38, 91, 165, 0.2);">
+                👤 {{ request.user.username }} (MINAGRI)
+            </span>
+            <a href="{% url 'agrishield:logout' %}" class="nav-link" style="color: #dc2626; font-weight: 600;">Log Out</a>
+            {% else %}
+            <a href="{% url 'agrishield:login' %}" class="nav-link" style="font-weight: 600; color: var(--nisr-primary);">Officer Sign-In</a>
             <a href="{% url 'agrishield:index' %}" class="btn-cta-nav">Launch Engine</a>
+            {% endif %}
         </nav>
     </header>
 

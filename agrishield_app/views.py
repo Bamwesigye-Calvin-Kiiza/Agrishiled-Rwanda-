@@ -3,10 +3,20 @@ import os
 import csv
 import pandas as pd
 import numpy as np
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import JsonResponse, HttpResponse
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 from django.views.decorators.csrf import csrf_exempt
 from pathlib import Path
+
+def api_login_required(view_func):
+    def _wrapped(request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return JsonResponse({"error": "Authentication required", "login_url": "/login/"}, status=401)
+        return view_func(request, *args, **kwargs)
+    return _wrapped
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -199,6 +209,37 @@ def landing_view(request):
     }
     return render(request, "agrishield_app/landing.html", context)
 
+def login_view(request):
+    if request.user.is_authenticated:
+        return redirect('agrishield:index')
+
+    error_msg = None
+    next_url = request.GET.get('next') or request.POST.get('next') or ''
+
+    if request.method == 'POST':
+        username = request.POST.get('username', '').strip()
+        password = request.POST.get('password', '')
+
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)
+            if next_url and next_url.startswith('/'):
+                return redirect(next_url)
+            return redirect('agrishield:index')
+        else:
+            error_msg = "Invalid officer credentials. Access is restricted to accredited MINAGRI & NISR personnel."
+
+    return render(request, "agrishield_app/login.html", {
+        "error_msg": error_msg,
+        "next": next_url,
+    })
+
+def logout_view(request):
+    logout(request)
+    messages.info(request, "You have been securely logged out of AgriShield Rwanda.")
+    return redirect('agrishield:landing')
+
+@login_required(login_url='agrishield:login')
 def index_view(request):
     cache = get_data_cache()
     metrics = cache["metrics"]
@@ -212,11 +253,13 @@ def index_view(request):
     }
     return render(request, "agrishield_app/index.html", context)
 
+@api_login_required
 def api_simulate(request):
     params = request.GET.dict() if request.method == "GET" else json.loads(request.body.decode("utf-8"))
     sim_result = perform_simulation(params)
     return JsonResponse(sim_result)
 
+@api_login_required
 def api_shap(request):
     cache = get_data_cache()
     level = request.GET.get("level", "district")
@@ -252,6 +295,7 @@ def api_shap(request):
         "contributions": feature_contributions
     })
 
+@login_required(login_url='agrishield:login')
 def api_export_csv(request):
     params = request.GET.dict()
     sim_result = perform_simulation(params)
@@ -285,6 +329,7 @@ def api_export_csv(request):
 
     return response
 
+@api_login_required
 def api_metrics(request):
     cache = get_data_cache()
     return JsonResponse(cache["metrics"])

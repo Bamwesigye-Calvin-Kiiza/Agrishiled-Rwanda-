@@ -41,9 +41,18 @@
                 <div class="brand-sub">Fusing NISR SAS Microdata & EICV Poverty Profiles with Climate Reanalysis</div>
             </div>
         </div>
-        <nav class="header-nav" style="display: flex; align-items: center; gap: 18px;">
+        <nav class="header-nav" style="display: flex; align-items: center; gap: 14px; flex-wrap: wrap;">
             <a href="{% url 'agrishield:landing' %}" class="nav-link" style="color: #4A6DAE; text-decoration: none; font-weight: 500; font-size: 0.9rem;">Home</a>
             <a href="{% url 'agrishield:index' %}" class="nav-link active" style="color: #265BA5; text-decoration: none; font-weight: 700; font-size: 0.9rem;">3D Spatial Engine</a>
+            {% if request.user.is_authenticated %}
+            <div class="officer-session-tag" title="Authorized Officer Session" style="display: inline-flex; align-items: center; gap: 6px; background: rgba(38, 91, 165, 0.08); padding: 5px 12px; border-radius: 20px; border: 1px solid rgba(38, 91, 165, 0.2); font-size: 0.82rem; color: #1e3a8a;">
+                <span style="font-weight: 700;">👤 {{ request.user.username }}</span>
+                <span style="color: #64748b; font-size: 0.74rem;">(MINAGRI SSIT)</span>
+            </div>
+            <a href="{% url 'agrishield:logout' %}" class="btn-logout-header" title="Sign out of AgriShield" style="color: #dc2626; text-decoration: none; font-weight: 600; font-size: 0.82rem; padding: 5px 12px; border-radius: 6px; border: 1px solid rgba(220, 38, 38, 0.3); background: rgba(220, 38, 38, 0.06); transition: all 0.2s ease;">
+                Log Out
+            </a>
+            {% endif %}
         </nav>
     </header>
 
