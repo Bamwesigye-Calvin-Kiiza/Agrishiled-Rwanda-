@@ -1,0 +1,1187 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+
+:root {
+  --nisr-primary:   #265BA5;
+  --nisr-logo:      #3158A4;
+  --nisr-accent:    #59A9E7;
+  --nisr-orange:    #D79B52;
+  --nisr-wave-1:    #4A6DAE;
+  --nisr-wave-2:    #849DC8;
+  --nisr-wave-3:    #B0C0DB;
+  --nisr-bar-gray:  #E7E9EB;
+  --nisr-bg-light:  #F2F5F9;
+  --nisr-white:     #FFFFFF;
+
+  --bg-dark:        #F2F5F9;
+  --card-bg:        #FFFFFF;
+  --border-color:   #B0C0DB;
+  --text-primary:   #1E293B;
+  --text-muted:     #4A6DAE;
+  --text-sub:       #64748B;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    background-color: var(--nisr-bg-light);
+    color: var(--text-primary);
+    line-height: 1.5;
+    overflow-x: hidden;
+}
+
+/* App Header */
+.app-header {
+    background: var(--nisr-white);
+    backdrop-filter: blur(16px);
+    border-bottom: 2px solid var(--nisr-bar-gray);
+    box-shadow: 0 2px 12px rgba(38, 91, 165, 0.08);
+    padding: 16px 32px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.brand-container {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.brand-logo {
+    width: 44px;
+    height: 44px;
+}
+
+.brand-title {
+    font-size: 1.45rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: var(--nisr-primary);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.brand-sub {
+    font-size: 0.82rem;
+    color: var(--nisr-wave-1);
+    font-weight: 500;
+}
+
+.badge-tag {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+}
+
+.badge-nst2 {
+    background: rgba(38, 91, 165, 0.12);
+    color: var(--nisr-primary);
+    border: 1px solid var(--nisr-wave-2);
+}
+
+.badge-track1 {
+    background: rgba(215, 155, 82, 0.15);
+    color: var(--nisr-orange);
+    border: 1px solid rgba(215, 155, 82, 0.35);
+}
+
+.badge-django {
+    background: rgba(89, 169, 231, 0.15);
+    color: var(--nisr-primary);
+    border: 1px solid var(--nisr-accent);
+}
+
+/* App Layout Grid */
+.app-layout {
+    display: grid;
+    grid-template-columns: 320px 1fr;
+    min-height: calc(100vh - 77px);
+}
+
+/* Sidebar Styling */
+.app-sidebar {
+    background: var(--nisr-white);
+    border-right: 1px solid var(--nisr-bar-gray);
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    box-shadow: 2px 0 10px rgba(38, 91, 165, 0.04);
+}
+
+.sidebar-section-title {
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--nisr-primary);
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.control-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 14px;
+}
+
+.control-label {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    display: flex;
+    justify-content: space-between;
+}
+
+.slider-val {
+    color: var(--nisr-primary);
+    font-weight: 700;
+}
+
+input[type="range"] {
+    accent-color: var(--nisr-primary);
+    width: 100%;
+    cursor: pointer;
+}
+
+select, input[type="number"] {
+    background: var(--nisr-bg-light);
+    border: 1px solid var(--nisr-wave-3);
+    border-radius: 8px;
+    padding: 8px 12px;
+    color: var(--text-primary);
+    font-family: inherit;
+    font-size: 0.88rem;
+    width: 100%;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+select:focus, input[type="number"]:focus {
+    border-color: var(--nisr-primary);
+}
+
+.preset-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+}
+
+.btn-preset {
+    background: var(--nisr-bg-light);
+    border: 1px solid var(--nisr-wave-3);
+    color: var(--nisr-primary);
+    padding: 8px 10px;
+    border-radius: 8px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: center;
+}
+
+.btn-preset:hover {
+    background: var(--nisr-primary);
+    color: var(--nisr-white);
+    font-weight: 700;
+    border-color: var(--nisr-primary);
+}
+
+/* Main Dashboard Area */
+.app-content {
+    padding: 28px 36px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+/* Metric Cards Ribbon */
+.metrics-ribbon {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 16px;
+}
+
+.metric-card {
+    background: var(--nisr-white);
+    border: 1px solid var(--nisr-wave-3);
+    border-radius: 14px;
+    padding: 18px 16px;
+    box-shadow: 0 4px 16px rgba(38, 91, 165, 0.06);
+    text-align: center;
+    transition: transform 0.2s, border-color 0.2s;
+}
+
+.metric-card:hover {
+    transform: translateY(-3px);
+    border-color: var(--nisr-accent);
+}
+
+.metric-title {
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--nisr-wave-1);
+    margin-bottom: 6px;
+}
+
+.metric-value {
+    font-size: 1.7rem;
+    font-weight: 800;
+    color: var(--nisr-primary);
+}
+
+.metric-sub {
+    font-size: 0.75rem;
+    color: var(--text-sub);
+    margin-top: 4px;
+}
+
+/* Tabs Navigation */
+.tabs-nav {
+    display: flex;
+    gap: 8px;
+    border-bottom: 2px solid var(--nisr-bar-gray);
+    padding-bottom: 12px;
+}
+
+.tab-btn {
+    background: transparent;
+    border: none;
+    color: var(--nisr-wave-1);
+    font-family: inherit;
+    font-size: 0.92rem;
+    font-weight: 600;
+    padding: 10px 18px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.tab-btn:hover {
+    color: var(--nisr-primary);
+    background: rgba(38, 91, 165, 0.08);
+}
+
+.tab-btn.active {
+    color: var(--nisr-white);
+    background: var(--nisr-primary);
+}
+
+/* Tab Content Panes */
+.tab-pane {
+    display: none;
+    animation: fadeIn 0.3s ease;
+}
+
+.tab-pane.active {
+    display: block;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Glass Section Container */
+.glass-box {
+    background: var(--nisr-white);
+    border: 1px solid var(--nisr-wave-3);
+    border-radius: 16px;
+    padding: 24px;
+    margin-bottom: 24px;
+    box-shadow: 0 4px 20px rgba(38, 91, 165, 0.06);
+}
+
+.glass-box-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.glass-box-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--nisr-primary);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* Map Canvas */
+.map-viewport-wrapper {
+    position: relative;
+    width: 100%;
+    margin-top: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    z-index: 1;
+    transition: all 0.25s ease;
+}
+
+/* Dedicated Map Control Toolbar - Positioned ABOVE the Map Area */
+.map-controls-toolbar {
+    position: relative;
+    width: 100%;
+    z-index: 5;
+    background: var(--nisr-white);
+    border: 1px solid var(--nisr-bar-gray);
+    border-radius: 12px;
+    padding: 12px 18px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    box-shadow: 0 2px 10px rgba(38, 91, 165, 0.06);
+    flex-wrap: wrap;
+    box-sizing: border-box;
+}
+
+/* Map Canvas Container */
+.map-canvas-container {
+    position: relative;
+    width: 100%;
+    border-radius: 14px;
+    overflow: hidden;
+    border: 1px solid var(--nisr-wave-3);
+    box-shadow: 0 4px 16px rgba(38, 91, 165, 0.1);
+}
+
+#deck-map-container {
+    width: 100%;
+    height: 580px;
+    position: relative;
+}
+
+/* Map Fullscreen Mode */
+.map-viewport-wrapper.is-fullscreen {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    z-index: 99999 !important;
+    margin: 0 !important;
+    border-radius: 0 !important;
+    border: none !important;
+    background: var(--nisr-bg-light) !important;
+    display: flex !important;
+    flex-direction: column !important;
+    padding: 16px 20px !important;
+    box-sizing: border-box !important;
+    gap: 12px !important;
+}
+
+.map-viewport-wrapper.is-fullscreen .map-controls-toolbar {
+    position: relative !important;
+    flex: 0 0 auto !important;
+    width: 100% !important;
+    background: #ffffff !important;
+    box-shadow: 0 4px 20px rgba(38, 91, 165, 0.15) !important;
+    border: 1px solid var(--nisr-wave-3) !important;
+}
+
+.map-viewport-wrapper.is-fullscreen .map-canvas-container {
+    flex: 1 1 auto !important;
+    width: 100% !important;
+    height: calc(100vh - 110px) !important;
+    border-radius: 12px !important;
+}
+
+.map-viewport-wrapper.is-fullscreen #deck-map-container {
+    width: 100% !important;
+    height: 100% !important;
+    border-radius: 12px !important;
+}
+
+.map-viewport-wrapper.is-fullscreen .map-legend-box {
+    bottom: 24px;
+    right: 24px;
+    box-shadow: 0 10px 35px rgba(38, 91, 165, 0.25);
+}
+
+.map-toolbar-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.map-toolbar-label {
+    font-size: 0.76rem;
+    font-weight: 700;
+    color: var(--nisr-wave-1);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    white-space: nowrap;
+}
+
+/* Segmented Buttons */
+.btn-group-segmented {
+    display: flex;
+    background: var(--nisr-bg-light);
+    border: 1px solid var(--nisr-wave-3);
+    border-radius: 8px;
+    padding: 2px;
+}
+
+.btn-segmented {
+    border: none;
+    background: transparent;
+    color: var(--nisr-wave-1);
+    font-size: 0.78rem;
+    font-weight: 600;
+    padding: 5px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-segmented.active {
+    background: var(--nisr-primary);
+    color: var(--nisr-white);
+    box-shadow: 0 2px 6px rgba(38, 91, 165, 0.25);
+}
+
+/* Dropdown & Range Controls */
+.map-select-control {
+    background: var(--nisr-white);
+    border: 1px solid var(--nisr-wave-3);
+    border-radius: 8px;
+    padding: 6px 12px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--nisr-primary);
+    outline: none;
+    cursor: pointer;
+}
+
+.map-range-control {
+    width: 80px;
+    accent-color: var(--nisr-primary);
+}
+
+.btn-map-action {
+    background: var(--nisr-white);
+    border: 1px solid var(--nisr-wave-2);
+    color: var(--nisr-primary);
+    font-weight: 700;
+    font-size: 0.78rem;
+    padding: 6px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-map-action:hover {
+    background: var(--nisr-primary);
+    color: var(--nisr-white);
+}
+
+/* Floating Map Legend Overlay */
+.map-legend-box {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    z-index: 10;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(12px);
+    border: 1px solid var(--nisr-wave-3);
+    border-radius: 12px;
+    padding: 14px 18px;
+    box-shadow: 0 8px 25px rgba(38, 91, 165, 0.15);
+    min-width: 220px;
+}
+
+.legend-header {
+    font-size: 0.82rem;
+    font-weight: 800;
+    color: var(--nisr-primary);
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+}
+
+.legend-bar-container {
+    height: 10px;
+    border-radius: 6px;
+    margin: 6px 0;
+    border: 1px solid var(--nisr-wave-3);
+}
+
+.legend-scale-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: var(--nisr-wave-1);
+}
+
+/* Custom Deck.gl Tooltip */
+.deck-tooltip {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    padding: 12px 14px;
+    background: var(--nisr-white);
+    color: #1E293B;
+    border-radius: 8px;
+    border: 1px solid var(--nisr-wave-2);
+    box-shadow: 0 10px 25px rgba(38, 91, 165, 0.18);
+    font-size: 0.85rem;
+    pointer-events: none;
+    z-index: 1000;
+}
+
+/* Schedule Table */
+.data-table-wrapper {
+    max-height: 380px;
+    overflow-y: auto;
+    border-radius: 10px;
+    border: 1px solid var(--nisr-wave-3);
+}
+
+table.custom-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+    text-align: left;
+}
+
+table.custom-table th {
+    background: var(--nisr-bg-light);
+    color: var(--nisr-primary);
+    padding: 12px 16px;
+    font-weight: 700;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    border-bottom: 2px solid var(--nisr-wave-3);
+}
+
+table.custom-table td {
+    padding: 10px 16px;
+    border-bottom: 1px solid var(--nisr-bar-gray);
+    color: #1E293B;
+}
+
+table.custom-table tr:hover {
+    background: rgba(89, 169, 231, 0.08);
+}
+
+.status-badge {
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 700;
+}
+
+.status-target {
+    background: rgba(215, 155, 82, 0.15);
+    color: var(--nisr-orange);
+    border: 1px solid rgba(215, 155, 82, 0.35);
+}
+
+.status-baseline {
+    background: rgba(38, 91, 165, 0.12);
+    color: var(--nisr-primary);
+    border: 1px solid var(--nisr-wave-2);
+}
+
+/* Charts Containers */
+.charts-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.btn-export {
+    background: var(--nisr-primary);
+    color: var(--nisr-white);
+    font-weight: 700;
+    padding: 12px 24px;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+    font-size: 0.9rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+    transition: all 0.2s;
+}
+
+.btn-export:hover {
+    background: var(--nisr-logo);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 14px rgba(38, 91, 165, 0.35);
+}
+
+/* Custom Weight Allocation Modal */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(38, 91, 165, 0.35);
+    backdrop-filter: blur(12px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.modal-card {
+    background: var(--nisr-white);
+    border: 1px solid var(--nisr-wave-2);
+    border-radius: 16px;
+    width: 90%;
+    max-width: 480px;
+    padding: 24px;
+    box-shadow: 0 20px 40px rgba(38, 91, 165, 0.2);
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.modal-close {
+    background: transparent;
+    border: none;
+    color: var(--nisr-wave-1);
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+.modal-close:hover {
+    color: var(--nisr-primary);
+}
+
+/* NISR AI Chatbot Floating Widget */
+#chatbot-widget-container {
+    position: fixed;
+    bottom: 24px;
+    right: 28px;
+    z-index: 10000;
+}
+
+.chatbot-fab {
+    background: linear-gradient(135deg, var(--nisr-primary) 0%, var(--nisr-logo) 100%);
+    color: var(--nisr-white);
+    font-weight: 800;
+    font-size: 0.92rem;
+    padding: 12px 20px;
+    border-radius: 30px;
+    border: none;
+    box-shadow: 0 8px 25px rgba(38, 91, 165, 0.35);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.chatbot-fab:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 30px rgba(38, 91, 165, 0.5);
+}
+
+.chatbot-window {
+    position: fixed;
+    bottom: 82px;
+    right: 28px;
+    width: 390px;
+    height: 500px;
+    background: var(--nisr-white);
+    border: 1px solid var(--nisr-wave-2);
+    border-radius: 16px;
+    box-shadow: 0 20px 50px rgba(38, 91, 165, 0.25);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    z-index: 10001;
+    animation: fadeIn 0.25s ease;
+}
+
+.chatbot-header {
+    background: var(--nisr-primary);
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--nisr-wave-3);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.chatbot-messages {
+    flex: 1;
+    padding: 14px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    background: var(--nisr-bg-light);
+}
+
+.chat-msg {
+    max-width: 88%;
+    padding: 10px 14px;
+    border-radius: 12px;
+    font-size: 0.84rem;
+    line-height: 1.45;
+    white-space: pre-wrap;
+}
+
+.chat-msg.bot-msg {
+    background: var(--nisr-white);
+    color: #1E293B;
+    border: 1px solid var(--nisr-wave-3);
+    align-self: flex-start;
+    border-bottom-left-radius: 2px;
+}
+
+.chat-msg.user-msg {
+    background: var(--nisr-primary);
+    color: var(--nisr-white);
+    font-weight: 600;
+    align-self: flex-end;
+    border-bottom-right-radius: 2px;
+}
+
+.chatbot-input-row {
+    display: flex;
+    padding: 10px;
+    background: var(--nisr-white);
+    border-top: 1px solid var(--nisr-bar-gray);
+    gap: 8px;
+}
+
+.chatbot-input-row input {
+    flex: 1;
+    background: var(--nisr-bg-light);
+    border: 1px solid var(--nisr-wave-3);
+    color: #1E293B;
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 0.85rem;
+}
+
+.chatbot-input-row button {
+    background: var(--nisr-primary);
+    color: var(--nisr-white);
+    border: none;
+    font-weight: 800;
+    padding: 8px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.chatbot-input-row button:hover {
+    background: var(--nisr-logo);
+}
+
+/* ==========================================================================
+   Comprehensive Mobile & Tablet Responsiveness System
+   ========================================================================== */
+
+/* Base mobile container safeguards */
+img, svg, canvas {
+    max-width: 100%;
+}
+
+/* Sidebar Mobile Accordion Toggle Header */
+.sidebar-mobile-toggle {
+    display: none;
+    width: 100%;
+    background: var(--nisr-white);
+    border: 1px solid var(--nisr-wave-3);
+    border-radius: 10px;
+    padding: 12px 16px;
+    font-weight: 700;
+    font-size: 0.9rem;
+    color: var(--nisr-primary);
+    cursor: pointer;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 2px 8px rgba(38, 91, 165, 0.06);
+    transition: all 0.2s;
+}
+
+.sidebar-mobile-toggle:hover {
+    background: var(--nisr-bg-light);
+    border-color: var(--nisr-primary);
+}
+
+.sidebar-mobile-toggle .toggle-icon {
+    font-size: 0.75rem;
+    transition: transform 0.2s ease;
+}
+
+.sidebar-mobile-toggle.active .toggle-icon {
+    transform: rotate(180deg);
+}
+
+.sidebar-inner {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* CV Metrics Grid for Tab 2 */
+.cv-metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-top: 18px;
+}
+
+/* --- Breakpoint 1: Large Tablets & Small Laptops (<= 1200px) --- */
+@media (max-width: 1200px) {
+    .metrics-ribbon {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 12px;
+    }
+}
+
+/* --- Breakpoint 2: Medium Tablets & Mobile Stacking (<= 992px) --- */
+@media (max-width: 992px) {
+    .app-header {
+        padding: 12px 20px;
+        flex-wrap: wrap;
+        gap: 12px;
+    }
+
+    .brand-title {
+        font-size: 1.25rem;
+        flex-wrap: wrap;
+    }
+
+    .badge-tag {
+        font-size: 0.65rem;
+        padding: 2px 8px;
+    }
+
+    .brand-sub {
+        font-size: 0.76rem;
+    }
+
+    /* Stack sidebar on top of main content */
+    .app-layout {
+        display: flex;
+        flex-direction: column;
+        min-height: auto;
+    }
+
+    .sidebar-mobile-toggle {
+        display: flex;
+    }
+
+    .app-sidebar {
+        width: 100%;
+        border-right: none;
+        border-bottom: 1px solid var(--nisr-bar-gray);
+        padding: 16px 20px;
+        box-shadow: 0 2px 8px rgba(38, 91, 165, 0.04);
+    }
+
+    .sidebar-inner {
+        display: none;
+    }
+
+    .sidebar-inner.is-open {
+        display: flex;
+        padding-top: 14px;
+    }
+
+    .app-content {
+        padding: 20px 18px;
+        gap: 20px;
+    }
+
+    .cv-metrics-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+    }
+
+    .charts-grid {
+        grid-template-columns: 1fr;
+        gap: 18px;
+    }
+
+    .map-controls-toolbar {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+    }
+
+    .map-toolbar-group {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .map-select-control {
+        width: 100%;
+        max-width: 100%;
+    }
+
+    .btn-group-segmented {
+        width: 100%;
+    }
+
+    .btn-segmented {
+        flex: 1;
+        text-align: center;
+    }
+
+    .map-controls-toolbar > div[style*="display: flex"] {
+        width: 100%;
+    }
+
+    .btn-map-action {
+        flex: 1;
+        text-align: center;
+        padding: 8px 12px;
+    }
+}
+
+/* --- Breakpoint 3: Portrait Tablets & Phablets (<= 768px) --- */
+@media (max-width: 768px) {
+    .app-header {
+        padding: 10px 16px;
+    }
+
+    .tabs-nav {
+        overflow-x: auto;
+        flex-wrap: nowrap;
+        -webkit-overflow-scrolling: touch;
+        gap: 8px;
+        padding-bottom: 8px;
+        margin-bottom: 16px;
+        scrollbar-width: none;
+    }
+
+    .tabs-nav::-webkit-scrollbar {
+        display: none;
+    }
+
+    .tab-btn {
+        flex-shrink: 0;
+        font-size: 0.82rem;
+        padding: 8px 14px;
+        white-space: nowrap;
+    }
+
+    .glass-box {
+        padding: 18px 16px;
+        border-radius: 14px;
+        margin-bottom: 18px;
+    }
+
+    .glass-box-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+
+    .glass-box-title {
+        font-size: 1.05rem;
+    }
+
+    #deck-map-container {
+        height: 420px;
+    }
+
+    .map-legend-box {
+        position: relative;
+        bottom: auto;
+        right: auto;
+        margin: 12px;
+        width: calc(100% - 24px);
+        min-width: unset;
+        box-shadow: 0 4px 14px rgba(38, 91, 165, 0.08);
+    }
+
+    /* Horizontal table scrolling */
+    .data-table-wrapper {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        width: 100%;
+    }
+
+    table.custom-table {
+        min-width: 720px;
+    }
+
+    /* Charts sizing */
+    #chart-global-shap,
+    #chart-shap-waterfall,
+    #chart-scatter,
+    #chart-prov-bar {
+        height: 330px !important;
+        width: 100% !important;
+    }
+}
+
+/* --- Breakpoint 4: Standard Mobile Phones (<= 640px) --- */
+@media (max-width: 640px) {
+    .app-header {
+        padding: 10px 12px;
+    }
+
+    .brand-container {
+        gap: 8px;
+    }
+
+    .brand-logo {
+        width: 34px;
+        height: 34px;
+    }
+
+    .brand-title {
+        font-size: 1.08rem;
+        gap: 4px;
+    }
+
+    .badge-tag {
+        font-size: 0.58rem;
+        padding: 2px 6px;
+    }
+
+    .brand-sub {
+        display: none;
+    }
+
+    .header-nav {
+        gap: 8px !important;
+    }
+
+    .header-nav .nav-link {
+        font-size: 0.78rem !important;
+        padding: 4px 8px;
+        border-radius: 6px;
+        background: rgba(38, 91, 165, 0.06);
+    }
+
+    .app-content {
+        padding: 14px 10px;
+        gap: 14px;
+    }
+
+    .app-sidebar {
+        padding: 14px 12px;
+    }
+
+    .metrics-ribbon {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+    }
+
+    .metric-card {
+        padding: 12px 8px;
+        border-radius: 10px;
+    }
+
+    .metric-title {
+        font-size: 0.65rem;
+        letter-spacing: 0.03em;
+        margin-bottom: 2px;
+    }
+
+    .metric-value {
+        font-size: 1.25rem;
+    }
+
+    .metric-sub {
+        font-size: 0.65rem;
+    }
+
+    .preset-grid {
+        gap: 6px;
+    }
+
+    .btn-preset {
+        padding: 7px 8px;
+        font-size: 0.74rem;
+    }
+
+    .glass-box {
+        padding: 14px 12px;
+        border-radius: 12px;
+    }
+
+    #deck-map-container {
+        height: 360px;
+    }
+
+    .cv-metrics-grid {
+        grid-template-columns: 1fr;
+        gap: 8px;
+    }
+
+    /* Modal Mobile Form */
+    .modal-card {
+        width: 94%;
+        padding: 18px 14px;
+        max-height: 90vh;
+        overflow-y: auto;
+    }
+
+    /* Chatbot Floating Window Mobile */
+    #chatbot-widget-container {
+        bottom: 14px;
+        right: 14px;
+    }
+
+    .chatbot-fab {
+        padding: 9px 15px;
+        font-size: 0.82rem;
+    }
+
+    .chatbot-window {
+        bottom: 68px;
+        right: 8px;
+        left: 8px;
+        width: calc(100vw - 16px);
+        height: calc(100vh - 90px);
+        max-height: 500px;
+        border-radius: 14px;
+    }
+}
+
+/* --- Breakpoint 5: Extra Narrow Phones (<= 380px) --- */
+@media (max-width: 380px) {
+    .metrics-ribbon {
+        grid-template-columns: 1fr;
+    }
+    
+    .brand-title {
+        font-size: 0.95rem;
+    }
+
+    .btn-segmented {
+        font-size: 0.72rem;
+        padding: 5px 6px;
+    }
+}
+

@@ -203,6 +203,28 @@ document.addEventListener("DOMContentLoaded", function () {
         triggerSimulation();
     }
 
+    function updateBudgetSliderLimits() {
+        if (!levelSelect || !sliderBudget) return;
+        const isDistrict = levelSelect.value.toLowerCase().includes("district");
+        const maxK = isDistrict ? 30 : 422;
+        
+        sliderBudget.min = "1";
+        sliderBudget.max = String(maxK);
+        
+        const labelBudgetMax = document.getElementById("label-budget-max");
+        if (labelBudgetMax) {
+            labelBudgetMax.textContent = `Max: ${maxK} (${isDistrict ? '30 Districts' : '422 Sectors'})`;
+        }
+
+        let currentVal = parseInt(sliderBudget.value, 10) || 10;
+        if (currentVal > maxK) {
+            sliderBudget.value = maxK;
+        } else if (currentVal < 1) {
+            sliderBudget.value = 1;
+        }
+        if (valBudget) valBudget.textContent = sliderBudget.value;
+    }
+
     function updateSliderDisplays() {
         if (valStress) valStress.textContent = `${currentWeights.w1.toFixed(2)} (${Math.round(currentWeights.w1 * 100)}%)`;
         if (valCropland) valCropland.textContent = `${currentWeights.w2.toFixed(2)} (${Math.round(currentWeights.w2 * 100)}%)`;
@@ -210,7 +232,15 @@ document.addEventListener("DOMContentLoaded", function () {
         if (valBudget && sliderBudget) valBudget.textContent = sliderBudget.value;
     }
 
-    [sliderBudget, inputCost, provinceSelect, levelSelect].forEach(input => {
+    if (levelSelect) {
+        levelSelect.addEventListener("change", () => {
+            updateBudgetSliderLimits();
+            updateSliderDisplays();
+            triggerSimulation();
+        });
+    }
+
+    [sliderBudget, inputCost, provinceSelect].forEach(input => {
         if (input) {
             input.addEventListener("change", () => {
                 updateSliderDisplays();
@@ -928,6 +958,7 @@ document.addEventListener("DOMContentLoaded", function () {
     // Initialize Deck.gl Map and trigger initial simulation
     if (document.getElementById("deck-map-container")) {
         initDeckGLMap();
+        updateBudgetSliderLimits();
         updateSliderDisplays();
         triggerSimulation();
 

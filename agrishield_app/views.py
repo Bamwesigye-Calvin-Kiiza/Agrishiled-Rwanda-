@@ -84,6 +84,8 @@ def perform_simulation(params):
     w_poverty = float(params.get("w_poverty", 0.20))
     
     budget_units = int(params.get("budget_units", 10 if level_key == "district" else 40))
+    max_k = 30 if level_key == "district" else 422
+    budget_units = max(1, min(budget_units, max_k))
     cost_per_unit = float(params.get("unit_cost", 1200.0))
 
     total_w = w_stress + w_cropland + w_poverty

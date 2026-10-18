@@ -106,7 +106,11 @@
                         <span>SSIT Pump Ceiling (K)</span>
                         <span class="slider-val" id="val-budget">10</span>
                     </div>
-                    <input type="range" id="slider-budget" min="1" max="100" step="1" value="10">
+                    <input type="range" id="slider-budget" min="1" max="30" step="1" value="10">
+                    <div style="display: flex; justify-content: space-between; font-size: 0.72rem; color: #64748B; margin-top: 4px;">
+                        <span>Min: 1</span>
+                        <span id="label-budget-max">Max: 30 (30 Districts)</span>
+                    </div>
                 </div>
 
                 <div class="control-group">
@@ -432,6 +436,6 @@
     </div>
 
     <!-- Application JavaScript Controller -->
-    <script src="{% static 'agrishield_app/js/app.js' %}?v=20261011_5"></script>
+    <script src="{% static 'agrishield_app/js/app.js' %}?v=20261018_1"></script>
 </body>
 </html>
