@@ -197,7 +197,7 @@ def landing_view(request):
     cache = get_data_cache()
     metrics = cache.get("metrics", {})
     initial_sim = perform_simulation({"level": "district", "budget_units": 5})
-    top_districts = initial_sim.get("ranked_list", [])[:5]
+    top_districts = initial_sim.get("rankings", [])[:5]
     
     context = {
         "metrics": metrics,
@@ -208,6 +208,7 @@ def landing_view(request):
         "sector_count": 422
     }
     return render(request, "agrishield_app/landing.html", context)
+
 
 def login_view(request):
     if request.user.is_authenticated:
