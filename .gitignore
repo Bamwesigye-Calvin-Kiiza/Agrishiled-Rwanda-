@@ -1,0 +1,50 @@
+# Environment variables & sensitive API keys
+.env
+.env.*
+!.env.example
+*.env
+
+# SQLite databases & local credentials
+*.sqlite3
+*.db
+db_persist/
+
+# Python compiled bytecode & caches
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Virtual Environments
+venv/
+env/
+ENV/
+.venv/
+
+# Operating System Files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# IDEs & Editor configurations
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Static collection output (Django production builds)
+staticfiles/
+
+# Logs & temporary files
+*.log
+logs/
+tmp/
+
