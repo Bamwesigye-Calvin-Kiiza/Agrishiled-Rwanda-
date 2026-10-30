@@ -43,8 +43,16 @@ Thumbs.db
 # Static collection output (Django production builds)
 staticfiles/
 
+# Large media files (videos tracked via cloud link in README)
+*.mp4
+*.webm
+*.mov
+*.avi
+AgriShield_Rwanda.mp4
+
 # Logs & temporary files
 *.log
 logs/
 tmp/
 
+AgriShield_Rwanda.mp4

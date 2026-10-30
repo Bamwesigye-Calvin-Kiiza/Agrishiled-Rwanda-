@@ -72,7 +72,15 @@ Open `http://127.0.0.1:8000/` in your browser.
 
 ---
 
-## 6. Student Eligibility Verification
+## 6. Demonstration Video
+
+A video demonstration highlighting the user interface, 3D geospatial engine, real-time multi-criteria subsidy targeting, and deployment CSV export is available directly in the project root:
+
+- **File**: [`AgriShield_Rwanda.mp4`](AgriShield_Rwanda.mp4)
+
+---
+
+## 7. Student Eligibility Verification
 
 Official eligibility verification documents for both team members are provided in the [`eligibility/`](eligibility/) directory:
 
