@@ -4,7 +4,7 @@
 
 ## 1. Problem Statement
 
-Rwanda’s agricultural sector faces significant challenges due to climate variability, limited irrigation infrastructure, and high poverty rates in many districts. Decision‑makers need **granular, district‑and sector‑level data** that combine:
+Rwanda’s agricultural sector faces significant challenges due to climate variability, limited irrigation infrastructure, and high poverty rates in many districts. Decision‑makers need **granular, district‑ and sector‑level data** that combine:
 
 - **Historical and projected climate variables** (precipitation, temperature, soil moisture).
 - **Agricultural land use metrics** (total cropland, irrigated vs. unirrigated areas).
@@ -118,4 +118,3 @@ flowchart TD
 ---
 
 *This document provides a high‑level view of the AgriShield Rwanda project, suitable for stakeholders, data scientists, and developers who wish to understand or extend the pipeline.*
-
