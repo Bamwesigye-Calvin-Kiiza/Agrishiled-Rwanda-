@@ -74,9 +74,10 @@ Open `http://127.0.0.1:8000/` in your browser.
 
 ## 6. Demonstration Video
 
-A video demonstration highlighting the user interface, 3D geospatial engine, real-time multi-criteria subsidy targeting, and deployment CSV export is available directly in the project root:
+A video demonstration highlighting the user interface, 3D geospatial engine, real-time multi-criteria subsidy targeting, and deployment CSV export is available online:
 
-- **File**: [`AgriShield_Rwanda.mp4`](AgriShield_Rwanda.mp4)
+- **Watch / Download Video (Google Drive)**: [AgriShield Rwanda Demonstration Video](https://drive.google.com/file/d/1o5d9ZhjGChBymDgfnRMh8Z3HZkEyaaRf/view?usp=sharing)
+- **Local File**: [`AgriShield_Rwanda.mp4`](AgriShield_Rwanda.mp4) (available in local workspace root)
 
 ---
 
