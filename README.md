@@ -6,11 +6,11 @@
 
 To access the interactive dashboard and spatial prioritization engine:
 
-| Field | Value |
-|---|---|
+| Field               | Value                                                                |
+| ------------------- | -------------------------------------------------------------------- |
 | **Login URL** | `http://127.0.0.1:8000/login/` (or `/login/` on deployed server) |
-| **Username** | `minagri_officer` |
-| **Password** | `AgriShield2026!` |
+| **Username**  | `minagri_officer`                                                  |
+| **Password**  | `AgriShield2026!`                                                  |
 
 ---
 
@@ -18,15 +18,16 @@ To access the interactive dashboard and spatial prioritization engine:
 
 The application integrates official agricultural statistics, socio-economic surveys, and meteorological reanalysis:
 
-| Dataset | Source | Purpose | Link |
-|---|---|---|---|
-| **District Boundaries (GADM Level 2)** | GADM v4.1 | Spatial polygons and centroids for Rwanda's 30 districts | [GADM Rwanda](https://gadm.org/download_country_v3.html) |
-| **Sector Boundaries (GADM Level 3)** | GADM v4.1 | Spatial polygons for Rwanda's 422 sectors | [GADM Rwanda](https://gadm.org/download_country_v3.html) |
-| **NISR SAS Cropland & Irrigation Baselines** | National Institute of Statistics of Rwanda (NISR) | District cropland area (ha) and irrigated vs. unirrigated hectares | [NISR Portal](https://www.statistics.gov.rw) |
-| **NISR EICV Poverty Indices** | NISR Integrated Household Living Conditions Survey (EICV) | District & sector household poverty incidence percentages | [NISR Portal](https://www.statistics.gov.rw) |
-| **ERA5-Land Climate Reanalysis** | ECMWF / Open-Meteo API | Daily precipitation, mean temperature, 0–7cm soil moisture deficit, and dry spell days (<1mm) | [Open-Meteo API](https://open-meteo.com/en/docs/historical-weather-api) |
+| Dataset                                            | Source                                                    | Purpose                                                                                        | Link                                                                   |
+| -------------------------------------------------- | --------------------------------------------------------- | ---------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------- |
+| **District Boundaries (GADM Level 2)**       | GADM v4.1                                                 | Spatial polygons and centroids for Rwanda's 30 districts                                       | [GADM Rwanda](https://gadm.org/download_country_v3.html)                |
+| **Sector Boundaries (GADM Level 3)**         | GADM v4.1                                                 | Spatial polygons for Rwanda's 422 sectors                                                      | [GADM Rwanda](https://gadm.org/download_country_v3.html)                |
+| **NISR SAS Cropland & Irrigation Baselines** | National Institute of Statistics of Rwanda (NISR)         | District cropland area (ha) and irrigated vs. unirrigated hectares                             | [NISR Portal](https://www.statistics.gov.rw)                            |
+| **NISR EICV Poverty Indices**                | NISR Integrated Household Living Conditions Survey (EICV) | District & sector household poverty incidence percentages                                      | [NISR Portal](https://www.statistics.gov.rw)                            |
+| **ERA5-Land Climate Reanalysis**             | ECMWF / Open-Meteo API                                    | Daily precipitation, mean temperature, 0–7cm soil moisture deficit, and dry spell days (<1mm) | [Open-Meteo API](https://open-meteo.com/en/docs/historical-weather-api) |
 
 All processed datasets are available locally in the `data/processed/` directory:
+
 - `data/processed/sas_district_baseline.csv` (30 districts)
 - `data/processed/sas_sector_baseline.csv` (422 sectors)
 - `data/processed/district_predictions.csv` & `sector_predictions.csv` (ML risk predictions)
@@ -77,7 +78,6 @@ Open `http://127.0.0.1:8000/` in your browser.
 A video demonstration highlighting the user interface, 3D geospatial engine, real-time multi-criteria subsidy targeting, and deployment CSV export is available online:
 
 - **Watch / Download Video (Google Drive)**: [AgriShield Rwanda Demonstration Video](https://drive.google.com/file/d/1o5d9ZhjGChBymDgfnRMh8Z3HZkEyaaRf/view?usp=sharing)
-- **Local File**: [`AgriShield_Rwanda.mp4`](AgriShield_Rwanda.mp4) (available in local workspace root)
 
 ---
 
@@ -85,7 +85,7 @@ A video demonstration highlighting the user interface, 3D geospatial engine, rea
 
 Official eligibility verification documents for both team members are provided in the [`eligibility/`](eligibility/) directory:
 
-| Team Member | Verification Document | Link |
-|---|---|---|
-| **Calvin Bamwesigye Kiiza** | Student Card / Eligibility Proof | [Calvin Bamwesigye Kiiza.png](eligibility/Calvin%20Bamwesigye%20Kiiza.png) |
-| **Irakoze Carine Uwase** | Student Card / Eligibility Proof | [Irakoze Carine Uwase.png](eligibility/Irakoze%20Carine%20Uwase.png) |
+| Team Member                       | Verification Document            | Link                                                                        |
+| --------------------------------- | -------------------------------- | --------------------------------------------------------------------------- |
+| **Calvin Bamwesigye Kiiza** | Student Card / Eligibility Proof | [Calvin Bamwesigye Kiiza.png](<eligibility/Calvin%20Bamwesigye%20Kiiza.png>) |
+| **Irakoze Carine Uwase**    | Student Card / Eligibility Proof | [Irakoze Carine Uwase.png](<eligibility/Irakoze%20Carine%20Uwase.png>)       |
