@@ -35,30 +35,37 @@ These files are ready for downstream modelling, visualisation, or policy analysi
 
 ```mermaid
 flowchart TD
-    subgraph RawData[Raw Data Sources]
-        A[District GeoJSON (GADM)]
-        B[Sector GeoJSON (GADM)]
-        C[NISR Survey Data (CSV/JSON)]
-        D[ERA5‑Land Climate API]
+    subgraph RawData["Raw Data Sources"]
+        A["District GeoJSON (GADM)"]
+        B["Sector GeoJSON (GADM)"]
+        C["NISR Survey Data (CSV/JSON)"]
+        D["ERA5-Land Climate API"]
     end
-    subgraph Processing[Processing Steps]
-        E[Extract District Centroids]
-        F[Merge NISR with Centroids]
-        G[Query ERA5‑Land per District]
-        H[Compute Empirical Moisture Stress]
-        I[Generate District CSV]
-        J[Generate Sector Micro‑data]
-        K[Write Processed CSVs]
+    subgraph Processing["Processing Steps"]
+        E["Extract District Centroids"]
+        F["Merge NISR with Centroids"]
+        G["Query ERA5-Land per District"]
+        H["Compute Empirical Moisture Stress"]
+        I["Generate District CSV"]
+        J["Generate Sector Micro-data"]
+        K["Write Processed CSVs"]
     end
-    subgraph Output[Outputs]
-        L[ data/processed/sas_district_baseline.csv ]
-        M[ data/processed/sas_sector_baseline.csv ]
+    subgraph Output["Outputs"]
+        L["data/processed/sas_district_baseline.csv"]
+        M["data/processed/sas_sector_baseline.csv"]
     end
 
-    A --> E --> F --> G --> H --> I --> L
-    B --> J --> K --> M
+    A --> E
+    E --> F
     C --> F
+    F --> G
     D --> G
+    G --> H
+    H --> I
+    I --> L
+    B --> J
+    J --> K
+    K --> M
 ```
 
 ---
