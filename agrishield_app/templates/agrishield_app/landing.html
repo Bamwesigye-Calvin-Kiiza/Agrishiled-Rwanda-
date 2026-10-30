@@ -1,14 +1,21 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NISR AgriShield Rwanda — Spatial AI Engine for Climate Resilience</title>
-    
+
+    <!-- Browser Tab Favicon -->
+    <link rel="icon" type="image/png" href="https://img.icons8.com/color/96/wheat.png">
+    <link rel="apple-touch-icon" href="https://img.icons8.com/color/96/wheat.png">
+
     <meta name="google-site-verification" content="1g5GQ3T7AkBunaFbylI42NrBHBj2S0W5A0kZMRpTZbk" />
-    <meta name="description" content="NISR AgriShield Rwanda: Spatial AI Engine for Climate Resilience and Small-Scale Irrigation Technology (SSIT) solar pump subsidy targeting for MINAGRI & RAB under NST2.">
-    <meta name="keywords" content="Rwanda, NISR, AgriShield, SSIT, Irrigation, Climate Resilience, MINAGRI, RAB, EICV, Agriculture, Smallholder Farmers, Solar Pumps, Spatial AI">
+    <meta name="description"
+        content="NISR AgriShield Rwanda: Spatial AI Engine for Climate Resilience and Small-Scale Irrigation Technology (SSIT) solar pump subsidy targeting for MINAGRI & RAB under NST2.">
+    <meta name="keywords"
+        content="Rwanda, NISR, AgriShield, SSIT, Irrigation, Climate Resilience, MINAGRI, RAB, EICV, Agriculture, Smallholder Farmers, Solar Pumps, Spatial AI">
     <meta name="author" content="NISR Hackathon 2026 - AgriShield Rwanda">
     <link rel="canonical" href="https://agrishieldrw.com/">
 
@@ -16,14 +23,16 @@
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://agrishieldrw.com/">
     <meta property="og:title" content="NISR AgriShield Rwanda — Spatial AI Engine for Climate Resilience">
-    <meta property="og:description" content="Data-Driven Spatial AI targeting Small-Scale Irrigation Technology (SSIT) solar pump subsidies by fusing NISR SAS microdata, EICV poverty indices, and climate reanalysis.">
+    <meta property="og:description"
+        content="Data-Driven Spatial AI targeting Small-Scale Irrigation Technology (SSIT) solar pump subsidies by fusing NISR SAS microdata, EICV poverty indices, and climate reanalysis.">
     <meta property="og:site_name" content="AgriShield Rwanda">
 
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:url" content="https://agrishieldrw.com/">
     <meta name="twitter:title" content="NISR AgriShield Rwanda — Spatial AI Engine for Climate Resilience">
-    <meta name="twitter:description" content="Data-Driven Spatial AI targeting Small-Scale Irrigation Technology (SSIT) solar pump subsidies by fusing NISR SAS microdata, EICV poverty indices, and climate reanalysis.">
+    <meta name="twitter:description"
+        content="Data-Driven Spatial AI targeting Small-Scale Irrigation Technology (SSIT) solar pump subsidies by fusing NISR SAS microdata, EICV poverty indices, and climate reanalysis.">
 
     <!-- Structured Data (JSON-LD) for Google Search Engine -->
     <script type="application/ld+json">
@@ -41,11 +50,12 @@
       }
     }
     </script>
-    
+
     <!-- CSS Stylesheet -->
     <link rel="stylesheet" href="{% static 'agrishield_app/css/styles.css' %}?v=20261018_publicmap">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+
     <style>
         /* Landing Page Custom Styling */
         body {
@@ -112,7 +122,8 @@
             transition: color 0.2s ease;
         }
 
-        .nav-link:hover, .nav-link.active {
+        .nav-link:hover,
+        .nav-link.active {
             color: var(--nisr-primary);
             font-weight: 700;
         }
@@ -513,23 +524,29 @@
             .landing-header {
                 padding: 14px 24px;
             }
+
             .hero-title {
                 font-size: 2.6rem;
             }
+
             .hero-subtitle {
                 font-size: 1.05rem;
             }
+
             .section-container {
                 margin: 50px auto;
                 padding: 0 16px;
             }
+
             .section-title {
                 font-size: 1.85rem;
             }
+
             .cta-banner {
                 padding: 40px 24px;
                 margin: 50px auto;
             }
+
             .cta-title {
                 font-size: 1.85rem;
             }
@@ -541,19 +558,24 @@
                 flex-wrap: wrap;
                 gap: 12px;
             }
+
             .brand-pill {
                 gap: 8px;
             }
+
             .brand-logo-img {
                 width: 36px;
                 height: 36px;
             }
+
             .brand-name {
                 font-size: 1.15rem;
             }
+
             .brand-tag {
                 font-size: 0.7rem;
             }
+
             .nav-menu {
                 gap: 10px;
                 flex-wrap: wrap;
@@ -562,136 +584,167 @@
                 border-top: 1px solid var(--nisr-bar-gray);
                 padding-top: 10px;
             }
+
             .nav-link {
                 font-size: 0.82rem;
                 padding: 4px 6px;
 
-            .btn-cta-nav {
-                padding: 8px 14px;
-                font-size: 0.82rem;
-            }
-            .hero-section {
-                padding: 40px 16px 36px;
-            }
-            .hero-badge {
-                font-size: 0.72rem;
-                padding: 4px 12px;
-                margin-bottom: 16px;
-            }
-            .hero-title {
-                font-size: 1.95rem;
-                margin-bottom: 12px;
-                line-height: 1.2;
-            }
-            .hero-subtitle {
-                font-size: 0.95rem;
-                margin-bottom: 24px;
-                line-height: 1.5;
-            }
-            .hero-cta-group {
-                flex-direction: column;
-                width: 100%;
-                max-width: 320px;
-                margin: 0 auto 30px;
-                gap: 12px;
-            }
-            .btn-hero-primary, .btn-hero-secondary {
-                width: 100%;
-                text-align: center;
-                justify-content: center;
-                padding: 14px 20px;
-                font-size: 0.95rem;
-            }
-            .stats-grid {
-                grid-template-columns: repeat(2, 1fr);
-                gap: 10px;
-                padding: 0 10px;
-            }
-            .stat-card-landing {
-                padding: 16px 10px;
-                border-radius: 12px;
-            }
-            .stat-val-landing {
-                font-size: 1.6rem;
-            }
-            .stat-lbl-landing {
-                font-size: 0.72rem;
-            }
-            .features-grid {
-                grid-template-columns: 1fr;
-                gap: 16px;
-            }
-            .feature-card {
-                padding: 22px 18px;
-                border-radius: 14px;
-            }
-            .feature-h3 {
-                font-size: 1.15rem;
-            }
-            .feature-p {
-                font-size: 0.9rem;
-            }
-            .priority-teaser-box {
-                padding: 20px 16px;
-                border-radius: 14px;
-            }
-            .district-pill-grid {
-                grid-template-columns: repeat(2, 1fr);
-                gap: 10px;
-            }
-            .district-pill {
-                padding: 12px 10px;
-            }
-            .district-pill-name {
-                font-size: 0.95rem;
-            }
-            .gallery-grid {
-                grid-template-columns: 1fr;
-                gap: 16px;
-            }
-            .gallery-card {
-                height: 240px;
-                border-radius: 14px;
-            }
-            .gallery-overlay {
-                padding: 16px;
-            }
-            .gallery-title {
-                font-size: 1.15rem;
-            }
-            .gallery-desc {
-                font-size: 0.82rem;
-            }
-            .cta-banner {
-                padding: 30px 16px;
-                border-radius: 16px;
-                margin: 40px auto;
-            }
-            .cta-title {
-                font-size: 1.5rem;
-            }
-            .cta-desc {
-                font-size: 0.92rem;
-            }
-            .landing-footer {
-                padding: 30px 16px;
-            }
-        }
+                .btn-cta-nav {
+                    padding: 8px 14px;
+                    font-size: 0.82rem;
+                }
 
-        @media (max-width: 440px) {
-            .stats-grid {
-                grid-template-columns: 1fr;
-            }
-            .district-pill-grid {
-                grid-template-columns: 1fr;
-            }
-            .hero-title {
-                font-size: 1.7rem;
-            }
-        }
+                .hero-section {
+                    padding: 40px 16px 36px;
+                }
 
+                .hero-badge {
+                    font-size: 0.72rem;
+                    padding: 4px 12px;
+                    margin-bottom: 16px;
+                }
+
+                .hero-title {
+                    font-size: 1.95rem;
+                    margin-bottom: 12px;
+                    line-height: 1.2;
+                }
+
+                .hero-subtitle {
+                    font-size: 0.95rem;
+                    margin-bottom: 24px;
+                    line-height: 1.5;
+                }
+
+                .hero-cta-group {
+                    flex-direction: column;
+                    width: 100%;
+                    max-width: 320px;
+                    margin: 0 auto 30px;
+                    gap: 12px;
+                }
+
+                .btn-hero-primary,
+                .btn-hero-secondary {
+                    width: 100%;
+                    text-align: center;
+                    justify-content: center;
+                    padding: 14px 20px;
+                    font-size: 0.95rem;
+                }
+
+                .stats-grid {
+                    grid-template-columns: repeat(2, 1fr);
+                    gap: 10px;
+                    padding: 0 10px;
+                }
+
+                .stat-card-landing {
+                    padding: 16px 10px;
+                    border-radius: 12px;
+                }
+
+                .stat-val-landing {
+                    font-size: 1.6rem;
+                }
+
+                .stat-lbl-landing {
+                    font-size: 0.72rem;
+                }
+
+                .features-grid {
+                    grid-template-columns: 1fr;
+                    gap: 16px;
+                }
+
+                .feature-card {
+                    padding: 22px 18px;
+                    border-radius: 14px;
+                }
+
+                .feature-h3 {
+                    font-size: 1.15rem;
+                }
+
+                .feature-p {
+                    font-size: 0.9rem;
+                }
+
+                .priority-teaser-box {
+                    padding: 20px 16px;
+                    border-radius: 14px;
+                }
+
+                .district-pill-grid {
+                    grid-template-columns: repeat(2, 1fr);
+                    gap: 10px;
+                }
+
+                .district-pill {
+                    padding: 12px 10px;
+                }
+
+                .district-pill-name {
+                    font-size: 0.95rem;
+                }
+
+                .gallery-grid {
+                    grid-template-columns: 1fr;
+                    gap: 16px;
+                }
+
+                .gallery-card {
+                    height: 240px;
+                    border-radius: 14px;
+                }
+
+                .gallery-overlay {
+                    padding: 16px;
+                }
+
+                .gallery-title {
+                    font-size: 1.15rem;
+                }
+
+                .gallery-desc {
+                    font-size: 0.82rem;
+                }
+
+                .cta-banner {
+                    padding: 30px 16px;
+                    border-radius: 16px;
+                    margin: 40px auto;
+                }
+
+                .cta-title {
+                    font-size: 1.5rem;
+                }
+
+                .cta-desc {
+                    font-size: 0.92rem;
+                }
+
+                .landing-footer {
+                    padding: 30px 16px;
+                }
+            }
+
+            @media (max-width: 440px) {
+                .stats-grid {
+                    grid-template-columns: 1fr;
+                }
+
+                .district-pill-grid {
+                    grid-template-columns: 1fr;
+                }
+
+                .hero-title {
+                    font-size: 1.7rem;
+                }
+            }
     </style>
 </head>
+
 <body>
 
     <!-- Header -->
@@ -709,12 +762,15 @@
             <a href="#gallery" class="nav-link">Field Operations</a>
             <a href="{% url 'agrishield:index' %}" class="nav-link">3D Spatial Engine</a>
             {% if request.user.is_authenticated %}
-            <span class="officer-session-tag" style="font-size: 0.84rem; font-weight: 600; color: var(--nisr-primary); background: rgba(38, 91, 165, 0.08); padding: 6px 14px; border-radius: 20px; border: 1px solid rgba(38, 91, 165, 0.2);">
+            <span class="officer-session-tag"
+                style="font-size: 0.84rem; font-weight: 600; color: var(--nisr-primary); background: rgba(38, 91, 165, 0.08); padding: 6px 14px; border-radius: 20px; border: 1px solid rgba(38, 91, 165, 0.2);">
                 👤 {{ request.user.username }} (MINAGRI)
             </span>
-            <a href="{% url 'agrishield:logout' %}" class="nav-link" style="color: #dc2626; font-weight: 600;">Log Out</a>
+            <a href="{% url 'agrishield:logout' %}" class="nav-link" style="color: #dc2626; font-weight: 600;">Log
+                Out</a>
             {% else %}
-            <a href="{% url 'agrishield:login' %}" class="nav-link" style="font-weight: 600; color: var(--nisr-primary);">Officer Sign-In</a>
+            <a href="{% url 'agrishield:login' %}" class="nav-link"
+                style="font-weight: 600; color: var(--nisr-primary);">Officer Sign-In</a>
             <a href="{% url 'agrishield:index' %}" class="btn-cta-nav">Launch Engine</a>
             {% endif %}
         </nav>
@@ -729,7 +785,9 @@
             Data-Driven Spatial AI for <span>Rwanda’s Climate Resilience</span>
         </h1>
         <p class="hero-subtitle">
-            Empowering Ministry of Agriculture (MINAGRI) and RAB to target 50% Small-Scale Irrigation Technology (SSIT) solar pump subsidies by fusing NISR SAS cropland microdata, EICV household poverty indices, and Earth Observation climate reanalysis.
+            Empowering Ministry of Agriculture (MINAGRI) and RAB to target 50% Small-Scale Irrigation Technology (SSIT)
+            solar pump subsidies by fusing NISR SAS cropland microdata, EICV household poverty indices, and Earth
+            Observation climate reanalysis.
         </p>
 
         <div class="hero-cta-group">
@@ -773,48 +831,75 @@
             <div class="feature-card">
                 <h3 class="feature-h3">Seasonal Dry Spell Vulnerability</h3>
                 <p class="feature-p">
-                    Over 845,000 hectares of smallholder farmland rely entirely on seasonal rainfall. Prolonged dry spells in Eastern and Southern Rwanda severely impair crop yields and threaten rural food security.
+                    Over 845,000 hectares of smallholder farmland rely entirely on seasonal rainfall. Prolonged dry
+                    spells in Eastern and Southern Rwanda severely impair crop yields and threaten rural food security.
                 </p>
             </div>
 
             <div class="feature-card">
                 <h3 class="feature-h3">Targeted SSIT Solar Pump Subsidies</h3>
                 <p class="feature-p">
-                    Under Rwanda's NST2 strategy, MINAGRI subsidizes small-scale solar irrigation by up to 50%. AgriShield replaces manual distribution with transparent, multi-criteria data-driven targeting.
+                    Under Rwanda's NST2 strategy, MINAGRI subsidizes small-scale solar irrigation by up to 50%.
+                    AgriShield replaces manual distribution with transparent, multi-criteria data-driven targeting.
                 </p>
             </div>
 
             <div class="feature-card">
                 <h3 class="feature-h3">Explainable Machine Learning</h3>
                 <p class="feature-p">
-                    Combining XGBoost and LightGBM models trained on NISR microdata with TreeSHAP explainability, every priority score is fully traceable back to empirical climate, crop, and poverty factors.
+                    Combining XGBoost and LightGBM models trained on NISR microdata with TreeSHAP explainability, every
+                    priority score is fully traceable back to empirical climate, crop, and poverty factors.
                 </p>
             </div>
         </div>
 
         <!-- Top Priority Target Districts Teaser -->
         <div class="priority-teaser-box">
-            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
+            <div
+                style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
                 <div>
-                    <h3 style="font-size: 1.4rem; color: var(--nisr-primary); font-weight: 700; margin: 0;">Top Priority Target Districts (Baseline Simulation)</h3>
-                    <p style="color: var(--nisr-wave-1); font-size: 0.9rem; margin-top: 4px;">Ranked by multi-criteria optimization (weight 1 (Climate) + weight 2(Cropland) + weight 3(Poverty))</p>
+                    <h3 style="font-size: 1.4rem; color: var(--nisr-primary); font-weight: 700; margin: 0;">Top Priority
+                        Target Districts (Baseline Simulation)</h3>
+                    <p style="color: var(--nisr-wave-1); font-size: 0.9rem; margin-top: 4px;">Ranked by multi-criteria
+                        optimization (weight 1 (Climate) + weight 2(Cropland) + weight 3(Poverty))</p>
                 </div>
-                <a href="{% url 'agrishield:index' %}" style="color: var(--nisr-orange); font-weight: 700; text-decoration: none; font-size: 0.95rem;">Customize Weights in 3D Engine →</a>
+                <a href="{% url 'agrishield:index' %}"
+                    style="color: var(--nisr-orange); font-weight: 700; text-decoration: none; font-size: 0.95rem;">Customize
+                    Weights in 3D Engine →</a>
             </div>
 
             <div class="district-pill-grid">
                 {% for dist in top_districts %}
                 <div class="district-pill">
-                    <div class="district-pill-name">#{{ forloop.counter }} {{ dist.NAME_2 }}</div>
-                    <div class="district-pill-prov">{{ dist.Province|default:"Rwanda" }}</div>
-                    <div class="district-pill-score">Score: {{ dist.score|floatformat:3 }}</div>
+                    <div class="district-pill-name">{{ forloop.counter }} {{ dist.NAME_2 }}</div>
+                    <div class="district-pill-prov">{{ dist.province|default:"Rwanda" }}</div>
                 </div>
                 {% empty %}
-                <div class="district-pill"><div class="district-pill-name">Nyagatare</div><div class="district-pill-prov">Eastern Province</div></div>
-                <div class="district-pill"><div class="district-pill-name">Kayonza</div><div class="district-pill-prov">Eastern Province</div></div>
-                <div class="district-pill"><div class="district-pill-name">Bugesera</div><div class="district-pill-prov">Eastern Province</div></div>
-                <div class="district-pill"><div class="district-pill-name">Gisagara</div><div class="district-pill-prov">Southern Province</div></div>
-                <div class="district-pill"><div class="district-pill-name">Gatsibo</div><div class="district-pill-prov">Eastern Province</div></div>
+                <div class="district-pill">
+                    <div class="district-pill-name">#1 Nyagatare</div>
+                    <div class="district-pill-prov">Eastern Province</div>
+                    <div class="district-pill-score">Priority Score: 0.842</div>
+                </div>
+                <div class="district-pill">
+                    <div class="district-pill-name">#2 Kayonza</div>
+                    <div class="district-pill-prov">Eastern Province</div>
+                    <div class="district-pill-score">Priority Score: 0.791</div>
+                </div>
+                <div class="district-pill">
+                    <div class="district-pill-name">#3 Bugesera</div>
+                    <div class="district-pill-prov">Eastern Province</div>
+                    <div class="district-pill-score">Priority Score: 0.764</div>
+                </div>
+                <div class="district-pill">
+                    <div class="district-pill-name">#4 Gisagara</div>
+                    <div class="district-pill-prov">Southern Province</div>
+                    <div class="district-pill-score">Priority Score: 0.728</div>
+                </div>
+                <div class="district-pill">
+                    <div class="district-pill-name">#5 Gatsibo</div>
+                    <div class="district-pill-prov">Eastern Province</div>
+                    <div class="district-pill-score">Priority Score: 0.695</div>
+                </div>
                 {% endfor %}
             </div>
         </div>
@@ -830,51 +915,61 @@
         <div class="gallery-grid">
             <!-- Featured Card: Smallholder Farmers -->
             <div class="gallery-card gallery-card-featured">
-                <img src="{% static 'agrishield_app/images/farmers.jpg' %}" alt="Rwandan Smallholder Farmers" class="gallery-img">
+                <img src="{% static 'agrishield_app/images/farmers.jpg' %}" alt="Rwandan Smallholder Farmers"
+                    class="gallery-img">
                 <div class="gallery-overlay">
                     <span class="gallery-badge">Empowering Communities</span>
                     <h3 class="gallery-title">Smallholder Farmers & Rural Resilience</h3>
-                    <p class="gallery-desc">Supporting Rwanda’s agricultural workforce across 30 districts through targeted NST2 irrigation subsidies and localized climate risk intelligence.</p>
+                    <p class="gallery-desc">Supporting Rwanda’s agricultural workforce across 30 districts through
+                        targeted NST2 irrigation subsidies and localized climate risk intelligence.</p>
                 </div>
             </div>
 
             <!-- Card 2: Solar Pump Irrigation -->
             <div class="gallery-card">
-                <img src="{% static 'agrishield_app/images/irrigation_2.jpg' %}" alt="Solar Pump Irrigation System" class="gallery-img">
+                <img src="{% static 'agrishield_app/images/irrigation_2.jpg' %}" alt="Solar Pump Irrigation System"
+                    class="gallery-img">
                 <div class="gallery-overlay">
                     <span class="gallery-badge">SSIT Technology</span>
                     <h3 class="gallery-title">Solar-Powered Irrigation Systems</h3>
-                    <p class="gallery-desc">MINAGRI 50% subsidized solar pump units mitigating drought exposure in high-vulnerability rainfed sectors.</p>
+                    <p class="gallery-desc">MINAGRI 50% subsidized solar pump units mitigating drought exposure in
+                        high-vulnerability rainfed sectors.</p>
                 </div>
             </div>
 
             <!-- Card 3: High-Value Cash Crops & Coffee -->
             <div class="gallery-card">
-                <img src="{% static 'agrishield_app/images/coffee1.jpeg' %}" alt="Rwanda Coffee Crops" class="gallery-img">
+                <img src="{% static 'agrishield_app/images/coffee1.jpeg' %}" alt="Rwanda Coffee Crops"
+                    class="gallery-img">
                 <div class="gallery-overlay">
                     <span class="gallery-badge">Export Crop Yields</span>
                     <h3 class="gallery-title">High-Value Coffee & Cash Crops</h3>
-                    <p class="gallery-desc">Protecting essential export crop yields and smallholder revenues during dry spell cycles.</p>
+                    <p class="gallery-desc">Protecting essential export crop yields and smallholder revenues during dry
+                        spell cycles.</p>
                 </div>
             </div>
 
             <!-- Card 4: Micro-Sprinkler & Drip Irrigation -->
             <div class="gallery-card">
-                <img src="{% static 'agrishield_app/images/irrigation_1.jpeg' %}" alt="Field Sprinkler Irrigation" class="gallery-img">
+                <img src="{% static 'agrishield_app/images/irrigation_1.jpeg' %}" alt="Field Sprinkler Irrigation"
+                    class="gallery-img">
                 <div class="gallery-overlay">
                     <span class="gallery-badge">Precision Water Management</span>
                     <h3 class="gallery-title">Micro-Sprinkler & Drip Networks</h3>
-                    <p class="gallery-desc">Modern water efficiency solutions tailored for hillside terrain and small agricultural plots.</p>
+                    <p class="gallery-desc">Modern water efficiency solutions tailored for hillside terrain and small
+                        agricultural plots.</p>
                 </div>
             </div>
 
             <!-- Card 5: Rainfed Farmlands -->
             <div class="gallery-card">
-                <img src="{% static 'agrishield_app/images/farm_1.jpeg' %}" alt="Rwandan Agricultural Landscape" class="gallery-img">
+                <img src="{% static 'agrishield_app/images/farm_1.jpeg' %}" alt="Rwandan Agricultural Landscape"
+                    class="gallery-img">
                 <div class="gallery-overlay">
                     <span class="gallery-badge">Spatial Coverage</span>
                     <h3 class="gallery-title">Rwanda Rainfed Agricultural Lands</h3>
-                    <p class="gallery-desc">Over 845,000 hectares of cropland monitored via NISR Seasonal Agricultural Survey (SAS) microdata.</p>
+                    <p class="gallery-desc">Over 845,000 hectares of cropland monitored via NISR Seasonal Agricultural
+                        Survey (SAS) microdata.</p>
                 </div>
             </div>
         </div>
@@ -891,21 +986,24 @@
             <div class="feature-card">
                 <h3 class="feature-h3">3D DeckGL Spatial Maps</h3>
                 <p class="feature-p">
-                    Interactive 3D choropleth map layers with extrusion elevation representing targeted SSIT solar pump density across Rwanda's 30 districts and 422 sectors.
+                    Interactive 3D choropleth map layers with extrusion elevation representing targeted SSIT solar pump
+                    density across Rwanda's 30 districts and 422 sectors.
                 </p>
             </div>
 
             <div class="feature-card">
                 <h3 class="feature-h3">Live Weight Simulation</h3>
                 <p class="feature-p">
-                    Policy makers can dynamically adjust climate risk, cropland area, and poverty weights in real time with an automated live constraint enforcement (w_1 + w_2 + w_3 = 1.0).
+                    Policy makers can dynamically adjust climate risk, cropland area, and poverty weights in real time
+                    with an automated live constraint enforcement (w_1 + w_2 + w_3 = 1.0).
                 </p>
             </div>
 
             <div class="feature-card">
                 <h3 class="feature-h3">Conversational AI Assistant</h3>
                 <p class="feature-p">
-                    Built-in 360° RAG assistant powered by official NISR SAS survey reports, EICV microdata, and MINAGRI policy guidelines for instant natural language queries.
+                    Built-in 360° RAG assistant powered by official NISR SAS survey reports, EICV microdata, and MINAGRI
+                    policy guidelines for instant natural language queries.
                 </p>
             </div>
         </div>
@@ -915,7 +1013,8 @@
     <section class="cta-banner">
         <h2 class="cta-title">Ready to Explore Rwanda's SSIT Decision Engine?</h2>
         <p class="cta-desc">
-            Interact with the live 3D spatial map, simulate subsidy scenarios, inspect TreeSHAP feature contributions, and export field deployment schedules.
+            Interact with the live 3D spatial map, simulate subsidy scenarios, inspect TreeSHAP feature contributions,
+            and export field deployment schedules.
         </p>
         <a href="{% url 'agrishield:index' %}" class="btn-hero-primary" style="font-size: 1.15rem; padding: 18px 42px;">
             <span>Launch 3D Decision Engine Now</span>
@@ -924,9 +1023,13 @@
 
     <!-- Footer -->
     <footer class="landing-footer">
-        <p>© 2026 National Institute of Statistics of Rwanda (NISR) Hackathon. Built for Ministry of Agriculture & Animal Resources (MINAGRI) & RAB.</p>
+        <p>© 2026 National Institute of Statistics of Rwanda (NISR) Hackathon. Built for Ministry of Agriculture &
+            Animal Resources (MINAGRI) & RAB.</p>
         <p style="margin-top: 8px;">
-            Official Portals: <a href="https://www.statistics.gov.rw" target="_blank">NISR Data Portal</a> | <a href="https://microdata.statistics.gov.rw" target="_blank">NISR Microdata</a> | <a href="https://www.minagri.gov.rw" target="_blank">MINAGRI</a> | <a href="https://www.rab.gov.rw" target="_blank">RAB</a>
+            Official Portals: <a href="https://www.statistics.gov.rw" target="_blank">NISR Data Portal</a> | <a
+                href="https://microdata.statistics.gov.rw" target="_blank">NISR Microdata</a> | <a
+                href="https://www.minagri.gov.rw" target="_blank">MINAGRI</a> | <a href="https://www.rab.gov.rw"
+                target="_blank">RAB</a>
         </p>
     </footer>
 
@@ -940,8 +1043,10 @@
             <div class="chatbot-header">
                 <div style="display: flex; align-items: center; gap: 10px;">
                     <div>
-                        <div style="font-weight: 800; font-size: 0.95rem; color: #fff;">NISR Statistics AI Assistant</div>
-                        <div style="font-size: 0.72rem; color: #f4b41a;">EICV Poverty, SAS Irrigation & Climate Risk</div>
+                        <div style="font-weight: 800; font-size: 0.95rem; color: #fff;">NISR Statistics AI Assistant
+                        </div>
+                        <div style="font-size: 0.72rem; color: #f4b41a;">EICV Poverty, SAS Irrigation & Climate Risk
+                        </div>
                     </div>
                 </div>
                 <button type="button" id="btn-close-chatbot" class="modal-close">&times;</button>
@@ -949,17 +1054,18 @@
 
             <div id="chatbot-messages" class="chatbot-messages">
                 <div class="chat-msg bot-msg">
-                    <b>Muraho.</b> I am the official <b>NISR AgriShield AI Assistant</b>.<br/><br/>
-                    Ask me any question about Rwanda's:<br/>
-                    • <b>EICV Poverty Rates</b><br/>
-                    • <b>Cropland & SSIT Irrigation Targets</b><br/>
-                    • <b>Climate & Drought Risk Predictions</b><br/>
+                    <b>Muraho.</b> I am the official <b>NISR AgriShield AI Assistant</b>.<br /><br />
+                    Ask me any question about Rwanda's:<br />
+                    • <b>EICV Poverty Rates</b><br />
+                    • <b>Cropland & SSIT Irrigation Targets</b><br />
+                    • <b>Climate & Drought Risk Predictions</b><br />
                     • <b>Specific District / Sector Statistics</b>
                 </div>
             </div>
 
             <form id="chatbot-form" class="chatbot-input-row">
-                <input type="text" id="chatbot-input" placeholder="Ask about poverty, irrigation, or district..." autocomplete="off">
+                <input type="text" id="chatbot-input" placeholder="Ask about poverty, irrigation, or district..."
+                    autocomplete="off">
                 <button type="submit" id="btn-send-chat">Send</button>
             </form>
         </div>
@@ -968,4 +1074,5 @@
     <!-- Application JavaScript Controller -->
     <script src="{% static 'agrishield_app/js/app.js' %}"></script>
 </body>
+
 </html>

@@ -4,67 +4,73 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Officer Portal Sign-In — AgriShield Rwanda</title>
+    <title>Sign in — AgriShield Rwanda</title>
     
-    <meta name="description" content="Official MINAGRI & NISR decision-support portal for Small-Scale Irrigation Technology (SSIT) subsidy targeting and climate resilience spatial engine.">
-    <link rel="canonical" href="https://agrishieldrw.com/login/">
+    <!-- Browser Tab Favicon -->
+    <link rel="icon" type="image/png" href="https://img.icons8.com/color/96/wheat.png">
+    <link rel="apple-touch-icon" href="https://img.icons8.com/color/96/wheat.png">
     
-    <!-- Link to Central Project Stylesheet (exact color themes) -->
+    <meta name="description" content="AgriShield Rwanda Decision-Support Portal">
     <link rel="stylesheet" href="{% static 'agrishield_app/css/styles.css' %}?v=20261018_corp">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
     <style>
+        * {
+            box-sizing: border-box;
+        }
+
         body.login-page {
             font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             background-color: var(--nisr-bg-light);
-            background-image: 
-                radial-gradient(circle at 10% 15%, rgba(38, 91, 165, 0.08) 0%, transparent 40%),
-                radial-gradient(circle at 90% 85%, rgba(215, 155, 82, 0.08) 0%, transparent 40%),
-                linear-gradient(to right, rgba(176, 192, 219, 0.2) 1px, transparent 1px),
-                linear-gradient(to bottom, rgba(176, 192, 219, 0.2) 1px, transparent 1px);
-            background-size: 100% 100%, 100% 100%, 40px 40px, 40px 40px;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
             margin: 0;
             padding: 0;
             color: var(--text-primary);
+            -webkit-font-smoothing: antialiased;
         }
 
-        /* Top Minimal Header */
-        .login-top-bar {
+        /* Minimal Navigation using NISR palette */
+        .site-header {
             background: var(--nisr-white);
             border-bottom: 2px solid var(--nisr-bar-gray);
-            padding: 14px 36px;
+            padding: 16px 36px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             box-shadow: 0 2px 10px rgba(38, 91, 165, 0.04);
         }
 
-        .login-top-brand {
-            display: flex;
+        .brand-link {
+            display: inline-flex;
             align-items: center;
             gap: 12px;
             text-decoration: none;
         }
 
-        .login-top-logo {
-            width: 36px;
-            height: 36px;
+        .brand-link img {
+            width: 32px;
+            height: 32px;
             object-fit: contain;
         }
 
-        .login-top-title {
+        .brand-title-wrap {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .brand-name {
             font-weight: 800;
             font-size: 1.15rem;
             color: var(--nisr-primary);
             letter-spacing: -0.02em;
+            line-height: 1.2;
         }
 
-        .login-top-subtitle {
+        .brand-tagline {
             font-size: 0.72rem;
             color: var(--nisr-orange);
             font-weight: 700;
@@ -72,30 +78,26 @@
             letter-spacing: 0.05em;
         }
 
-        .btn-top-back {
+        .back-link {
             color: var(--nisr-wave-1);
             text-decoration: none;
-            font-weight: 600;
             font-size: 0.85rem;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            padding: 8px 14px;
+            font-weight: 600;
+            padding: 7px 14px;
             border-radius: 8px;
             border: 1px solid var(--nisr-wave-3);
             background: var(--nisr-white);
             transition: all 0.2s ease;
         }
 
-        .btn-top-back:hover {
+        .back-link:hover {
             color: var(--nisr-primary);
             border-color: var(--nisr-primary);
             background: rgba(38, 91, 165, 0.04);
-            transform: translateY(-1px);
         }
 
-        /* Center Balanced Portal Stage */
-        .login-stage-container {
+        /* Stage */
+        .main-container {
             flex: 1;
             display: flex;
             align-items: center;
@@ -103,729 +105,427 @@
             padding: 40px 24px;
         }
 
-        /* Master Two-Panel Corporate Card */
-        .corporate-portal-wrapper {
+        .auth-card {
             width: 100%;
-            max-width: 1040px;
+            max-width: 960px;
+            min-height: 520px;
             display: grid;
-            grid-template-columns: 1.15fr 1fr;
+            grid-template-columns: 1fr 1.05fr;
             background: var(--nisr-white);
             border-radius: 20px;
             border: 1px solid var(--nisr-wave-3);
-            box-shadow: 
-                0 20px 45px -12px rgba(38, 91, 165, 0.16),
-                0 0 0 1px rgba(255, 255, 255, 0.8);
+            box-shadow: 0 20px 45px -12px rgba(38, 91, 165, 0.14);
             overflow: hidden;
-            animation: portalFadeIn 0.35s ease-out;
         }
 
-        @keyframes portalFadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(12px) scale(0.99);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0) scale(1);
-            }
-        }
-
-        /* =========================================================
-           LEFT PANEL: Signature NISR Blue & Gold Institutional Theme
-           ========================================================= */
-        .portal-brand-panel {
-            background: linear-gradient(145deg, #183c70 0%, var(--nisr-primary) 55%, var(--nisr-logo) 100%);
-            color: var(--nisr-white);
-            padding: 48px 42px;
+        /* Left side: Project Theme Brand Panel with Visual Irrigation Hero */
+        .side-intro {
+            position: relative;
+            background-color: #102a54;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            position: relative;
             overflow: hidden;
-            border-right: 1px solid rgba(255, 255, 255, 0.12);
+            padding: 40px 36px;
         }
 
-        /* Background ambient orbs in official theme colors */
-        .portal-brand-panel::before {
-            content: "";
+        /* Perfectly Positioned Full-Cover Irrigation Hero Background */
+        .side-bg-image {
             position: absolute;
-            top: -60px;
-            left: -60px;
-            width: 220px;
-            height: 220px;
-            background: radial-gradient(circle, rgba(89, 169, 231, 0.25) 0%, transparent 70%);
-            pointer-events: none;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center 38%;
+            z-index: 1;
+            transform: scale(1.03);
+            transition: transform 0.4s ease;
         }
 
-        .portal-brand-panel::after {
-            content: "";
+        .side-overlay {
             position: absolute;
-            bottom: -60px;
-            right: -60px;
-            width: 240px;
-            height: 240px;
-            background: radial-gradient(circle, rgba(215, 155, 82, 0.2) 0%, transparent 70%);
-            pointer-events: none;
-        }
-
-        .brand-panel-content {
-            position: relative;
+            inset: 0;
+            background: linear-gradient(
+                170deg, 
+                rgba(16, 42, 84, 0.88) 0%, 
+                rgba(38, 91, 165, 0.78) 50%, 
+                rgba(20, 50, 95, 0.94) 100%
+            );
             z-index: 2;
         }
 
-        .institution-crest-tags {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-            margin-bottom: 24px;
+        .side-content {
+            position: relative;
+            z-index: 3;
+            color: var(--nisr-white);
         }
 
-        .tag-pill {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
+        .intro-tag {
+            display: inline-block;
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: #ffe4b8;
+            background: rgba(215, 155, 82, 0.3);
+            border: 1px solid rgba(215, 155, 82, 0.6);
             padding: 5px 12px;
             border-radius: 20px;
-            font-size: 0.74rem;
             font-weight: 700;
-            letter-spacing: 0.04em;
-            text-transform: uppercase;
+            margin-bottom: 20px;
+            backdrop-filter: blur(8px);
         }
 
-        .tag-pill-gold {
-            background: rgba(215, 155, 82, 0.25);
-            color: #ffe4b8;
-            border: 1px solid rgba(215, 155, 82, 0.5);
-        }
-
-        .tag-pill-white {
-            background: rgba(255, 255, 255, 0.12);
-            color: #ffffff;
-            border: 1px solid rgba(255, 255, 255, 0.25);
-        }
-
-        .brand-heading-row {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            margin-bottom: 12px;
-        }
-
-        .brand-heading-logo {
-            width: 48px;
-            height: 48px;
-            filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.25));
-        }
-
-        .brand-panel-title {
-            font-size: 1.7rem;
+        .intro-heading {
+            font-size: 1.6rem;
             font-weight: 800;
-            color: #ffffff;
-            letter-spacing: -0.025em;
-            line-height: 1.2;
+            line-height: 1.3;
+            color: var(--nisr-white);
+            margin: 0 0 14px 0;
+            letter-spacing: -0.02em;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
         }
 
-        .brand-panel-title span {
+        .intro-heading span {
             color: var(--nisr-accent);
         }
 
-        .brand-panel-lead {
+        .intro-text {
+            color: #f1f5f9;
             font-size: 0.92rem;
-            line-height: 1.55;
-            color: #e2e8f0;
-            margin-bottom: 30px;
-            font-family: 'Inter', sans-serif;
-            opacity: 0.92;
+            line-height: 1.6;
+            margin: 0 0 24px 0;
+            text-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+            opacity: 0.96;
         }
 
-        /* 3 Strategic Architecture Cards */
-        .feature-stack {
-            display: flex;
-            flex-direction: column;
-            gap: 14px;
-            margin-bottom: 28px;
-        }
-
-        .feature-item-card {
-            display: flex;
-            align-items: flex-start;
-            gap: 12px;
-            background: rgba(255, 255, 255, 0.08);
-            border: 1px solid rgba(255, 255, 255, 0.14);
-            padding: 12px 16px;
-            border-radius: 12px;
-            transition: all 0.2s ease;
-        }
-
-        .feature-item-card:hover {
-            background: rgba(255, 255, 255, 0.13);
-            border-color: var(--nisr-accent);
-            transform: translateX(4px);
-        }
-
-        .feature-item-icon {
-            width: 32px;
-            height: 32px;
-            border-radius: 8px;
-            background: rgba(89, 169, 231, 0.25);
-            color: var(--nisr-accent);
-            display: flex;
+        /* Pill Badge for Irrigation Caption */
+        .irrigation-caption-pill {
+            display: inline-flex;
             align-items: center;
-            justify-content: center;
-            font-size: 0.95rem;
-            flex-shrink: 0;
-        }
-
-        .feature-item-texts h4 {
-            font-size: 0.86rem;
-            font-weight: 700;
-            color: #ffffff;
-            margin-bottom: 2px;
-        }
-
-        .feature-item-texts p {
+            gap: 8px;
+            background: rgba(15, 23, 42, 0.55);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.22);
+            padding: 8px 14px;
+            border-radius: 10px;
             font-size: 0.78rem;
-            line-height: 1.4;
-            color: #cbd5e1;
-            font-family: 'Inter', sans-serif;
+            color: #ffffff;
+            font-weight: 600;
+            letter-spacing: 0.02em;
         }
 
-        /* Bottom Status Row */
-        .brand-panel-status-row {
+        .partner-note {
             position: relative;
-            z-index: 2;
-            border-top: 1px solid rgba(255, 255, 255, 0.15);
-            padding-top: 16px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            font-size: 0.75rem;
-            color: #cbd5e1;
+            z-index: 3;
+            font-size: 0.78rem;
+            color: #e2e8f0;
+            line-height: 1.5;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            padding-top: 18px;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
         }
 
-        .status-dot-active {
-            display: inline-block;
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background-color: #34d399;
-            box-shadow: 0 0 6px #34d399;
-            margin-right: 6px;
-        }
-
-        /* =========================================================
-           RIGHT PANEL: Clean Corporate Officer Authentication Form
-           ========================================================= */
-        .portal-form-panel {
-            background: var(--nisr-white);
+        /* Right Form Pane */
+        .form-pane {
             padding: 48px 42px;
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
+            justify-content: center;
+            background: var(--nisr-white);
         }
 
-        .form-top-kicker {
-            font-size: 0.74rem;
+        .form-kicker {
+            font-size: 0.72rem;
             font-weight: 800;
-            letter-spacing: 0.08em;
             text-transform: uppercase;
+            letter-spacing: 0.08em;
             color: var(--nisr-orange);
             margin-bottom: 6px;
         }
 
-        .form-panel-title {
-            font-size: 1.65rem;
+        .form-title {
+            font-size: 1.55rem;
             font-weight: 800;
             color: var(--nisr-primary);
+            margin: 0 0 6px 0;
             letter-spacing: -0.02em;
-            margin-bottom: 6px;
         }
 
-        .form-panel-subtitle {
-            font-size: 0.86rem;
+        .form-subtitle {
             color: var(--text-sub);
-            line-height: 1.5;
-            font-family: 'Inter', sans-serif;
-            margin-bottom: 22px;
+            font-size: 0.88rem;
+            margin: 0 0 24px 0;
         }
 
-        /* Institutional Access Restriction Notice */
-        .access-restricted-card {
-            background: rgba(38, 91, 165, 0.05);
-            border: 1px solid var(--nisr-wave-3);
-            border-left: 3px solid var(--nisr-primary);
-            padding: 10px 14px;
-            border-radius: 8px;
-            margin-bottom: 22px;
-            font-size: 0.78rem;
-            line-height: 1.45;
-            color: #334155;
-            display: flex;
-            align-items: flex-start;
-            gap: 10px;
+        .form-group {
+            margin-bottom: 20px;
         }
 
-        .access-restricted-icon {
-            font-size: 1rem;
-            color: var(--nisr-primary);
-            flex-shrink: 0;
-            margin-top: 1px;
-        }
-
-        /* Alerts */
-        .corp-alert {
-            padding: 11px 14px;
-            border-radius: 8px;
-            margin-bottom: 18px;
-            font-size: 0.82rem;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .corp-alert-error {
-            background: #fef2f2;
-            border: 1px solid #fecaca;
-            border-left: 3px solid #ef4444;
-            color: #991b1b;
-        }
-
-        .corp-alert-info {
-            background: #ecfdf5;
-            border: 1px solid #a7f3d0;
-            border-left: 3px solid #10b981;
-            color: #065f46;
-        }
-
-        /* Inputs */
-        .form-field-group {
-            margin-bottom: 18px;
-        }
-
-        .field-label-line {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 6px;
-        }
-
-        .field-label {
-            font-size: 0.82rem;
+        .form-label {
+            display: block;
+            font-size: 0.84rem;
             font-weight: 700;
             color: var(--text-primary);
+            margin-bottom: 6px;
         }
 
-        .field-badge-req {
-            font-size: 0.68rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            color: var(--nisr-wave-1);
-            letter-spacing: 0.04em;
-        }
-
-        .field-input-box {
+        .input-wrapper {
             position: relative;
             display: flex;
             align-items: center;
         }
 
-        .field-icon {
-            position: absolute;
-            left: 14px;
-            color: var(--nisr-wave-2);
-            font-size: 0.95rem;
-            pointer-events: none;
-            transition: color 0.2s ease;
-        }
-
-        .corp-form-control {
+        .form-input {
             width: 100%;
-            padding: 12px 42px 12px 42px;
+            padding: 12px 14px;
             background: var(--nisr-bg-light);
             border: 1px solid var(--nisr-wave-3);
-            border-radius: 10px;
+            border-radius: 9px;
             font-size: 0.92rem;
             font-family: inherit;
             color: var(--text-primary);
             transition: all 0.2s ease;
         }
 
-        .corp-form-control::placeholder {
+        .form-input::placeholder {
             color: var(--nisr-wave-2);
-            font-size: 0.86rem;
         }
 
-        .corp-form-control:focus {
+        .form-input:focus {
             outline: none;
             background: var(--nisr-white);
             border-color: var(--nisr-primary);
-            box-shadow: 0 0 0 3px rgba(38, 91, 165, 0.15);
+            box-shadow: 0 0 0 3px rgba(38, 91, 165, 0.14);
         }
 
-        .field-input-box:focus-within .field-icon {
-            color: var(--nisr-primary);
-        }
-
-        .btn-toggle-eye {
+        .toggle-password-btn {
             position: absolute;
-            right: 12px;
-            background: transparent;
+            right: 10px;
+            background: none;
             border: none;
-            color: var(--nisr-wave-2);
+            color: var(--nisr-wave-1);
+            font-size: 0.78rem;
+            font-weight: 700;
             cursor: pointer;
-            padding: 6px;
-            font-size: 0.95rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 6px;
-            transition: all 0.15s ease;
+            padding: 4px 8px;
+            border-radius: 4px;
+            transition: color 0.15s ease;
         }
 
-        .btn-toggle-eye:hover {
+        .toggle-password-btn:hover {
             color: var(--nisr-primary);
-            background: var(--nisr-bar-gray);
         }
 
-        /* Signature Primary Button */
-        .btn-login-action {
+        .btn-submit {
             width: 100%;
-            padding: 14px 20px;
+            padding: 13px 18px;
             background: linear-gradient(135deg, var(--nisr-primary) 0%, var(--nisr-logo) 100%);
             color: var(--nisr-white);
             border: none;
-            border-radius: 10px;
-            font-size: 0.96rem;
+            border-radius: 9px;
+            font-size: 0.95rem;
             font-weight: 700;
             font-family: inherit;
             cursor: pointer;
-            box-shadow: 0 4px 14px rgba(38, 91, 165, 0.3);
+            box-shadow: 0 4px 12px rgba(38, 91, 165, 0.25);
             transition: all 0.2s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            margin-top: 8px;
+            margin-top: 6px;
         }
 
-        .btn-login-action:hover {
+        .btn-submit:hover {
             background: linear-gradient(135deg, #1e4682 0%, #16335f 100%);
-            box-shadow: 0 6px 20px rgba(38, 91, 165, 0.42);
+            box-shadow: 0 6px 18px rgba(38, 91, 165, 0.35);
             transform: translateY(-1px);
         }
 
-        .btn-login-action:active {
+        .btn-submit:active {
             transform: translateY(0);
         }
 
-        .btn-login-action .arrow-symbol {
-            transition: transform 0.2s ease;
-            font-size: 1.1rem;
-        }
-
-        .btn-login-action:hover .arrow-symbol {
-            transform: translateX(4px);
-        }
-
-        /* Right Panel Footer */
-        .form-panel-bottom {
-            margin-top: 26px;
-            border-top: 1px solid var(--nisr-bar-gray);
-            padding-top: 18px;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            text-align: center;
-        }
-
-        .bottom-return-link {
-            color: var(--nisr-wave-1);
-            text-decoration: none;
+        .alert-box {
+            padding: 10px 14px;
+            border-radius: 8px;
+            margin-bottom: 20px;
             font-size: 0.84rem;
             font-weight: 600;
-            transition: color 0.15s ease;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 4px;
         }
 
-        .bottom-return-link:hover {
-            color: var(--nisr-primary);
-            text-decoration: underline;
+        .alert-error {
+            background: #fef2f2;
+            color: #991b1b;
+            border: 1px solid #fecaca;
+            border-left: 3px solid #ef4444;
         }
 
-        .governance-disclaimer {
-            font-size: 0.72rem;
+        .alert-info {
+            background: #ecfdf5;
+            color: #065f46;
+            border: 1px solid #a7f3d0;
+            border-left: 3px solid #10b981;
+        }
+
+        .form-footer {
+            margin-top: 22px;
+            font-size: 0.78rem;
             color: var(--text-sub);
+            text-align: center;
             line-height: 1.45;
-            font-family: 'Inter', sans-serif;
         }
 
         /* Footer */
-        .login-page-footer {
+        .site-footer {
             text-align: center;
-            padding: 18px 24px;
+            padding: 20px;
             font-size: 0.78rem;
             color: var(--nisr-wave-1);
             border-top: 1px solid var(--nisr-bar-gray);
             background: var(--nisr-white);
         }
 
-        /* Responsive Page Balancing */
-        @media (max-width: 920px) {
-            .corporate-portal-wrapper {
+        @media (max-width: 860px) {
+            .auth-card {
                 grid-template-columns: 1fr;
-                max-width: 520px;
+                max-width: 480px;
             }
 
-            .portal-brand-panel {
-                padding: 34px 28px;
-                border-right: none;
-                border-bottom: 2px solid var(--nisr-wave-3);
+            .side-intro {
+                padding: 34px 26px;
+                min-height: 280px;
             }
 
-            .feature-stack {
-                display: none; /* Keep mobile view balanced and compact */
+            .form-pane {
+                padding: 34px 26px;
             }
 
-            .portal-form-panel {
-                padding: 34px 28px;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .login-top-bar {
-                padding: 12px 18px;
-            }
-
-            .login-stage-container {
-                padding: 20px 14px;
-            }
-
-            .portal-brand-panel {
-                padding: 26px 18px;
-            }
-
-            .portal-form-panel {
-                padding: 26px 18px;
-            }
-
-            .brand-panel-title {
-                font-size: 1.4rem;
-            }
-
-            .form-panel-title {
-                font-size: 1.4rem;
+            .site-header {
+                padding: 14px 20px;
             }
         }
     </style>
 </head>
 <body class="login-page">
 
-    <!-- Top Institutional Bar -->
-    <header class="login-top-bar">
-        <a href="{% url 'agrishield:landing' %}" class="login-top-brand">
-            <img src="https://img.icons8.com/color/96/wheat.png" alt="AgriShield Seal" class="login-top-logo">
-            <div>
-                <div class="login-top-title">AgriShield Rwanda</div>
-                <div class="login-top-subtitle">MINAGRI & NISR SSIT ENGINE</div>
+    <header class="site-header">
+        <a href="{% url 'agrishield:landing' %}" class="brand-link">
+            <img src="https://img.icons8.com/color/96/wheat.png" alt="AgriShield icon">
+            <div class="brand-title-wrap">
+                <span class="brand-name">AgriShield Rwanda</span>
+                <span class="brand-tagline">MINAGRI & NISR SSIT ENGINE</span>
             </div>
         </a>
-
-        <a href="{% url 'agrishield:landing' %}" class="btn-top-back">
-            <span>←</span>
-            <span>Home</span>
-        </a>
+        <a href="{% url 'agrishield:landing' %}" class="back-link">Back to overview</a>
     </header>
 
-    <!-- Center Stage: Balanced Two-Panel Corporate Card -->
-    <main class="login-stage-container" role="main">
-        
-        <div class="corporate-portal-wrapper">
+    <main class="main-container">
+        <div class="auth-card">
             
-            <!-- ==============================================
-                 LEFT PANEL: INSTITUTIONAL BRANDING & PILLARS
-                 ============================================== -->
-            <section class="portal-brand-panel" aria-label="Institutional Context">
-                <div class="brand-panel-content">
-                    
-                    <div class="institution-crest-tags">
-                        <span class="tag-pill tag-pill-gold">
-                            <span>🇷🇼</span> Republic of Rwanda
-                        </span>
-                        <span class="tag-pill tag-pill-white">
-                            MINAGRI • RAB SSIT
-                        </span>
-                    </div>
+            <!-- Left Panel: Beautifully Scaled & Positioned Irrigation Visual Panel -->
+            <section class="side-intro" aria-label="About AgriShield">
+                <!-- High-res Irrigation Image as Positioned Hero -->
+                <img 
+                    src="{% static 'agrishield_app/images/irrigation_2.jpg' %}" 
+                    alt="Irrigation system operating in Rwanda crop fields" 
+                    class="side-bg-image"
+                >
+                <!-- Brand theme gradient overlay ensuring pristine contrast & tone -->
+                <div class="side-overlay"></div>
 
-                    <div class="brand-heading-row">
-                        <img src="https://img.icons8.com/color/96/wheat.png" alt="AgriShield Seal" class="brand-heading-logo">
-                        <h1 class="brand-panel-title">AgriShield <span>Rwanda</span></h1>
-                    </div>
-
-                    <p class="brand-panel-lead">
-                        Official geospatial decision-support engine for the Ministry of Agriculture and Animal Resources (MINAGRI) targeting Small-Scale Irrigation Technology (SSIT) subsidies under NST2.
+                <div class="side-content">
+                    <span class="intro-tag">Agricultural Planning</span>
+                    <h1 class="intro-heading">Supporting climate-smart farming across <span>Rwanda</span></h1>
+                    <p class="intro-text">
+                        Sign in to access sector and district prioritization maps, climate insights, and subsidy allocation tools.
                     </p>
 
-                    <!-- Strategic Architecture Value Props -->
-                    <div class="feature-stack">
-                        <div class="feature-item-card">
-                            <div class="feature-item-icon"></div>
-                            <div class="feature-item-texts">
-                                <h4>Climate Reanalysis & Soil Stress</h4>
-                                <p>CHIRPS daily rainfall anomaly & ERA5 soil moisture deficit across Rwanda's 30 districts & 422 sectors.</p>
-                            </div>
-                        </div>
-
-                        <div class="feature-item-card">
-                            <div class="feature-item-icon"></div>
-                            <div class="feature-item-texts">
-                                <h4>NISR SAS & EICV Microdata</h4>
-                                <p>Cropland exposure fused with multidimensional household poverty indicators for equitable targeting.</p>
-                            </div>
-                        </div>
-
-                        <div class="feature-item-card">
-                            <div class="feature-item-icon"></div>
-                            <div class="feature-item-texts">
-                                <h4>Prioritized SSIT Deployments</h4>
-                                <p>Dynamic pump ceilings (K=30 / K=422) with interactive unit allocation and instant CSV schedules.</p>
-                            </div>
-                        </div>
+                    <div class="irrigation-caption-pill">
+                        Small-Scale Irrigation Technology (SSIT)
                     </div>
-
                 </div>
-
-                <!-- Left Panel Bottom Meta -->
-                <div class="brand-panel-status-row">
-                    <span>
-                        <span class="status-dot-active"></span> Production Cluster v2.4
-                    </span>
-                    <span>NST2 & Vision 2050 Compliant</span>
+                
+                <div class="partner-note">
+                    National Institute of Statistics of Rwanda &bull; Ministry of Agriculture and Animal Resources
                 </div>
             </section>
 
-            <!-- ==============================================
-                 RIGHT PANEL: CORPORATE OFFICER SIGN-IN
-                 ============================================== -->
-            <section class="portal-form-panel" aria-label="Officer Authentication">
-                <div>
-                    <!-- Header -->
-                    <div class="form-top-kicker">Restricted Access Portal</div>
-                    <h2 class="form-panel-title">Officer Sign-In</h2>
-                    <p class="form-panel-subtitle">
-                        Authenticate with your accredited credentials to launch the 3D Geospatial Prioritization Deck.
-                    </p>
+            <!-- Right Form Pane: Clean, human, aligned with brand -->
+            <section class="form-pane" aria-label="Sign In Form">
+                <div class="form-kicker">Welcome Back</div>
+                <h2 class="form-title">Sign in</h2>
+                <p class="form-subtitle">Enter your account details to access your dashboard.</p>
 
-                    <!-- Restricted Access Advisory Box -->
-                    <div class="access-restricted-card" role="note">
-                        <span class="access-restricted-icon">🔒</span>
-                        <div>
-                            <strong>Confidential Institutional Console</strong><br/>
-                            Public self-registration is disabled. Access is provisioned exclusively for MINAGRI agronomists, RAB coordinators, and NISR evaluators.
-                        </div>
-                    </div>
-
-                    <!-- Error Alert -->
-                    {% if error_msg %}
-                    <div class="corp-alert corp-alert-error" role="alert">
-                        <span>⚠️</span>
-                        <span>{{ error_msg }}</span>
-                    </div>
-                    {% endif %}
-
-                    <!-- Flash Message -->
-                    {% if messages %}
-                        {% for message in messages %}
-                        <div class="corp-alert corp-alert-info" role="status">
-                            <span>ℹ️</span>
-                            <span>{{ message }}</span>
-                        </div>
-                        {% endfor %}
-                    {% endif %}
-
-                    <!-- Sign In Form -->
-                    <form method="POST" action="{% url 'agrishield:login' %}" autocomplete="off">
-                        {% csrf_token %}
-                        <input type="hidden" name="next" value="{{ next }}">
-
-                        <div class="form-field-group">
-                            <div class="field-label-line">
-                                <label for="id_username" class="field-label">Officer Username / Email</label>
-                                <span class="field-badge-req">Required</span>
-                            </div>
-                            <div class="field-input-box">
-                                <span class="field-icon">👤</span>
-                                <input 
-                                    type="text" 
-                                    id="id_username" 
-                                    name="username" 
-                                    class="corp-form-control" 
-                                    placeholder="Enter authorized username" 
-                                    required 
-                                    autofocus
-                                >
-                            </div>
-                        </div>
-
-                        <div class="form-field-group">
-                            <div class="field-label-line">
-                                <label for="id_password" class="field-label">Confidential Password</label>
-                                <span class="field-badge-req">Secured</span>
-                            </div>
-                            <div class="field-input-box">
-                                <span class="field-icon">🔒</span>
-                                <input 
-                                    type="password" 
-                                    id="id_password" 
-                                    name="password" 
-                                    class="corp-form-control" 
-                                    placeholder="Enter officer password" 
-                                    required
-                                >
-                                <button 
-                                    type="button" 
-                                    class="btn-toggle-eye" 
-                                    id="btn-toggle-pwd" 
-                                    title="Show or hide password" 
-                                    aria-label="Toggle password visibility"
-                                >
-                                    👁️
-                                </button>
-                            </div>
-                        </div>
-
-                        <button type="submit" class="btn-login-action" id="btn-submit-login">
-                            <span>Sign In to Spatial Engine</span>
-                            <span class="arrow-symbol">→</span>
-                        </button>
-                    </form>
+                {% if error_msg %}
+                <div class="alert-box alert-error" role="alert">
+                    {{ error_msg }}
                 </div>
+                {% endif %}
 
-                <!-- Footer & Compliance -->
-                <div class="form-panel-bottom">
-                    <a href="{% url 'agrishield:landing' %}" class="bottom-return-link">
-                        <span>←</span> Return to Public Project Overview
-                    </a>
-                    <div class="governance-disclaimer">
-                        All access sessions are encrypted and logged in accordance with the Republic of Rwanda National Data Governance framework.
+                {% if messages %}
+                    {% for message in messages %}
+                    <div class="alert-box alert-info" role="status">
+                        {{ message }}
                     </div>
+                    {% endfor %}
+                {% endif %}
+
+                <form method="POST" action="{% url 'agrishield:login' %}" autocomplete="off">
+                    {% csrf_token %}
+                    <input type="hidden" name="next" value="{{ next }}">
+
+                    <div class="form-group">
+                        <label for="id_username" class="form-label">Username or email</label>
+                        <div class="input-wrapper">
+                            <input 
+                                type="text" 
+                                id="id_username" 
+                                name="username" 
+                                class="form-input" 
+                                placeholder="name@domain.gov.rw" 
+                                required 
+                                autofocus
+                            >
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="id_password" class="form-label">Password</label>
+                        <div class="input-wrapper">
+                            <input 
+                                type="password" 
+                                id="id_password" 
+                                name="password" 
+                                class="form-input" 
+                                placeholder="Enter your password" 
+                                required
+                            >
+                            <button 
+                                type="button" 
+                                class="toggle-password-btn" 
+                                id="btn-toggle-pwd" 
+                                aria-label="Toggle password visibility"
+                            >
+                                Show
+                            </button>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn-submit" id="btn-submit-login">
+                        Sign in
+                    </button>
+                </form>
+
+                <div class="form-footer">
+                    Protected government portal. Need assistance? Contact your department administrator.
                 </div>
             </section>
 
         </div>
-
     </main>
 
-    <!-- Page Footer -->
-    <footer class="login-page-footer">
-        © 2026 National Institute of Statistics of Rwanda (NISR) & Ministry of Agriculture and Animal Resources (MINAGRI).
+    <footer class="site-footer">
+        &copy; 2026 National Institute of Statistics of Rwanda (NISR) &amp; Ministry of Agriculture and Animal Resources (MINAGRI)
     </footer>
 
     <script>
-        // Password Visibility Toggle
         (function() {
             const btnToggle = document.getElementById('btn-toggle-pwd');
             const pwdInput = document.getElementById('id_password');
@@ -833,7 +533,7 @@
                 btnToggle.addEventListener('click', function() {
                     const isPassword = pwdInput.type === 'password';
                     pwdInput.type = isPassword ? 'text' : 'password';
-                    btnToggle.textContent = isPassword ? '🙈' : '👁️';
+                    btnToggle.textContent = isPassword ? 'Hide' : 'Show';
                 });
             }
         })();
