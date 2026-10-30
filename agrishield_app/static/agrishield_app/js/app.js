@@ -15,6 +15,7 @@ document.addEventListener("DOMContentLoaded", function () {
     let currentGeoLevel = "District";
     let currentRankings = [];
     let currentAllocationFilter = "all"; // "all", "allocated", "identified", "unallocated"
+    let currentTableSearchQuery = "";
     let allocStateVersion = 0;
 
     const BASEMAP_STYLES = {
@@ -1103,12 +1104,21 @@ document.addEventListener("DOMContentLoaded", function () {
         const isDistrict = (level || "district").toLowerCase().includes("district");
         const nameKey = isDistrict ? "NAME_2" : "NAME_3";
 
-        // Filter according to currentAllocationFilter
+        // Filter according to currentAllocationFilter and currentTableSearchQuery
+        const query = (currentTableSearchQuery || "").trim().toLowerCase();
         const displayRankings = (rankings || []).filter(r => {
-            if (currentAllocationFilter === "all") return true;
-            if (currentAllocationFilter === "allocated") return !!r.is_allocated;
-            if (currentAllocationFilter === "identified") return !!r.is_identified_target;
-            if (currentAllocationFilter === "unallocated") return !r.is_allocated;
+            if (currentAllocationFilter === "allocated" && !r.is_allocated) return false;
+            if (currentAllocationFilter === "identified" && !r.is_identified_target) return false;
+            if (currentAllocationFilter === "unallocated" && !!r.is_allocated) return false;
+
+            if (query) {
+                const uName = (r[nameKey] || "").toString().toLowerCase();
+                const prov = (r.province || "").toString().toLowerCase();
+                const rank = (r.allocated_subsidy_rank || "").toString();
+                if (!uName.includes(query) && !prov.includes(query) && !rank.includes(query)) {
+                    return false;
+                }
+            }
             return true;
         });
 
@@ -1118,14 +1128,29 @@ document.addEventListener("DOMContentLoaded", function () {
             else if (currentAllocationFilter === "identified") filterLabel = "🔍 Identified Targets Only";
             else if (currentAllocationFilter === "unallocated") filterLabel = "Baseline (Unallocated) Only";
 
+            const searchNote = query ? ` matching "<b>${currentTableSearchQuery}</b>"` : '';
+
             tbody.innerHTML = `
                 <tr>
                     <td colspan="11" style="text-align: center; padding: 32px; color: #64748B; font-weight: 500;">
-                        No administrative units found for filter: <b>${filterLabel}</b>.
-                        ${currentAllocationFilter === "allocated" ? '<br/><span style="font-size: 0.85rem; color: #10b981; margin-top: 6px; display: inline-block;">Click "+ Allocate Pump" on any identified target or "+ Allocate All Identified" to allocate.</span>' : ''}
+                        No administrative units found for filter: <b>${filterLabel}</b>${searchNote}.
+                        ${query ? '<br/><button type="button" id="btn-empty-clear-search" style="margin-top: 10px; background: none; border: 1px solid var(--nisr-wave-3); padding: 5px 12px; border-radius: 6px; color: var(--nisr-primary); cursor: pointer; font-size: 0.8rem; font-weight: 600;">Clear search</button>' : ''}
+                        ${currentAllocationFilter === "allocated" && !query ? '<br/><span style="font-size: 0.85rem; color: #10b981; margin-top: 6px; display: inline-block;">Click "+ Allocate Pump" on any identified target or "+ Allocate All Identified" to allocate.</span>' : ''}
                     </td>
                 </tr>
             `;
+
+            const emptyClearBtn = document.getElementById("btn-empty-clear-search");
+            if (emptyClearBtn) {
+                emptyClearBtn.addEventListener("click", () => {
+                    const searchInput = document.getElementById("table-search-input");
+                    const clearBtn = document.getElementById("btn-clear-table-search");
+                    if (searchInput) searchInput.value = "";
+                    if (clearBtn) clearBtn.style.display = "none";
+                    currentTableSearchQuery = "";
+                    renderTable(rankings, level);
+                });
+            }
             return;
         }
 
@@ -1438,6 +1463,36 @@ document.addEventListener("DOMContentLoaded", function () {
             const level = levelSelect ? levelSelect.value : currentGeoLevel;
             clearPersistedAllocations(level);
             triggerSimulation();
+        });
+    }
+
+    // Table Search Bar Filter
+    const tableSearchInput = document.getElementById("table-search-input");
+    const btnClearTableSearch = document.getElementById("btn-clear-table-search");
+
+    if (tableSearchInput) {
+        tableSearchInput.addEventListener("input", (e) => {
+            currentTableSearchQuery = e.target.value;
+            if (btnClearTableSearch) {
+                btnClearTableSearch.style.display = currentTableSearchQuery ? "inline-block" : "none";
+            }
+            if (currentRankings) {
+                renderTable(currentRankings, levelSelect ? levelSelect.value : currentGeoLevel);
+            }
+        });
+    }
+
+    if (btnClearTableSearch) {
+        btnClearTableSearch.addEventListener("click", () => {
+            if (tableSearchInput) {
+                tableSearchInput.value = "";
+                tableSearchInput.focus();
+            }
+            btnClearTableSearch.style.display = "none";
+            currentTableSearchQuery = "";
+            if (currentRankings) {
+                renderTable(currentRankings, levelSelect ? levelSelect.value : currentGeoLevel);
+            }
         });
     }
 

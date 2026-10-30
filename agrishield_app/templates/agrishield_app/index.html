@@ -283,10 +283,24 @@
                         <div>
                             <div class="glass-box-title">Prioritized SSIT Deployment Schedule</div>
                             <div style="font-size: 0.8rem; color: #64748B; margin-top: 2px;">
-                                Allocate or deallocate pumps dynamically, or filter view by status.
+                                Search, filter by status, and allocate or deallocate pumps dynamically.
                             </div>
                         </div>
                         <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+                            <!-- Search Bar -->
+                            <div class="table-search-box" style="position: relative; display: flex; align-items: center;">
+                                <input 
+                                    type="text" 
+                                    id="table-search-input" 
+                                    class="map-select-control" 
+                                    placeholder="Search district / sector..." 
+                                    style="padding-left: 30px; padding-right: 24px; min-width: 210px; font-weight: 500;"
+                                    aria-label="Search administrative units"
+                                >
+                                <span style="position: absolute; left: 10px; color: var(--nisr-wave-1); font-size: 0.85rem; pointer-events: none;">🔍</span>
+                                <button type="button" id="btn-clear-table-search" style="display: none; position: absolute; right: 8px; background: none; border: none; color: #94A3B8; cursor: pointer; font-size: 0.8rem; padding: 2px 4px;" title="Clear search">✕</button>
+                            </div>
+
                             <div class="btn-group-segmented" id="table-filter-group">
                                 <button type="button" class="btn-segmented active" data-filter="all" id="btn-filter-all">
                                     All (<span id="count-filter-all">30</span>)
@@ -492,6 +506,6 @@
     </div>
 
     <!-- Application JavaScript Controller -->
-    <script src="{% static 'agrishield_app/js/app.js' %}?v=20261018_2"></script>
+    <script src="{% static 'agrishield_app/js/app.js' %}?v=20261018_search"></script>
 </body>
 </html>
